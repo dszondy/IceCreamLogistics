@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <AssemblyName>IceCreamLogistics.Infrastructure</AssemblyName>
+        <RootNamespace>IceCreamLogistics.Infrastructure</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\IceCreamLogistics.Application\IceCreamLogistics.Application.csproj" />
+    </ItemGroup>
+
+</Project>
