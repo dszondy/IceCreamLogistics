@@ -1,0 +1,26 @@
+<div>
+  <tabset>
+    <tab #searchTab="tab" heading="Keresés">
+      <app-select-orders (orderSelected)="orderSelected($event)"
+                         *ngIf="searchTab.active"
+                         [mixingBatchMembersByOrderId]="mixingBatchMembersByOrderId"></app-select-orders>
+    </tab>
+    <tab heading="Tartalom">
+      <app-batch-content (orderSelected)="orderSelected($event)"
+                         [mixingBatchMembersByOrderId]="mixingBatchMembersByOrderId"
+                         [mixingBatchOrders]="mixingBatchOrders">
+      </app-batch-content>
+    </tab>
+    <tab heading="Összegzés">
+      <app-batch-overview (orderSelected)="orderSelected($event)"
+                          [mixingBatchOrders]="mixingBatchOrders"></app-batch-overview>
+    </tab>
+  </tabset>
+  <div class="row justify-content-end">
+    <button (click)="save()" class="btn btn-success">
+      Mentés
+    </button>
+  </div>
+
+  lapozás jobb/bal, hozzáadás batchoz +
+</div>

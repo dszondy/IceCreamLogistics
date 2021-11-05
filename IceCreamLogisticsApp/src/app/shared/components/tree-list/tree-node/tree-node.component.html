@@ -1,0 +1,19 @@
+<alert type="primary">
+  <div class="row">
+    <div>
+      <button (click)="collapsed = !collapsed" class="btn btn-primary" type="button">
+        <fa-icon [icon]="collapsed ? 'caret-down' : 'caret-up'"></fa-icon>
+      </button>
+    </div>
+    <div class="col">
+      <div>
+        <ng-container *ngTemplateOutlet="head"></ng-container>
+      </div>
+
+      <div *ngIf="!collapsed">
+        <hr>
+        <ng-container *ngTemplateOutlet="content"></ng-container>
+      </div>
+    </div>
+  </div>
+</alert>

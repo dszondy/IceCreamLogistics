@@ -1,0 +1,9 @@
+<button (click)="toggle()" *ngIf="checked===true" class="btn btn-success" type="button">
+  <fa-icon icon="check"></fa-icon>
+</button>
+<button (click)="toggle()" *ngIf="checked===false" button class="btn btn-light">
+  <fa-icon icon="plus"></fa-icon>
+</button>
+<button (click)="toggle()" *ngIf="checked===undefined" button class="btn btn-dark">
+  <fa-icon icon="slash"></fa-icon>
+</button>

@@ -1,0 +1,17 @@
+<div class="form-group">
+  <div *ngIf="searchInProgress">
+    <label class="form-label" for="client">Megrendelő: </label>
+    <input (typeaheadLoading)="changeTypeaheadLoading($event)"
+           (typeaheadOnSelect)="onClientSelected($event)"
+           [(ngModel)]="asyncSelected"
+           [isAnimated]="true"
+           [typeaheadAsync]="true"
+           [typeahead]="clients"
+           class="form-control"
+           id="client"
+           placeholder="Keresés..."
+           typeaheadOptionField="name">
+  </div>
+  <app-client-details (clientChange)="startSearch()" *ngIf="!searchInProgress"
+                      [client]="selectedClient"></app-client-details>
+</div>

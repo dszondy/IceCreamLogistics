@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "5776a94c-df5b-4476-9c80-38fb347f1716"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -61,7 +64,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "IceCreamLogisticsApp:build"
+            "browserTarget": "IceCreamLogisticsApp:build",
+            "proxyConfig": "./proxy.conf.json"
           },
           "configurations": {
             "production": {

@@ -1,0 +1,24 @@
+<div class="p-2">
+  <app-tree-node *ngFor="let order of mixingBatchOrders" [collapsed]="false">
+    <ng-template #head>
+      <div class="row align-items-center">
+        <div class="col-6">{{order.clientName}} ({{order.date}})</div>
+        <div class="col-4">{{order.memberItemsCount}} / {{order.incompleteItemsCount}}</div>
+        <div class="col-2">
+          <app-add-check (checkedChange)="onOrderChecked($event, order)"
+                         [checked]="order.memberItemsCount > 0"></app-add-check>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #content>
+      <div *ngFor="let item of itemsFiltered(order)" class="row  align-items-center">
+        <div class="col-6"> {{item.recipeName}} </div>
+        <div class="col-5"> {{item.memberAmount}} / {{item.incompleteAmount}} </div>
+        <div class="col-1">
+          <app-add-check (checkedChange)="onItemChecked($event, item, order)"
+                         [checked]="item.memberAmount > 0"></app-add-check>
+        </div>
+      </div>
+    </ng-template>
+  </app-tree-node>
+</div>

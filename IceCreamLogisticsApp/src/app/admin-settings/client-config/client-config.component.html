@@ -1,0 +1,60 @@
+<div class="d-flex row flex-row-reverse m-2">
+  <div class="col-lg-6 p-2">
+    <div *ngIf="selectedItem" class="card w-100 p-2">
+      <div class="d-flex justify-content-between align-items-center"><h2>{{selectedItem.name}}</h2>
+        <button (click)="close().subscribe()" class="btn btn-light">
+          <fa-icon icon="times" style="font-size:20px"></fa-icon>
+        </button>
+      </div>
+      <div class="form-group">
+        <label for="country">Ország</label>
+        <input [(ngModel)]="selectedItem.address.country" class="form-control" id="country" type="text">
+      </div>
+      <div class="form-group">
+        <label for="region">Megye</label>
+        <input [(ngModel)]="selectedItem.address.region" class="form-control" id="region" type="text">
+      </div>
+      <div class="form-group">
+        <label for="city">Város</label>
+        <input [(ngModel)]="selectedItem.address.city" class="form-control" id="city" type="text">
+      </div>
+      <div class="form-group">
+        <label for="addressLine">Cím</label>
+        <input [(ngModel)]="selectedItem.address.addressLine" class="form-control" id="addressLine" type="text">
+      </div>
+      <div class="form-group">
+        <label for="zip">Irányítószám</label>
+        <input [(ngModel)]="selectedItem.address.zip" class="form-control" id="zip" type="text">
+      </div>
+
+    </div>
+  </div>
+
+  <div class="col-lg-6 p-2">
+    <div class="card">
+      <div class="d-flex align-items-center justify-content-lg-start">
+        <fa-icon icon="search" style="font-size:20px"></fa-icon>
+        <input (ngModelChange)="onSearchTextChange($event)" [(ngModel)]="searchText" [readOnly]="selectedItem"
+               class="form-control m-2" type="text">
+        <button (click)="add()" [disabled]="!canAdd || selectedItem" class="btn btn-primary">
+          <fa-icon icon="plus" style="font-size:20px"></fa-icon>
+        </button>
+      </div>
+      <div class="picklist-viewport card bg-light">
+        <ng-container *ngIf="items | async as clients" class="picklist-viewport">
+          <cdk-virtual-scroll-viewport (scrolledIndexChange)="nextBatch($event, (clients[clients.length - 1].name))"
+                                       class="picklist-viewport"
+                                       itemSize="50">
+            <div (click)="select(client)" *cdkVirtualFor="let client of clients" class="example-item auto m-1">
+              <button
+                [ngClass]="{
+                  'btn-primary': client!==selectedItem,
+                  'btn-secondary': client===selectedItem}"
+                class=" btn  w-100">{{client.name}}</button>
+            </div>
+          </cdk-virtual-scroll-viewport>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

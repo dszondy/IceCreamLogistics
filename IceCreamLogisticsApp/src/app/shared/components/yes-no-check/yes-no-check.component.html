@@ -1,0 +1,6 @@
+<button (click)="toggle()" *ngIf="value" [disabled]="isDisabled" class="btn btn-success" type="button">
+  <fa-icon icon="check"></fa-icon>
+</button>
+<button (click)="toggle()" *ngIf="!value" [disabled]="isDisabled" class="btn btn-danger" type="button">
+  <fa-icon icon="times"></fa-icon>
+</button>
