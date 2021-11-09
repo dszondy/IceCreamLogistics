@@ -24,10 +24,15 @@ namespace IceCreamLogistics.Infrastructure.DAL
         public  DbSet<OrderDbo>  Orders { get; set; }
         public  DbSet<OrderItemDbo>  OrderItems { get; set; }
         public  DbSet<MixingBatchDbo>  MixingBatches { get; set; }
-        public  DbSet<MixingBatchMemberDbo>  MixingBatchMembers { get; set; }
+        public  DbSet<MixingMemberDbo>  MixingBatchMembers { get; set; }
         public  DbSet<ClientDbo>  Clients { get; set; }
         public DbSet<AddressDbo> Addresses { get; set; }
-
+        public DbSet<MixingItemDbo> MixingItems { get; set; }
+        
+        public DbSet<RecipeIngredientDbo> RecipeIngredients { get; set; }
+        public DbSet<IngredientDbo> Ingredients { get; set; }
+        public DbSet<InventoryChangeDbo> InventoryChanges { get; set; }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql(Configuration.GetValue<string>(Infrastructure.Configuration.ConnectionStringKey));       
@@ -70,33 +75,42 @@ namespace IceCreamLogistics.Infrastructure.DAL
                 .HasMany(x => x.Items)
                 .WithOne()
                 .HasForeignKey(x => x.OrderId);
-                        
-            modelBuilder.Entity<OrderDbo>()
-                .HasMany(x => x.IncompleteItems)
-                .WithOne()
-                .HasForeignKey(x => x.IncompleteOrderId);
-            
+
             modelBuilder.Entity<OrderDbo>()
                 .HasOne(x => x.Client)
                 .WithMany()
                 .HasForeignKey(x => x.ClientId);
 
-            modelBuilder.Entity<MixingBatchMemberDbo>()
+            modelBuilder.Entity<MixingMemberDbo>()
                 .HasOne(x => x.Order)
                 .WithMany()
                 .HasForeignKey(x => x.OrderId);
             
-            modelBuilder.Entity<MixingBatchMemberDbo>()
+            modelBuilder.Entity<MixingMemberDbo>()
                 .HasMany(x => x.Items)
                 .WithOne()
-                .HasForeignKey(x => x.MixingBatchMemberId);
+                .HasForeignKey(x => x.MixingMemberId);
 
             modelBuilder.Entity<MixingBatchDbo>()
                 .HasMany(x => x.Members)
                 .WithOne()
                 .HasForeignKey(x => x.MixingBatchId);
+
+            modelBuilder.Entity<RecipeDbo>()
+                .HasMany(x => x.Ingredients)
+                .WithOne()
+                .HasForeignKey(x => x.RecipeId);
+
+            modelBuilder.Entity<RecipeIngredientDbo>()
+                .HasOne(x => x.Ingredient)
+                .WithMany()
+                .HasForeignKey(x => x.IngredientId);
             
-            modelBuilder.Entity<Recipe>();
+            modelBuilder.Entity<IngredientDbo>()
+                .HasMany<InventoryChangeDbo>()
+                .WithOne()
+                .HasForeignKey(x => x.IngredientId);
+            
         }
     }
 }

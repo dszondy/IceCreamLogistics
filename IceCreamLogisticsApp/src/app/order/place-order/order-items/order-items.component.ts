@@ -1,8 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {OrderItem, Recipe, RecipeClient} from 'src/app/core/api/api';
-import {Observable, Subscriber} from "rxjs";
-import {TypeaheadMatch} from "ngx-bootstrap/typeahead";
-import {map, mergeMap} from "rxjs/operators";
+import {Observable, Subscriber} from 'rxjs';
+import {TypeaheadMatch} from 'ngx-bootstrap/typeahead';
+import {map, mergeMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-items',
@@ -11,18 +11,18 @@ import {map, mergeMap} from "rxjs/operators";
 })
 export class OrderItemsComponent implements OnInit {
   recipeSelected: Recipe;
+  asyncRecipeName: string;
   amount: number;
 
-  measurement = "adag";
+  measurement = 'adag';
   @Output()
   orderItemsChange = new EventEmitter<OrderItem[]>();
   orderItems: OrderItem[] = [];
-  asyncSelected: string;
   recipes: Observable<Recipe[]>;
 
   constructor(private recipeClient: RecipeClient) {
     this.recipes = new Observable((observer: Subscriber<string>) => {
-      observer.next(this.asyncSelected);
+      observer.next(this.asyncRecipeName);
     })
       .pipe(
         mergeMap((token: string) => this.getRecipesAsObservable(token))
@@ -34,17 +34,18 @@ export class OrderItemsComponent implements OnInit {
 
   addItem(): void {
     this.orderItems.push(new OrderItem({amount: this.amount, recipe: this.recipeSelected}));
-    this.amount = undefined;
+    this.asyncRecipeName = '',
+      this.amount = undefined;
     this.recipeSelected = null;
     this.orderItemsChange.emit(this.orderItems);
   }
 
-  onRecipeSelected($event: TypeaheadMatch) {
+  onRecipeSelected($event: TypeaheadMatch): void {
     this.recipeSelected = $event.item;
   }
 
   private getRecipesAsObservable(token: string): Observable<Recipe[]> {
-    return this.recipeClient.get(0, 10, token)
+    return this.recipeClient.list(0, 10, token)
       .pipe(map(x => x.content));
   }
 }

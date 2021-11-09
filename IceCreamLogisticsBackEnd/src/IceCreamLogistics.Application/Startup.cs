@@ -1,4 +1,5 @@
 ﻿using IceCreamLogistics.Application.Manufacturing;
+using IceCreamLogistics.Application.Mixing;
 using IceCreamLogistics.Application.Security;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,8 +13,9 @@ namespace IceCreamLogistics.Application
             services.AddTransient<IRecipeService, RecipeService>();
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<IClientService, ClientService>();
-            services.AddTransient<IMixingBatchService, MixingBatchService>();
-
+            services.AddTransient<IMixingService, MixingService>();
+            services.AddTransient<IIngredientService, IngredientService>();
+            services.AddTransient<IMixingInventoryCheckService, MixingInventoryCheckService>();
         }
 
     }

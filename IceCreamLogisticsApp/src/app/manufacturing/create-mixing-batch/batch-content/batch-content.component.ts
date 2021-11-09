@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {MixingBatchCreateMember} from "../../../core/api/api";
-import {emptyMixingBatchCreateMemberFromOrderPart, MixingBatchOrder, MixingBathOrderItem} from "../models";
+import {emptyMixingBatchCreateMemberFromOrderPart, MixingBatchOrder, MixingBathOrderItem} from '../models';
+import {MixingBatchCreateMemberDto} from "../../../core/api/api";
 
 @Component({
   selector: 'app-batch-content',
@@ -9,7 +9,7 @@ import {emptyMixingBatchCreateMemberFromOrderPart, MixingBatchOrder, MixingBathO
 })
 export class BatchContentComponent implements OnInit {
   @Input()
-  public mixingBatchMembersByOrderId = new Map<number, MixingBatchCreateMember>();
+  public mixingBatchMembersByOrderId = new Map<number, MixingBatchCreateMemberDto>();
   @Input()
   public mixingBatchOrders = new Array<MixingBatchOrder>();
   @Output()

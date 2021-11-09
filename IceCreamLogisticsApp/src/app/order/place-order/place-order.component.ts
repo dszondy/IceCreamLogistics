@@ -1,5 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {Client, OrderDto, OrderItem, OrdersClient, OrderState} from '../../core/api/api';
+import {
+  Client,
+  OrderCreateDto,
+  OrderCreateItemDto,
+  OrderDto,
+  OrderItem,
+  OrdersClient,
+  OrderState
+} from '../../core/api/api';
 import {Router} from "@angular/router";
 import {tap} from "rxjs/operators";
 
@@ -11,7 +19,7 @@ import {tap} from "rxjs/operators";
 export class PlaceOrderComponent implements OnInit {
   selectedClient: Client;
   orderItems: OrderItem[];
-  date: string
+  date: string;
 
   constructor(private ordersClient: OrdersClient, private router: Router) {
   }
@@ -33,7 +41,14 @@ export class PlaceOrderComponent implements OnInit {
       orderState: OrderState.Active
     });
     console.log(order);
-    this.ordersClient.placeOrder(order)
+    this.ordersClient.placeOrder(new OrderCreateDto({
+      items: [...order.items.map(item => new OrderCreateItemDto({
+        recipeId: item.recipe.id,
+        amount: item.amount
+      }))],
+      clientId: order.client.id,
+      requestedDate: order.requestedDate,
+    }))
       .pipe(tap(() => this.router.navigate(['/orders']).then()))
       .subscribe();
 

@@ -3,7 +3,7 @@
     <div class="col-lg-8 p-2">
       <label class="form-label" for="client">Recept: </label>
       <input (typeaheadOnSelect)="onRecipeSelected($event)"
-             [(ngModel)]="asyncSelected"
+             [(ngModel)]="asyncRecipeName"
              [isAnimated]="true"
              [typeaheadAsync]="true"
              [typeahead]="recipes"
@@ -14,11 +14,11 @@
     </div>
     <div class="col-lg-3 col-11 p-2">
       <label class="form-label" for="amount">Mennyiség: </label>
-      <input [(ngModel)]="amount" [isAnimated]="true"
+      <input [(ngModel)]="amount"
              [min]="0"
-             [typeahead]="null"
              class="form-control"
-             id="amount">
+             id="amount"
+             type="number">
     </div>
     <div class="col-1 p-2">
       <button (click)="addItem()" [disabled]="!(recipeSelected && amount)" class="btn btn-primary" type="button">

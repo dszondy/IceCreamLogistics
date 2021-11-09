@@ -39,6 +39,7 @@ export class BatchOverviewComponent implements OnInit {
                   recipeName: item.recipeName,
                   recipeId: item.recipeId,
                   totalAmount: item.memberAmount,
+                  completedAmount: 0,
                   totalClients: 1,
                   items: [{
                     item: order.items.find(x => x.recipeId === item.recipeId),

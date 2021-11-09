@@ -8,22 +8,29 @@ namespace IceCreamLogistics.Application
     {
         public RecipeService(IRecipeRepository recipeRepository)
         {
-            RecipeRepository = recipeRepository;
+            _recipeRepository = recipeRepository;
         }
 
-        private IRecipeRepository RecipeRepository { get; }
+        private readonly IRecipeRepository _recipeRepository;
         public Task<IEnumerable<Recipe>> Search(string text, LazyLoadingParams loadingParams)
         {
-            return RecipeRepository.GetRecipesBySearch(text, loadingParams);
+            return _recipeRepository.GetRecipesBySearch(text, loadingParams);
         }
 
-        public Task<Recipe> AddRecipe(Recipe recipe)
+        public async Task<RecipeDetails> Create(RecipeCreate recipe)
         {
-            return RecipeRepository.Create(recipe);
+            var result = await  _recipeRepository.Create(recipe);
+            return await Get(result.Id);
         }
-        public Task<Recipe> UpdateRecipe(Recipe recipe)
+        public async Task<RecipeDetails> Update(RecipeCreate recipe)
         {
-            return RecipeRepository.Update(recipe);
+            var result = await _recipeRepository.Update(recipe);
+            return await Get(result.Id);
+        }
+
+        public Task<RecipeDetails> Get(int id)
+        {
+            return _recipeRepository.Get(id);
         }
     }
 }

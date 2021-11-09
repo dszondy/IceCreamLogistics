@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IceCreamLogistics.Domain;
@@ -8,16 +9,18 @@ namespace IceCreamLogistics.Application
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IOrderPartRepository _orderPartRepository;
+        private readonly IOrderProgressRepository _orderProgressRepository;
 
-        public OrderService(IOrderRepository orderRepository, IOrderPartRepository orderPartRepository)
+        public OrderService(IOrderRepository orderRepository, IOrderProgressRepository orderProgressRepository)
         {
             _orderRepository = orderRepository;
-            _orderPartRepository = orderPartRepository;
+            _orderProgressRepository = orderProgressRepository;
         }
 
         public Task<Domain.Order> Place(Domain.Order order)
         {
+            order.OrderCreated = DateTime.Now;
+            order.OrderState = OrderState.Active;
             return _orderRepository.Create(order);
         }
 
@@ -35,7 +38,7 @@ namespace IceCreamLogistics.Application
         public Task<IEnumerable<OrderPart>> SearchIncomplete(OrderSearchParams searchParams,
             LazyLoadingParams lazyLoadingParams)
         {
-            return _orderPartRepository.GetIncompleteParts(searchParams, lazyLoadingParams);
+            return _orderProgressRepository.GetIncompleteParts(searchParams, lazyLoadingParams);
         }
     }
 }

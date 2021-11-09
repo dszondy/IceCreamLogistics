@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {MixingItem} from "../models";
 
 @Component({
   selector: 'app-mixing-item',
@@ -6,14 +7,13 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./mixing-item.component.css']
 })
 export class MixingItemComponent implements OnInit {
-  n = 5;
-  measurement = "adag";
-  recipie = "dinnyés";
+  measurement = 'adag';
+  @Input()
+  item: MixingItem;
 
   constructor() {
   }
 
   ngOnInit(): void {
   }
-
 }

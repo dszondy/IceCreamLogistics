@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using IceCreamLogistics.Application;
@@ -22,36 +23,42 @@ namespace IceCreamLogistics.Presentation.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<LazyLoadingResponse<Recipe>>> Get([FromQuery] LazyLoadingParamsDto lazyLoadingParamsDto, [FromQuery]string? search = "")
+        public async Task<ActionResult<LazyLoadingResponse<RecipeDto>>> List([FromQuery] LazyLoadingParamsDto lazyLoadingParamsDto, [FromQuery]string? search = "")
         {
-            var recipes = await RecipeService.Search(search ?? string.Empty, DtoMappingProvider.Mapper
-                .From(lazyLoadingParamsDto)
-                .AdaptToType<LazyLoadingParams>());
+            var recipes =
+                (await RecipeService
+                    .Search(search ?? string.Empty, lazyLoadingParamsDto.MapTo<LazyLoadingParams>()))
+                    .Select(x => x.MapTo<RecipeDto>());
+            
             return recipes.ToLazyLoadingResponse(lazyLoadingParamsDto);
         }
         
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<RecipeDetailsDto>> Get(int id)
+        {
+            var recipe = await RecipeService.Get(id);
+            return recipe.MapTo<RecipeDetailsDto>();
+        }
+
         
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<RecipeDto>> Post([FromBody] RecipeDto recipeDto)
+        public async Task<ActionResult<RecipeDetailsDto>> Post([FromBody] RecipeCreateDto recipeDto)
         {
-            var recipe = await RecipeService.AddRecipe(DtoMappingProvider.Mapper
-                .From(recipeDto)
-                .AdaptToType<Recipe>());
-            
-            return DtoMappingProvider.Mapper.From(recipe).AdaptToType<RecipeDto>();
+            var recipe = await RecipeService.Create(recipeDto.MapTo<RecipeCreate>());
+
+            return recipe.MapTo<RecipeDetailsDto>();
         }
         
         
         [HttpPut]
-        [Route("")]
-        public async Task<ActionResult<RecipeDto>> Put([FromBody] RecipeDto recipeDto)
+        [Route("{id}")]
+        public async Task<ActionResult<RecipeDetailsDto>> Put(int id, [FromBody] RecipeCreateDto recipeDto)
         {
-            var recipe = await RecipeService.UpdateRecipe(DtoMappingProvider.Mapper
-                .From(recipeDto)
-                .AdaptToType<Recipe>());
+            var recipe = await RecipeService.Update(recipeDto.MapTo<RecipeCreate>());
             
-            return DtoMappingProvider.Mapper.From(recipe).AdaptToType<RecipeDto>();
+            return recipe.MapTo<RecipeDetailsDto>();
         }
     }
 }

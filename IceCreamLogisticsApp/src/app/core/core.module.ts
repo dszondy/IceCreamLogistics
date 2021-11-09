@@ -27,6 +27,7 @@ import {RouterModule} from "@angular/router";
     ModalModule.forRoot(),
     FontAwesomeModule,
     RouterModule,
+    ModalModule.forRoot(),
   ]
 })
 export class CoreModule {

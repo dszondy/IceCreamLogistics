@@ -1,0 +1,34 @@
+<div class="card">
+  <div class="container row align-items-center">
+    <div class="col-lg-8 p-2">
+      <label class="form-label" for="client">Alapanyag: </label>
+      <input (typeaheadOnSelect)="onIngredientSelected($event)"
+             [(ngModel)]="asyncIngredientName"
+             [isAnimated]="true"
+             [typeaheadAsync]="true"
+             [typeahead]="ingredients"
+             class="form-control"
+             id="client"
+             placeholder="Keresés..."
+             typeaheadOptionField="name">
+    </div>
+    <div class="col-lg-3 col-11 p-2">
+      <label class="form-label" for="amount">Mennyiség ({{ingredientSelected?.measurementUnit}}): </label>
+      <input [(ngModel)]="amount" [isAnimated]="true"
+             [min]="0"
+             [typeahead]="null"
+             class="form-control"
+             id="amount">
+    </div>
+    <div class="col-1 p-2">
+      <button (click)="addItem()" [disabled]="!(ingredientSelected && amount)" class="btn btn-primary" type="button">
+        <fa-icon icon="plus"></fa-icon>
+      </button>
+    </div>
+    <hr>
+    <div *ngFor="let ingredient of recipeIngredients" class="container row align-items-center">
+      <div class="col-8 p-2 pl-4">{{ingredient.ingredientName}}</div>
+      <div class="col-4 p-2  pl-4">{{ingredient.amount}} {{ingredient.measurementUnit}}</div>
+    </div>
+  </div>
+</div>

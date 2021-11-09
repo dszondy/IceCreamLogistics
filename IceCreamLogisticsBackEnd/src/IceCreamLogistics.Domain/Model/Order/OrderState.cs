@@ -3,8 +3,9 @@
     public enum OrderState
     {
         Cancelled,
+        Pending,
         Active,
-        Complete,
-        Delivered
+        ReadyForDelivery,
+        Delivered,
     }
 }

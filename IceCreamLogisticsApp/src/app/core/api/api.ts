@@ -314,6 +314,182 @@ export class ClientClient {
 @Injectable({
     providedIn: 'root'
 })
+export class IngredientClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
+    }
+
+    get(offset: number | undefined, count: number | undefined, search: string | null | undefined): Observable<LazyLoadingResponseOfIngredient> {
+        let url_ = this.baseUrl + "/ingredients?";
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "Offset=" + encodeURIComponent("" + offset) + "&";
+        if (count === null)
+            throw new Error("The parameter 'count' cannot be null.");
+        else if (count !== undefined)
+            url_ += "Count=" + encodeURIComponent("" + count) + "&";
+        if (search !== undefined && search !== null)
+            url_ += "search=" + encodeURIComponent("" + search) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<LazyLoadingResponseOfIngredient>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<LazyLoadingResponseOfIngredient>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<LazyLoadingResponseOfIngredient> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LazyLoadingResponseOfIngredient.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<LazyLoadingResponseOfIngredient>(<any>null);
+    }
+
+    post(ingredientDto: IngredientCreateDto): Observable<IngredientDto> {
+        let url_ = this.baseUrl + "/ingredients";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(ingredientDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPost(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPost(<any>response_);
+                } catch (e) {
+                    return <Observable<IngredientDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<IngredientDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPost(response: HttpResponseBase): Observable<IngredientDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = IngredientDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<IngredientDto>(<any>null);
+    }
+
+    put(ingredientDto: IngredientCreateDto): Observable<IngredientDto> {
+        let url_ = this.baseUrl + "/ingredients";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(ingredientDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPut(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPut(<any>response_);
+                } catch (e) {
+                    return <Observable<IngredientDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<IngredientDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPut(response: HttpResponseBase): Observable<IngredientDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = IngredientDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<IngredientDto>(<any>null);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class MixingBatchClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -325,7 +501,7 @@ export class MixingBatchClient {
     }
 
     create(clientDto: MixingBatchCreateDto): Observable<MixingBatchCreateDto> {
-        let url_ = this.baseUrl + "/mixing-batches";
+        let url_ = this.baseUrl + "/mixing";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(clientDto);
@@ -374,6 +550,227 @@ export class MixingBatchClient {
             }));
         }
         return _observableOf<MixingBatchCreateDto>(<any>null);
+    }
+
+    list(offset: number | undefined, count: number | undefined): Observable<LazyLoadingResponseOfMixingBatchShallowDto> {
+        let url_ = this.baseUrl + "/mixing?";
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "Offset=" + encodeURIComponent("" + offset) + "&";
+        if (count === null)
+            throw new Error("The parameter 'count' cannot be null.");
+        else if (count !== undefined)
+            url_ += "Count=" + encodeURIComponent("" + count) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processList(<any>response_);
+                } catch (e) {
+                    return <Observable<LazyLoadingResponseOfMixingBatchShallowDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<LazyLoadingResponseOfMixingBatchShallowDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processList(response: HttpResponseBase): Observable<LazyLoadingResponseOfMixingBatchShallowDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LazyLoadingResponseOfMixingBatchShallowDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<LazyLoadingResponseOfMixingBatchShallowDto>(<any>null);
+    }
+
+    administerAbsolute(id: number, members: MixingBatchCreateMemberDto[]): Observable<MixingBatchDetailsDto> {
+        let url_ = this.baseUrl + "/mixing/{id}/administer";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(members);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAdministerAbsolute(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAdministerAbsolute(<any>response_);
+                } catch (e) {
+                    return <Observable<MixingBatchDetailsDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MixingBatchDetailsDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAdministerAbsolute(response: HttpResponseBase): Observable<MixingBatchDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MixingBatchDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MixingBatchDetailsDto>(<any>null);
+    }
+
+    get(id: number): Observable<MixingBatchDetailsDto> {
+        let url_ = this.baseUrl + "/mixing/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<MixingBatchDetailsDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MixingBatchDetailsDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<MixingBatchDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MixingBatchDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MixingBatchDetailsDto>(<any>null);
+    }
+
+    inventoryCheck(batch: MixingBatchCreateDto): Observable<MixingInventoryCheckDto[]> {
+        let url_ = this.baseUrl + "/mixing/inventory-check";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(batch);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processInventoryCheck(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processInventoryCheck(<any>response_);
+                } catch (e) {
+                    return <Observable<MixingInventoryCheckDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MixingInventoryCheckDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processInventoryCheck(response: HttpResponseBase): Observable<MixingInventoryCheckDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MixingInventoryCheckDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MixingInventoryCheckDto[]>(<any>null);
     }
 }
 
@@ -454,7 +851,7 @@ export class OrdersClient {
         return _observableOf<LazyLoadingResponseOfOrderDto>(<any>null);
     }
 
-    placeOrder(order: OrderDto): Observable<OrderDto> {
+    placeOrder(order: OrderCreateDto): Observable<OrderDto> {
         let url_ = this.baseUrl + "/orders";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -506,7 +903,7 @@ export class OrdersClient {
         return _observableOf<OrderDto>(<any>null);
     }
 
-    searchIncompleteOrders(from: Date | null | undefined, to: Date | null | undefined, clientName: string | null | undefined, recipeName: string | null | undefined, offset: number | undefined, count: number | undefined): Observable<LazyLoadingResponseOfOrderPartDto> {
+    searchForMixing(from: Date | null | undefined, to: Date | null | undefined, clientName: string | null | undefined, recipeName: string | null | undefined, offset: number | undefined, count: number | undefined): Observable<LazyLoadingResponseOfOrderPartDto> {
         let url_ = this.baseUrl + "/orders/incomplete?";
         if (from !== undefined && from !== null)
             url_ += "From=" + encodeURIComponent(from ? "" + from.toJSON() : "") + "&";
@@ -535,11 +932,11 @@ export class OrdersClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSearchIncompleteOrders(response_);
+            return this.processSearchForMixing(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSearchIncompleteOrders(<any>response_);
+                    return this.processSearchForMixing(<any>response_);
                 } catch (e) {
                     return <Observable<LazyLoadingResponseOfOrderPartDto>><any>_observableThrow(e);
                 }
@@ -548,7 +945,7 @@ export class OrdersClient {
         }));
     }
 
-    protected processSearchIncompleteOrders(response: HttpResponseBase): Observable<LazyLoadingResponseOfOrderPartDto> {
+    protected processSearchForMixing(response: HttpResponseBase): Observable<LazyLoadingResponseOfOrderPartDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -584,7 +981,7 @@ export class RecipeClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5001";
     }
 
-    get(offset: number | undefined, count: number | undefined, search: string | null | undefined): Observable<LazyLoadingResponseOfRecipe> {
+    list(offset: number | undefined, count: number | undefined, search: string | null | undefined): Observable<LazyLoadingResponseOfRecipeDto> {
         let url_ = this.baseUrl + "/recipes?";
         if (offset === null)
             throw new Error("The parameter 'offset' cannot be null.");
@@ -607,20 +1004,20 @@ export class RecipeClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
+            return this.processList(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGet(<any>response_);
+                    return this.processList(<any>response_);
                 } catch (e) {
-                    return <Observable<LazyLoadingResponseOfRecipe>><any>_observableThrow(e);
+                    return <Observable<LazyLoadingResponseOfRecipeDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<LazyLoadingResponseOfRecipe>><any>_observableThrow(response_);
+                return <Observable<LazyLoadingResponseOfRecipeDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGet(response: HttpResponseBase): Observable<LazyLoadingResponseOfRecipe> {
+    protected processList(response: HttpResponseBase): Observable<LazyLoadingResponseOfRecipeDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -631,7 +1028,7 @@ export class RecipeClient {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = LazyLoadingResponseOfRecipe.fromJS(resultData200);
+            result200 = LazyLoadingResponseOfRecipeDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -639,10 +1036,10 @@ export class RecipeClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<LazyLoadingResponseOfRecipe>(<any>null);
+        return _observableOf<LazyLoadingResponseOfRecipeDto>(<any>null);
     }
 
-    post(recipeDto: RecipeDto): Observable<RecipeDto> {
+    post(recipeDto: RecipeCreateDto): Observable<RecipeDetailsDto> {
         let url_ = this.baseUrl + "/recipes";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -665,14 +1062,14 @@ export class RecipeClient {
                 try {
                     return this.processPost(<any>response_);
                 } catch (e) {
-                    return <Observable<RecipeDto>><any>_observableThrow(e);
+                    return <Observable<RecipeDetailsDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<RecipeDto>><any>_observableThrow(response_);
+                return <Observable<RecipeDetailsDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processPost(response: HttpResponseBase): Observable<RecipeDto> {
+    protected processPost(response: HttpResponseBase): Observable<RecipeDetailsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -683,7 +1080,7 @@ export class RecipeClient {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RecipeDto.fromJS(resultData200);
+            result200 = RecipeDetailsDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -691,11 +1088,65 @@ export class RecipeClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<RecipeDto>(<any>null);
+        return _observableOf<RecipeDetailsDto>(<any>null);
     }
 
-    put(recipeDto: RecipeDto): Observable<RecipeDto> {
-        let url_ = this.baseUrl + "/recipes";
+    get(id: number): Observable<RecipeDetailsDto> {
+        let url_ = this.baseUrl + "/recipes/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<RecipeDetailsDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<RecipeDetailsDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<RecipeDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RecipeDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<RecipeDetailsDto>(<any>null);
+    }
+
+    put(id: number, recipeDto: RecipeCreateDto): Observable<RecipeDetailsDto> {
+        let url_ = this.baseUrl + "/recipes/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(recipeDto);
@@ -717,14 +1168,14 @@ export class RecipeClient {
                 try {
                     return this.processPut(<any>response_);
                 } catch (e) {
-                    return <Observable<RecipeDto>><any>_observableThrow(e);
+                    return <Observable<RecipeDetailsDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<RecipeDto>><any>_observableThrow(response_);
+                return <Observable<RecipeDetailsDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processPut(response: HttpResponseBase): Observable<RecipeDto> {
+    protected processPut(response: HttpResponseBase): Observable<RecipeDetailsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -735,7 +1186,7 @@ export class RecipeClient {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RecipeDto.fromJS(resultData200);
+            result200 = RecipeDetailsDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -743,7 +1194,7 @@ export class RecipeClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<RecipeDto>(<any>null);
+        return _observableOf<RecipeDetailsDto>(<any>null);
     }
 }
 
@@ -854,6 +1305,8 @@ export class Client implements IClient {
     id!: number;
     name!: string;
     address!: Address;
+    email!: string;
+    phone!: string;
 
     constructor(data?: IClient) {
         if (data) {
@@ -872,6 +1325,8 @@ export class Client implements IClient {
             this.id = _data["id"];
             this.name = _data["name"];
             this.address = _data["address"] ? Address.fromJS(_data["address"]) : new Address();
+            this.email = _data["email"];
+            this.phone = _data["phone"];
         }
     }
 
@@ -887,6 +1342,8 @@ export class Client implements IClient {
         data["id"] = this.id;
         data["name"] = this.name;
         data["address"] = this.address ? this.address.toJSON() : <any>undefined;
+        data["email"] = this.email;
+        data["phone"] = this.phone;
         return data; 
     }
 }
@@ -895,6 +1352,8 @@ export interface IClient {
     id: number;
     name: string;
     address: Address;
+    email: string;
+    phone: string;
 }
 
 export class Address implements IAddress {
@@ -976,183 +1435,14 @@ export class ClientDto extends Client implements IClientDto {
 export interface IClientDto extends IClient {
 }
 
-export class MixingBatchCreate implements IMixingBatchCreate {
-    id?: number | undefined;
-    members!: MixingBatchCreateMember[];
-
-    constructor(data?: IMixingBatchCreate) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.members = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            if (Array.isArray(_data["members"])) {
-                this.members = [] as any;
-                for (let item of _data["members"])
-                    this.members!.push(MixingBatchCreateMember.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): MixingBatchCreate {
-        data = typeof data === 'object' ? data : {};
-        let result = new MixingBatchCreate();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        if (Array.isArray(this.members)) {
-            data["members"] = [];
-            for (let item of this.members)
-                data["members"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface IMixingBatchCreate {
-    id?: number | undefined;
-    members: MixingBatchCreateMember[];
-}
-
-export class MixingBatchCreateDto extends MixingBatchCreate implements IMixingBatchCreateDto {
-
-    constructor(data?: IMixingBatchCreateDto) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-    }
-
-    static fromJS(data: any): MixingBatchCreateDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new MixingBatchCreateDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IMixingBatchCreateDto extends IMixingBatchCreate {
-}
-
-export class MixingBatchCreateMember implements IMixingBatchCreateMember {
-    orderId!: number;
-    items!: MixingBatchCreateItem[];
-
-    constructor(data?: IMixingBatchCreateMember) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.items = [];
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.orderId = _data["orderId"];
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(MixingBatchCreateItem.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): MixingBatchCreateMember {
-        data = typeof data === 'object' ? data : {};
-        let result = new MixingBatchCreateMember();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["orderId"] = this.orderId;
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface IMixingBatchCreateMember {
-    orderId: number;
-    items: MixingBatchCreateItem[];
-}
-
-export class MixingBatchCreateItem implements IMixingBatchCreateItem {
-    recipeId!: number;
-    amount!: number;
-
-    constructor(data?: IMixingBatchCreateItem) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.recipeId = _data["recipeId"];
-            this.amount = _data["amount"];
-        }
-    }
-
-    static fromJS(data: any): MixingBatchCreateItem {
-        data = typeof data === 'object' ? data : {};
-        let result = new MixingBatchCreateItem();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["recipeId"] = this.recipeId;
-        data["amount"] = this.amount;
-        return data; 
-    }
-}
-
-export interface IMixingBatchCreateItem {
-    recipeId: number;
-    amount: number;
-}
-
-export class LazyLoadingResponseOfOrderDto implements ILazyLoadingResponseOfOrderDto {
+export class LazyLoadingResponseOfIngredient implements ILazyLoadingResponseOfIngredient {
     offset!: number;
     count!: number;
     nextOffset!: number;
     hasMore!: boolean;
-    content!: OrderDto[];
+    content!: Ingredient[];
 
-    constructor(data?: ILazyLoadingResponseOfOrderDto) {
+    constructor(data?: ILazyLoadingResponseOfIngredient) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1173,14 +1463,14 @@ export class LazyLoadingResponseOfOrderDto implements ILazyLoadingResponseOfOrde
             if (Array.isArray(_data["content"])) {
                 this.content = [] as any;
                 for (let item of _data["content"])
-                    this.content!.push(OrderDto.fromJS(item));
+                    this.content!.push(Ingredient.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): LazyLoadingResponseOfOrderDto {
+    static fromJS(data: any): LazyLoadingResponseOfIngredient {
         data = typeof data === 'object' ? data : {};
-        let result = new LazyLoadingResponseOfOrderDto();
+        let result = new LazyLoadingResponseOfIngredient();
         result.init(data);
         return result;
     }
@@ -1200,12 +1490,409 @@ export class LazyLoadingResponseOfOrderDto implements ILazyLoadingResponseOfOrde
     }
 }
 
-export interface ILazyLoadingResponseOfOrderDto {
+export interface ILazyLoadingResponseOfIngredient {
     offset: number;
     count: number;
     nextOffset: number;
     hasMore: boolean;
-    content: OrderDto[];
+    content: Ingredient[];
+}
+
+export class Ingredient implements IIngredient {
+    id!: number;
+    name!: string;
+    amountOnHand!: number;
+    measurementUnit!: string;
+
+    constructor(data?: IIngredient) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.amountOnHand = _data["amountOnHand"];
+            this.measurementUnit = _data["measurementUnit"];
+        }
+    }
+
+    static fromJS(data: any): Ingredient {
+        data = typeof data === 'object' ? data : {};
+        let result = new Ingredient();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["amountOnHand"] = this.amountOnHand;
+        data["measurementUnit"] = this.measurementUnit;
+        return data; 
+    }
+}
+
+export interface IIngredient {
+    id: number;
+    name: string;
+    amountOnHand: number;
+    measurementUnit: string;
+}
+
+export class IngredientDto implements IIngredientDto {
+    id!: number;
+    name!: string;
+    amountOnHand!: number;
+    measurementUnit!: string;
+
+    constructor(data?: IIngredientDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.amountOnHand = _data["amountOnHand"];
+            this.measurementUnit = _data["measurementUnit"];
+        }
+    }
+
+    static fromJS(data: any): IngredientDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new IngredientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["amountOnHand"] = this.amountOnHand;
+        data["measurementUnit"] = this.measurementUnit;
+        return data; 
+    }
+}
+
+export interface IIngredientDto {
+    id: number;
+    name: string;
+    amountOnHand: number;
+    measurementUnit: string;
+}
+
+export class IngredientCreateDto implements IIngredientCreateDto {
+    id!: number;
+    name!: string;
+    measurementUnit!: string;
+
+    constructor(data?: IIngredientCreateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.measurementUnit = _data["measurementUnit"];
+        }
+    }
+
+    static fromJS(data: any): IngredientCreateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new IngredientCreateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["measurementUnit"] = this.measurementUnit;
+        return data; 
+    }
+}
+
+export interface IIngredientCreateDto {
+    id: number;
+    name: string;
+    measurementUnit: string;
+}
+
+export class MixingBatchCreateDto implements IMixingBatchCreateDto {
+    id?: number | undefined;
+    name!: string;
+    members!: MixingBatchCreateMemberDto[];
+
+    constructor(data?: IMixingBatchCreateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.members = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(MixingBatchCreateMemberDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MixingBatchCreateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MixingBatchCreateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IMixingBatchCreateDto {
+    id?: number | undefined;
+    name: string;
+    members: MixingBatchCreateMemberDto[];
+}
+
+export class MixingBatchCreateMemberDto implements IMixingBatchCreateMemberDto {
+    orderId!: number;
+    items!: MixingBatchCreateItemDto[];
+
+    constructor(data?: IMixingBatchCreateMemberDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.items = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["orderId"];
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(MixingBatchCreateItemDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MixingBatchCreateMemberDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MixingBatchCreateMemberDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["orderId"] = this.orderId;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IMixingBatchCreateMemberDto {
+    orderId: number;
+    items: MixingBatchCreateItemDto[];
+}
+
+export class MixingBatchCreateItemDto implements IMixingBatchCreateItemDto {
+    recipeId!: number;
+    amount!: number;
+
+    constructor(data?: IMixingBatchCreateItemDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.recipeId = _data["recipeId"];
+            this.amount = _data["amount"];
+        }
+    }
+
+    static fromJS(data: any): MixingBatchCreateItemDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MixingBatchCreateItemDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["recipeId"] = this.recipeId;
+        data["amount"] = this.amount;
+        return data; 
+    }
+}
+
+export interface IMixingBatchCreateItemDto {
+    recipeId: number;
+    amount: number;
+}
+
+export class MixingBatchDetailsDto implements IMixingBatchDetailsDto {
+    id!: number;
+    name!: string;
+    created!: Date;
+    members!: MixingBatchMemberDto[];
+
+    constructor(data?: IMixingBatchDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.members = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            if (Array.isArray(_data["members"])) {
+                this.members = [] as any;
+                for (let item of _data["members"])
+                    this.members!.push(MixingBatchMemberDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MixingBatchDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MixingBatchDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        if (Array.isArray(this.members)) {
+            data["members"] = [];
+            for (let item of this.members)
+                data["members"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IMixingBatchDetailsDto {
+    id: number;
+    name: string;
+    created: Date;
+    members: MixingBatchMemberDto[];
+}
+
+export class MixingBatchMemberDto implements IMixingBatchMemberDto {
+    order!: OrderDto;
+    items!: MixingBatchItemDto[];
+
+    constructor(data?: IMixingBatchMemberDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.order = new OrderDto();
+            this.items = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.order = _data["order"] ? OrderDto.fromJS(_data["order"]) : new OrderDto();
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(MixingBatchItemDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MixingBatchMemberDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MixingBatchMemberDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["order"] = this.order ? this.order.toJSON() : <any>undefined;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IMixingBatchMemberDto {
+    order: OrderDto;
+    items: MixingBatchItemDto[];
 }
 
 export class Order implements IOrder {
@@ -1392,9 +2079,330 @@ export interface IRecipe {
 
 export enum OrderState {
     Cancelled = 0,
-    Active = 1,
-    Complete = 2,
-    Delivered = 3,
+    Pending = 1,
+    Active = 2,
+    ReadyForDelivery = 3,
+    Delivered = 4,
+}
+
+export class MixingBatchItemDto implements IMixingBatchItemDto {
+    recipe!: RecipeDto;
+    amount!: number;
+    completedAmount!: number;
+
+    constructor(data?: IMixingBatchItemDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.recipe = new RecipeDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.recipe = _data["recipe"] ? RecipeDto.fromJS(_data["recipe"]) : new RecipeDto();
+            this.amount = _data["amount"];
+            this.completedAmount = _data["completedAmount"];
+        }
+    }
+
+    static fromJS(data: any): MixingBatchItemDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MixingBatchItemDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["recipe"] = this.recipe ? this.recipe.toJSON() : <any>undefined;
+        data["amount"] = this.amount;
+        data["completedAmount"] = this.completedAmount;
+        return data; 
+    }
+}
+
+export interface IMixingBatchItemDto {
+    recipe: RecipeDto;
+    amount: number;
+    completedAmount: number;
+}
+
+export class RecipeDto implements IRecipeDto {
+    id!: number;
+    name!: string;
+    canBeOrdered!: boolean;
+
+    constructor(data?: IRecipeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.canBeOrdered = _data["canBeOrdered"];
+        }
+    }
+
+    static fromJS(data: any): RecipeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RecipeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["canBeOrdered"] = this.canBeOrdered;
+        return data; 
+    }
+}
+
+export interface IRecipeDto {
+    id: number;
+    name: string;
+    canBeOrdered: boolean;
+}
+
+export class LazyLoadingResponseOfMixingBatchShallowDto implements ILazyLoadingResponseOfMixingBatchShallowDto {
+    offset!: number;
+    count!: number;
+    nextOffset!: number;
+    hasMore!: boolean;
+    content!: MixingBatchShallowDto[];
+
+    constructor(data?: ILazyLoadingResponseOfMixingBatchShallowDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.content = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.offset = _data["offset"];
+            this.count = _data["count"];
+            this.nextOffset = _data["nextOffset"];
+            this.hasMore = _data["hasMore"];
+            if (Array.isArray(_data["content"])) {
+                this.content = [] as any;
+                for (let item of _data["content"])
+                    this.content!.push(MixingBatchShallowDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): LazyLoadingResponseOfMixingBatchShallowDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new LazyLoadingResponseOfMixingBatchShallowDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["offset"] = this.offset;
+        data["count"] = this.count;
+        data["nextOffset"] = this.nextOffset;
+        data["hasMore"] = this.hasMore;
+        if (Array.isArray(this.content)) {
+            data["content"] = [];
+            for (let item of this.content)
+                data["content"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ILazyLoadingResponseOfMixingBatchShallowDto {
+    offset: number;
+    count: number;
+    nextOffset: number;
+    hasMore: boolean;
+    content: MixingBatchShallowDto[];
+}
+
+export class MixingBatchShallowDto implements IMixingBatchShallowDto {
+    id!: number;
+    name!: string;
+    created!: Date;
+    orderCount!: number;
+    recipeCount!: number;
+    totalAmount!: number;
+    totalCompletedAmount!: number;
+
+    constructor(data?: IMixingBatchShallowDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.orderCount = _data["orderCount"];
+            this.recipeCount = _data["recipeCount"];
+            this.totalAmount = _data["totalAmount"];
+            this.totalCompletedAmount = _data["totalCompletedAmount"];
+        }
+    }
+
+    static fromJS(data: any): MixingBatchShallowDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MixingBatchShallowDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["orderCount"] = this.orderCount;
+        data["recipeCount"] = this.recipeCount;
+        data["totalAmount"] = this.totalAmount;
+        data["totalCompletedAmount"] = this.totalCompletedAmount;
+        return data; 
+    }
+}
+
+export interface IMixingBatchShallowDto {
+    id: number;
+    name: string;
+    created: Date;
+    orderCount: number;
+    recipeCount: number;
+    totalAmount: number;
+    totalCompletedAmount: number;
+}
+
+export class MixingInventoryCheckDto implements IMixingInventoryCheckDto {
+    ingredient!: IngredientDto;
+    amountRequired!: number;
+
+    constructor(data?: IMixingInventoryCheckDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.ingredient = new IngredientDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.ingredient = _data["ingredient"] ? IngredientDto.fromJS(_data["ingredient"]) : new IngredientDto();
+            this.amountRequired = _data["amountRequired"];
+        }
+    }
+
+    static fromJS(data: any): MixingInventoryCheckDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MixingInventoryCheckDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ingredient"] = this.ingredient ? this.ingredient.toJSON() : <any>undefined;
+        data["amountRequired"] = this.amountRequired;
+        return data; 
+    }
+}
+
+export interface IMixingInventoryCheckDto {
+    ingredient: IngredientDto;
+    amountRequired: number;
+}
+
+export class LazyLoadingResponseOfOrderDto implements ILazyLoadingResponseOfOrderDto {
+    offset!: number;
+    count!: number;
+    nextOffset!: number;
+    hasMore!: boolean;
+    content!: OrderDto[];
+
+    constructor(data?: ILazyLoadingResponseOfOrderDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.content = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.offset = _data["offset"];
+            this.count = _data["count"];
+            this.nextOffset = _data["nextOffset"];
+            this.hasMore = _data["hasMore"];
+            if (Array.isArray(_data["content"])) {
+                this.content = [] as any;
+                for (let item of _data["content"])
+                    this.content!.push(OrderDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): LazyLoadingResponseOfOrderDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new LazyLoadingResponseOfOrderDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["offset"] = this.offset;
+        data["count"] = this.count;
+        data["nextOffset"] = this.nextOffset;
+        data["hasMore"] = this.hasMore;
+        if (Array.isArray(this.content)) {
+            data["content"] = [];
+            for (let item of this.content)
+                data["content"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ILazyLoadingResponseOfOrderDto {
+    offset: number;
+    count: number;
+    nextOffset: number;
+    hasMore: boolean;
+    content: OrderDto[];
 }
 
 export class LazyLoadingResponseOfOrderPartDto implements ILazyLoadingResponseOfOrderPartDto {
@@ -1460,12 +2468,12 @@ export interface ILazyLoadingResponseOfOrderPartDto {
     content: OrderPartDto[];
 }
 
-export class OrderPart implements IOrderPart {
+export class OrderPartDto implements IOrderPartDto {
     id!: number;
     order!: Order;
     incompleteItems!: OrderItem[];
 
-    constructor(data?: IOrderPart) {
+    constructor(data?: IOrderPartDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1490,9 +2498,9 @@ export class OrderPart implements IOrderPart {
         }
     }
 
-    static fromJS(data: any): OrderPart {
+    static fromJS(data: any): OrderPartDto {
         data = typeof data === 'object' ? data : {};
-        let result = new OrderPart();
+        let result = new OrderPartDto();
         result.init(data);
         return result;
     }
@@ -1510,47 +2518,115 @@ export class OrderPart implements IOrderPart {
     }
 }
 
-export interface IOrderPart {
+export interface IOrderPartDto {
     id: number;
     order: Order;
     incompleteItems: OrderItem[];
 }
 
-export class OrderPartDto extends OrderPart implements IOrderPartDto {
+export class OrderCreateDto implements IOrderCreateDto {
+    items!: OrderCreateItemDto[];
+    clientId!: number;
+    requestedDate!: Date;
 
-    constructor(data?: IOrderPartDto) {
-        super(data);
+    constructor(data?: IOrderCreateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.items = [];
+        }
     }
 
     init(_data?: any) {
-        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(OrderCreateItemDto.fromJS(item));
+            }
+            this.clientId = _data["clientId"];
+            this.requestedDate = _data["requestedDate"] ? new Date(_data["requestedDate"].toString()) : <any>undefined;
+        }
     }
 
-    static fromJS(data: any): OrderPartDto {
+    static fromJS(data: any): OrderCreateDto {
         data = typeof data === 'object' ? data : {};
-        let result = new OrderPartDto();
+        let result = new OrderCreateDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["clientId"] = this.clientId;
+        data["requestedDate"] = this.requestedDate ? this.requestedDate.toISOString() : <any>undefined;
         return data; 
     }
 }
 
-export interface IOrderPartDto extends IOrderPart {
+export interface IOrderCreateDto {
+    items: OrderCreateItemDto[];
+    clientId: number;
+    requestedDate: Date;
 }
 
-export class LazyLoadingResponseOfRecipe implements ILazyLoadingResponseOfRecipe {
+export class OrderCreateItemDto implements IOrderCreateItemDto {
+    recipeId!: number;
+    amount!: number;
+
+    constructor(data?: IOrderCreateItemDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.recipeId = _data["recipeId"];
+            this.amount = _data["amount"];
+        }
+    }
+
+    static fromJS(data: any): OrderCreateItemDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderCreateItemDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["recipeId"] = this.recipeId;
+        data["amount"] = this.amount;
+        return data; 
+    }
+}
+
+export interface IOrderCreateItemDto {
+    recipeId: number;
+    amount: number;
+}
+
+export class LazyLoadingResponseOfRecipeDto implements ILazyLoadingResponseOfRecipeDto {
     offset!: number;
     count!: number;
     nextOffset!: number;
     hasMore!: boolean;
-    content!: Recipe[];
+    content!: RecipeDto[];
 
-    constructor(data?: ILazyLoadingResponseOfRecipe) {
+    constructor(data?: ILazyLoadingResponseOfRecipeDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1571,14 +2647,14 @@ export class LazyLoadingResponseOfRecipe implements ILazyLoadingResponseOfRecipe
             if (Array.isArray(_data["content"])) {
                 this.content = [] as any;
                 for (let item of _data["content"])
-                    this.content!.push(Recipe.fromJS(item));
+                    this.content!.push(RecipeDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): LazyLoadingResponseOfRecipe {
+    static fromJS(data: any): LazyLoadingResponseOfRecipeDto {
         data = typeof data === 'object' ? data : {};
-        let result = new LazyLoadingResponseOfRecipe();
+        let result = new LazyLoadingResponseOfRecipeDto();
         result.init(data);
         return result;
     }
@@ -1598,20 +2674,80 @@ export class LazyLoadingResponseOfRecipe implements ILazyLoadingResponseOfRecipe
     }
 }
 
-export interface ILazyLoadingResponseOfRecipe {
+export interface ILazyLoadingResponseOfRecipeDto {
     offset: number;
     count: number;
     nextOffset: number;
     hasMore: boolean;
-    content: Recipe[];
+    content: RecipeDto[];
 }
 
-export class RecipeDto implements IRecipeDto {
+export class RecipeDetailsDto implements IRecipeDetailsDto {
     id!: number;
     name!: string;
     canBeOrdered!: boolean;
+    ingredients!: RecipeIngredientDto[];
 
-    constructor(data?: IRecipeDto) {
+    constructor(data?: IRecipeDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.ingredients = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.canBeOrdered = _data["canBeOrdered"];
+            if (Array.isArray(_data["ingredients"])) {
+                this.ingredients = [] as any;
+                for (let item of _data["ingredients"])
+                    this.ingredients!.push(RecipeIngredientDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RecipeDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RecipeDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["canBeOrdered"] = this.canBeOrdered;
+        if (Array.isArray(this.ingredients)) {
+            data["ingredients"] = [];
+            for (let item of this.ingredients)
+                data["ingredients"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IRecipeDetailsDto {
+    id: number;
+    name: string;
+    canBeOrdered: boolean;
+    ingredients: RecipeIngredientDto[];
+}
+
+export class RecipeIngredientDto implements IRecipeIngredientDto {
+    ingredientId!: number;
+    ingredientName!: string;
+    measurementUnit!: string;
+    amount!: number;
+
+    constructor(data?: IRecipeIngredientDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1622,15 +2758,71 @@ export class RecipeDto implements IRecipeDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.canBeOrdered = _data["canBeOrdered"];
+            this.ingredientId = _data["ingredientId"];
+            this.ingredientName = _data["ingredientName"];
+            this.measurementUnit = _data["measurementUnit"];
+            this.amount = _data["amount"];
         }
     }
 
-    static fromJS(data: any): RecipeDto {
+    static fromJS(data: any): RecipeIngredientDto {
         data = typeof data === 'object' ? data : {};
-        let result = new RecipeDto();
+        let result = new RecipeIngredientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ingredientId"] = this.ingredientId;
+        data["ingredientName"] = this.ingredientName;
+        data["measurementUnit"] = this.measurementUnit;
+        data["amount"] = this.amount;
+        return data; 
+    }
+}
+
+export interface IRecipeIngredientDto {
+    ingredientId: number;
+    ingredientName: string;
+    measurementUnit: string;
+    amount: number;
+}
+
+export class RecipeCreateDto implements IRecipeCreateDto {
+    id!: number;
+    name!: string;
+    canBeOrdered!: boolean;
+    ingredients!: RecipeCreateIngredientDto[];
+
+    constructor(data?: IRecipeCreateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.ingredients = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.canBeOrdered = _data["canBeOrdered"];
+            if (Array.isArray(_data["ingredients"])) {
+                this.ingredients = [] as any;
+                for (let item of _data["ingredients"])
+                    this.ingredients!.push(RecipeCreateIngredientDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): RecipeCreateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RecipeCreateDto();
         result.init(data);
         return result;
     }
@@ -1640,14 +2832,60 @@ export class RecipeDto implements IRecipeDto {
         data["id"] = this.id;
         data["name"] = this.name;
         data["canBeOrdered"] = this.canBeOrdered;
+        if (Array.isArray(this.ingredients)) {
+            data["ingredients"] = [];
+            for (let item of this.ingredients)
+                data["ingredients"].push(item.toJSON());
+        }
         return data; 
     }
 }
 
-export interface IRecipeDto {
+export interface IRecipeCreateDto {
     id: number;
     name: string;
     canBeOrdered: boolean;
+    ingredients: RecipeCreateIngredientDto[];
+}
+
+export class RecipeCreateIngredientDto implements IRecipeCreateIngredientDto {
+    ingredientId!: number;
+    amount!: number;
+
+    constructor(data?: IRecipeCreateIngredientDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.ingredientId = _data["ingredientId"];
+            this.amount = _data["amount"];
+        }
+    }
+
+    static fromJS(data: any): RecipeCreateIngredientDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RecipeCreateIngredientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ingredientId"] = this.ingredientId;
+        data["amount"] = this.amount;
+        return data; 
+    }
+}
+
+export interface IRecipeCreateIngredientDto {
+    ingredientId: number;
+    amount: number;
 }
 
 export class ApiException extends Error {

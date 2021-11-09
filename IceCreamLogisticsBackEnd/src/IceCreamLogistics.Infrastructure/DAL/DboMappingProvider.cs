@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Linq;
+using System.Security.Claims;
 using IceCreamLogistics.Domain;
 using IceCreamLogistics.Domain.Security;
 using IceCreamLogistics.Infrastructure.DAL.DBOs;
@@ -36,7 +37,12 @@ namespace IceCreamLogistics.Infrastructure.DAL
             config.NewConfig<Recipe, RecipeDbo>();
             
             config.NewConfig<OrderDbo, Order>();
-            config.NewConfig<Order, OrderDbo>();
+            config.NewConfig<Order, OrderDbo>()
+                .AfterMapping((order, dbo) =>
+                {
+                    dbo.ClientId = order.Client.Id;
+                    dbo.Client = null; 
+                });
             
             config.NewConfig<OrderItemDbo, OrderItem>();
             config.NewConfig<OrderItem, OrderItemDbo>().MapWith(x => new OrderItemDbo() {
@@ -49,6 +55,17 @@ namespace IceCreamLogistics.Infrastructure.DAL
             
             config.NewConfig<AddressDbo, Address>();
             config.NewConfig<Address, AddressDbo>();
+            config.NewConfig<RecipeCreate, RecipeDbo>().Ignore(x => x.Ingredients);
+
+            config.NewConfig<RecipeDbo, RecipeDetails>()
+                .AfterMapping(((dbo, details) => details.Ingredients = 
+                dbo.Ingredients.Select(x => new RecipeIngredient()
+                {
+                    IngredientId = x.IngredientId,
+                    Amount = x.Amount,
+                    IngredientName = x.Ingredient.Name,
+                    MeasurementUnit = x.Ingredient.MeasurementUnit
+                })));
             return config;
         }
     }

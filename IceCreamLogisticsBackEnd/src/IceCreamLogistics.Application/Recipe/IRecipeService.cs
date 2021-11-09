@@ -8,7 +8,9 @@ namespace IceCreamLogistics.Application
     {
         
         Task<IEnumerable<Recipe>> Search(string text, LazyLoadingParams loadingParams);
-        Task<Recipe> AddRecipe(Recipe recipe);
-        Task<Recipe> UpdateRecipe(Recipe recipe);
+        Task<RecipeDetails> Create(RecipeCreate recipe);
+        Task<RecipeDetails> Update(RecipeCreate recipe);
+        Task<RecipeDetails> Get(int id);
+        
     }
 }

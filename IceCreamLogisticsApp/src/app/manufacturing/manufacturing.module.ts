@@ -14,10 +14,11 @@ import {BatchContentComponent} from './create-mixing-batch/batch-content/batch-c
 import {BatchOverviewComponent} from './create-mixing-batch/batch-overview/batch-overview.component';
 import {FormsModule} from "@angular/forms";
 import {ScrollingModule} from "@angular/cdk/scrolling";
+import { MixingListComponent } from './mixing-list/mixing-list.component';
 
 
 @NgModule({
-  declarations: [CreateMixingBatchComponent, MixingComponent, MixingItemComponent, SelectOrdersComponent, BatchContentComponent, BatchOverviewComponent],
+  declarations: [CreateMixingBatchComponent, MixingComponent, MixingItemComponent, SelectOrdersComponent, BatchContentComponent, BatchOverviewComponent, MixingListComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {MixingBatchCreateItem, MixingBatchCreateMember, OrdersClient} from '../../../core/api/api';
+import {MixingBatchCreateItemDto, MixingBatchCreateMemberDto, OrdersClient} from '../../../core/api/api';
 import {map, mergeMap, scan, tap, throttleTime} from 'rxjs/operators';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {
@@ -17,7 +17,7 @@ import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 })
 export class SelectOrdersComponent implements OnInit {
   @Input()
-  public mixingBatchMembersByOrderId: Map<number, MixingBatchCreateMember>;
+  public mixingBatchMembersByOrderId: Map<number, MixingBatchCreateMemberDto>;
   @Input()
   public batchChanged: Observable<void>;
 
@@ -45,7 +45,7 @@ export class SelectOrdersComponent implements OnInit {
   }
 
   getBatch(offset): Observable<MixingBatchOrder[]> {
-    return this.ordersClient.searchIncompleteOrders(this.from, this.to, this.clientName, this.recipeName,
+    return this.ordersClient.searchForMixing(this.from, this.to, this.clientName, this.recipeName,
       offset, this.batch)
       .pipe(
         tap(resp => (this.theEnd = !resp.hasMore)),
@@ -77,7 +77,7 @@ export class SelectOrdersComponent implements OnInit {
       } else {
         order.member = emptyMixingBatchCreateMemberFromOrderPart(order.orderPart);
       }
-      order.member.items.push(new MixingBatchCreateItem(
+      order.member.items.push(new MixingBatchCreateItemDto(
         {
           recipeId: item.recipeId,
           amount: item.incompleteAmount

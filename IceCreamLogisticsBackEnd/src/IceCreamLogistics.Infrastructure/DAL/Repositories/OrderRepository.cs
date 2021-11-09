@@ -19,32 +19,9 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 
         public async Task<Order> Create(Order order)
         {
-            var client = order.Client;
-            order.Client = null;
-            var items = order.Items;
-            order.Items = null;
+                var orderDbo = order.MapTo<OrderDbo>();
             
-            var orderDbo = DboMappingProvider.Mapper
-                .From(order)
-                .AdaptToType<OrderDbo>();
-            orderDbo.ClientId = client.Id;
-
             await DbContext.Orders.AddAsync(orderDbo);
-            orderDbo.Items = items
-                .Select(x => new OrderItemDbo()
-                {
-                    Amount = x.Amount,
-                    RecipeId = x.Recipe.Id,
-                    OrderId = orderDbo.Id
-                }).ToArray();
-            
-            orderDbo.IncompleteItems = items
-                .Select(x => new OrderItemDbo()
-                {
-                    Amount = x.Amount,
-                    RecipeId = x.Recipe.Id,
-                    IncompleteOrderId = orderDbo.Id
-                }).ToArray();
             await DbContext.OrderItems.AddRangeAsync(orderDbo.Items);
 
             await DbContext.SaveChangesAsync();
@@ -78,7 +55,9 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         {
             IQueryable<OrderDbo> orders = DbContext.Orders
                 .Include(x => x.Items)
-                .Where(x => x.OrderState == OrderState.Active);
+                .ThenInclude(x => x.Recipe)
+                .Include(x => x.Client)
+                .Where(x => x.OrderState == OrderState.Active || x.OrderState == OrderState.ReadyForDelivery);
 
             if (searchParams.From is not null)
                 orders = orders.Where(x => x.RequestedDate >= searchParams.From);
@@ -93,7 +72,8 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 orders = orders.Where(x => x.Items.Any(item => item.Recipe.Name.StartsWith(searchParams.RecipeName)));
             
             return orders
-                .OrderBy(x => x.Client.Name)
+                .OrderByDescending(x => x.RequestedDate)
+                .ThenBy(x => x.Client.Name)
                 .ThenBy(x => x.OrderCreated)
                 .ApplyLazyLoading(loadingParams)
                 .ToArray()

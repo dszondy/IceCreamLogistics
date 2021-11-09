@@ -1,4 +1,5 @@
 ﻿using IceCreamLogistics.Application;
+using IceCreamLogistics.Application.Mixing;
 using IceCreamLogistics.Application.Security;
 using IceCreamLogistics.Infrastructure.DAL;
 using IceCreamLogistics.Infrastructure.DAL.DBOs;
@@ -22,8 +23,9 @@ namespace IceCreamLogistics.Infrastructure
             services.AddTransient<IRecipeRepository, RecipeRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddTransient<IClientRepository, ClientRepository>();
-            services.AddTransient<IOrderPartRepository, OrderPartRepository>();
-            services.AddTransient<IMixingBatchesRepository, MixingBatchesRepository>();
+            services.AddTransient<IOrderProgressRepository, OrderProgressRepository>();
+            services.AddTransient<IMixingRepository, MixingRepository>();
+            services.AddTransient<IIngredientRepository, IngredientRepository>();
 
             services.AddTransient<IHashingService, HashingService>();
             services.AddTransient<IUserTokenService, JwtTokenService>();

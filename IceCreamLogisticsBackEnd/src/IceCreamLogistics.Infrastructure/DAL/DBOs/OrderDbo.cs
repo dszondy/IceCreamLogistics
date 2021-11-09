@@ -11,7 +11,6 @@ namespace IceCreamLogistics.Infrastructure.DAL.DBOs
         [Key]
         public int Id { get; set; }
         public ICollection<OrderItemDbo> Items { get; set; }
-        public ICollection<OrderItemDbo> IncompleteItems { get; set; }
         public int ClientId { get; set; }
         public ClientDbo Client { get; set; }
         public DateTime OrderCreated { get; set; }

@@ -12,4 +12,10 @@ namespace IceCreamLogistics.Domain
         public DateTime RequestedDate { get; set; }
         public OrderState OrderState { get; set; }
     }
+    public class OrderItem
+    {
+        public Recipe Recipe { get; set; }
+        public int Amount { get; set; }
+
+    }
 }

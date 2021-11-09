@@ -11,6 +11,8 @@ import {TypeaheadModule} from "ngx-bootstrap/typeahead";
 import {ClientSelectComponent} from './place-order/client-select/client-select.component';
 import {OrderItemsComponent} from './place-order/order-items/order-items.component';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {ScrollingModule} from "@angular/cdk/scrolling";
+import {AlertModule} from "ngx-bootstrap/alert";
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
     SharedModule,
     FormsModule,
     TypeaheadModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    ScrollingModule,
+    AlertModule
   ]
 })
 export class OrderModule {

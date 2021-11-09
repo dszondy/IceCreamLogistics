@@ -1,3 +1,10 @@
-<div>
-  <app-mixing-item></app-mixing-item>
+<div *ngIf="batch" class="d-flex row justify-content-between m-2">
+  <h2>{{batch.name}}</h2>
+  <button (click)="onSave()" class="btn btn-success">Mentés</button>
+</div>
+
+<div *ngIf="items">
+  <div *ngFor="let item of items">
+    <app-mixing-item [item]="item"></app-mixing-item>
+  </div>
 </div>

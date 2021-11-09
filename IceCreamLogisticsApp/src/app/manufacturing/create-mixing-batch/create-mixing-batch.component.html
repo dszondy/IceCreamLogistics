@@ -1,4 +1,16 @@
-<div>
+<div class="m-2 p-2">
+  <div class="d-flex row justify-content-end">
+    <button (click)="openIngredientListModal(ingredientListTemplate)" class="btn btn-primary mr-2">
+      Alapanyagok
+    </button>
+    <button (click)="save()" class="btn btn-success">
+      Mentés
+    </button>
+  </div>
+  <div class="row m-2">
+    <label for="name">Név: </label>
+    <input [(ngModel)]="name" class="form-control" id="name" placeholder="Name" type="text">
+  </div>
   <tabset>
     <tab #searchTab="tab" heading="Keresés">
       <app-select-orders (orderSelected)="orderSelected($event)"
@@ -16,11 +28,26 @@
                           [mixingBatchOrders]="mixingBatchOrders"></app-batch-overview>
     </tab>
   </tabset>
-  <div class="row justify-content-end">
-    <button (click)="save()" class="btn btn-success">
-      Mentés
-    </button>
-  </div>
-
-  lapozás jobb/bal, hozzáadás batchoz +
 </div>
+<ng-template #ingredientListTemplate>
+
+  <div class="modal-header"></div>
+  <div class="modal-body">
+    <table class="table text-dark">
+      <thead>
+      <tr>
+        <th>Alapanyag</th>
+        <th>Szükséges</th>
+        <th>Raktáron</th>
+      </tr>
+      </thead>
+      <tbody *ngIf="ingredientList">
+      <tr *ngFor="let ingredient of ingredientList" [ngClass]="
+      {'table-warning': (ingredient.amountRequired !== ingredient.ingredient.amountOnHand)}">
+        <td>{{ingredient.ingredient.name}}</td>
+        <td>{{ingredient.amountRequired}} {{ingredient.ingredient.measurementUnit}}</td>
+        <td>{{ingredient.ingredient.amountOnHand}} {{ingredient.ingredient.measurementUnit}}</td>
+      </tr>
+    </table>
+  </div>
+</ng-template>

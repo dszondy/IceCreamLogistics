@@ -1,18 +1,18 @@
-import {MixingBatchCreateItem, MixingBatchCreateMember, OrderPartDto} from 'src/app/core/api/api';
+import {MixingBatchCreateItemDto, MixingBatchCreateMemberDto, OrderPartDto} from 'src/app/core/api/api';
 
 
-export function fullMixingBatchCreateMemberFromOrderPart(orderPart: OrderPartDto): MixingBatchCreateMember {
-  return new MixingBatchCreateMember({
+export function fullMixingBatchCreateMemberFromOrderPart(orderPart: OrderPartDto): MixingBatchCreateMemberDto {
+  return new MixingBatchCreateMemberDto({
     orderId: orderPart.order.id,
-    items: orderPart.incompleteItems.map(item => new MixingBatchCreateItem({
+    items: orderPart.incompleteItems.map(item => new MixingBatchCreateItemDto({
       recipeId: item.recipe.id,
       amount: item.amount
     }))
   });
 }
 
-export function emptyMixingBatchCreateMemberFromOrderPart(orderPart: OrderPartDto): MixingBatchCreateMember {
-  return new MixingBatchCreateMember({
+export function emptyMixingBatchCreateMemberFromOrderPart(orderPart: OrderPartDto): MixingBatchCreateMemberDto {
+  return new MixingBatchCreateMemberDto({
     orderId: orderPart.order.id,
     items: []
   });
@@ -20,7 +20,7 @@ export function emptyMixingBatchCreateMemberFromOrderPart(orderPart: OrderPartDt
 
 export class MixingBatchOrder {
   orderPart: OrderPartDto;
-  member: MixingBatchCreateMember;
+  member: MixingBatchCreateMemberDto;
   date: string;
   incompleteItemsCount: number;
   memberItemsCount: number;
@@ -28,13 +28,13 @@ export class MixingBatchOrder {
   clientName: string;
 
 
-  constructor(order: OrderPartDto, member: MixingBatchCreateMember) {
+  constructor(order: OrderPartDto, member: MixingBatchCreateMemberDto) {
     this.orderPart = order;
     this.member = member;
     this.clientName = order.order.client.name;
     this.incompleteItemsCount = order.incompleteItems.filter((item) => item.amount > 0).length;
     this.memberItemsCount = member?.items.filter((item) => item.amount > 0).length || 0;
-    this.date = order.order.requestedDate.toLocaleDateString("hu-hu");
+    this.date = order.order.requestedDate.toLocaleDateString('hu-hu');
     this.items = order.incompleteItems.map((item) => (
       {
         recipeId: item.recipe.id,
@@ -57,6 +57,7 @@ export interface MixingBatchRecipe {
   recipeName: string;
   recipeId: number;
   totalAmount: number;
+  completedAmount: number;
   totalClients: number;
   items: {
     item: MixingBathOrderItem,

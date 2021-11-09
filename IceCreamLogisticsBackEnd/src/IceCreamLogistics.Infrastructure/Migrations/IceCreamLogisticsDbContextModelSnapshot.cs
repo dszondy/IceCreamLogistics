@@ -19,25 +19,6 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("IceCreamLogistics.Domain.Recipe", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<bool>("CanBeOrdered")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Recipe");
-                });
-
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.AddressDbo", b =>
                 {
                     b.Property<int>("Id")
@@ -91,7 +72,16 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -102,6 +92,65 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.IngredientDbo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<decimal>("AmountOnHand")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("MeasurementUnit")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ingredients");
+                });
+
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.InventoryChangeDbo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("AmountLeft")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IngredientId");
+
+                    b.ToTable("InventoryChanges");
+                });
+
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingBatchDbo", b =>
                 {
                     b.Property<int>("Id")
@@ -109,12 +158,46 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("MixingBatches");
                 });
 
-            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingBatchMemberDbo", b =>
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingItemDbo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("CompletedAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("MixingMemberId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MixingMemberId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("MixingItems");
+                });
+
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingMemberDbo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -172,23 +255,19 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<int?>("IncompleteOrderId")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("MixedAmount")
+                        .HasColumnType("numeric");
 
-                    b.Property<int?>("MixingBatchMemberId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("OrderId")
+                    b.Property<int>("OrderId")
                         .HasColumnType("integer");
 
                     b.Property<int>("RecipeId")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("SelectedMixingAmount")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("IncompleteOrderId");
-
-                    b.HasIndex("MixingBatchMemberId");
 
                     b.HasIndex("OrderId");
 
@@ -215,6 +294,31 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                     b.ToTable("Recipes");
                 });
 
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.RecipeIngredientDbo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IngredientId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("RecipeIngredients");
+                });
+
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.UserDbo", b =>
                 {
                     b.Property<int>("Id")
@@ -224,6 +328,9 @@ namespace IceCreamLogistics.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .HasMaxLength(127)
@@ -267,7 +374,33 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingBatchMemberDbo", b =>
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.InventoryChangeDbo", b =>
+                {
+                    b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.IngredientDbo", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingItemDbo", b =>
+                {
+                    b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingMemberDbo", null)
+                        .WithMany("Items")
+                        .HasForeignKey("MixingMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.RecipeDbo", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingMemberDbo", b =>
                 {
                     b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingBatchDbo", null)
                         .WithMany("Members")
@@ -298,16 +431,10 @@ namespace IceCreamLogistics.Infrastructure.Migrations
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderItemDbo", b =>
                 {
                     b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderDbo", null)
-                        .WithMany("IncompleteItems")
-                        .HasForeignKey("IncompleteOrderId");
-
-                    b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingBatchMemberDbo", null)
                         .WithMany("Items")
-                        .HasForeignKey("MixingBatchMemberId");
-
-                    b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderDbo", null)
-                        .WithMany("Items")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.RecipeDbo", "Recipe")
                         .WithMany()
@@ -316,6 +443,23 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.RecipeIngredientDbo", b =>
+                {
+                    b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.IngredientDbo", "Ingredient")
+                        .WithMany()
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.RecipeDbo", null)
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ingredient");
                 });
 
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.RoleDbo", b =>
@@ -332,16 +476,19 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingBatchMemberDbo", b =>
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingMemberDbo", b =>
                 {
                     b.Navigation("Items");
                 });
 
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderDbo", b =>
                 {
-                    b.Navigation("IncompleteItems");
-
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.RecipeDbo", b =>
+                {
+                    b.Navigation("Ingredients");
                 });
 
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.UserDbo", b =>

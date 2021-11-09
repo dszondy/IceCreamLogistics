@@ -18,5 +18,6 @@ namespace IceCreamLogistics.Infrastructure.DAL.DBOs
 
         public ICollection<RoleDbo> Roles { get; set; }
         public BasicAuthInfoDbo BasicAuthInfo { get; set; }
+        public bool IsActive { get; set; }
     }
 }

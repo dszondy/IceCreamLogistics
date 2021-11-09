@@ -1,1 +1,64 @@
-<p>list-orders works!</p>
+<alert type="info">
+  <div>
+    <div class="form-group col-lg-6">
+      <label class="form-label" for="from">Kiszállítás dátuma: </label>
+      <input
+        (ngModelChange)="from = $event; filterChange()"
+        [ngModel]="from | date:'yyyy-MM-dd'"
+        class="form-control"
+        id="from"
+        type="date">
+    </div>
+    <div class="form-group col-lg-6">
+      <label class="form-label" for="to"> - </label>
+      <input
+        (ngModelChange)="to = $event; filterChange()"
+        [ngModel]="to | date:'yyyy-MM-dd'"
+        class="form-control"
+        id="to"
+        type="date">
+    </div>
+    <div class="form-group col-lg-6">
+      <label class="form-label" for="clientName"> Fagyizó: </label>
+      <input (ngModelChange)="filterChange()"
+             [(ngModel)]="clientName"
+             class="form-control"
+             id="clientName"
+             type="text">
+    </div>
+    <div class="form-group col-lg-6">
+      <label class="form-label" for="recipeName"> Recept: </label>
+      <input (ngModelChange)="filterChange()"
+             [(ngModel)]="recipeName"
+             class="form-control"
+             id="recipeName"
+             type="text">
+    </div>
+  </div>
+</alert>
+<div class="card bg-primary p-2">
+  <ng-container *ngIf="itemsDisplayedObservable | async as orders" style="height: 80vh">
+    <cdk-virtual-scroll-viewport (scrolledIndexChange)="nextBatch($event, orders.length)" [itemSize]="200"
+                                 style="height: 80vh">
+      <app-tree-node *cdkVirtualFor="let order of orders">
+        <ng-template #head>
+          <div class="row align-items-center">
+            <div class="col-6">{{order.client.name}} ({{order.requestedDate | date:'yyyy-MM-dd'}})</div>
+            <div class="col-5">{{order.items.length}}</div>
+            <div class="col-1">
+              {{orderStatus[order.orderState]}}
+            </div>
+          </div>
+        </ng-template>
+        <ng-template #content>
+          <div *ngFor="let item of order.items" class="row  align-items-center">
+            <div class="col-6"> {{item.recipe.name}} </div>
+            <div class="col-5"> {{item.amount}}  </div>
+            <div class="col-1">
+            </div>
+          </div>
+        </ng-template>
+      </app-tree-node>
+    </cdk-virtual-scroll-viewport>
+  </ng-container>
+</div>

@@ -33,7 +33,7 @@ namespace IceCreamLogistics.Presentation.Controllers
         
         [HttpGet]
         [Route("incomplete")]
-        public async Task<ActionResult<LazyLoadingResponse<OrderPartDto>>> SearchIncompleteOrders([FromQuery]OrderSearchParamsDto orderSearchParams, 
+        public async Task<ActionResult<LazyLoadingResponse<OrderPartDto>>> SearchForMixing([FromQuery]OrderSearchParamsDto orderSearchParams, 
             [FromQuery]LazyLoadingParamsDto lazyLoadingParams)
         {
             var result = await _orderService.SearchIncomplete(orderSearchParams.MapTo<OrderSearchParams>(), lazyLoadingParams.MapTo<LazyLoadingParams>());
@@ -42,9 +42,10 @@ namespace IceCreamLogistics.Presentation.Controllers
                 .ToLazyLoadingResponse(lazyLoadingParams));
         }
         
+        
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<OrderDto>> PlaceOrder([FromBody] OrderDto order)
+        public async Task<ActionResult<OrderDto>> PlaceOrder([FromBody] OrderCreateDto order)
         {
             var result = await _orderService.Place(order.MapTo<Order>());
             

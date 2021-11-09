@@ -1,0 +1,47 @@
+<div class="d-flex row flex-row-reverse m-2">
+  <div class="col-lg-6 p-2">
+    <div *ngIf="selectedItem" class="card w-100 p-2">
+      <div class="d-flex justify-content-between align-items-center pb-2">
+        <div class="form-group">
+          <label for="name">Név: </label>
+          <input [(ngModel)]="selectedItem.name" class="form-control" id="name" type="text">
+        </div>
+        <button (click)="close().subscribe()" class="btn btn-light">
+          <fa-icon icon="times" style="font-size:20px"></fa-icon>
+        </button>
+      </div>
+      <div class="form-group">
+        <label for="measurement">Mértékegység: </label>
+        <input [(ngModel)]="selectedItem.measurementUnit" class="form-control" id="measurement" type="text">
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6 p-2">
+    <div class="card">
+      <div class="d-flex align-items-center justify-content-lg-start">
+        <fa-icon icon="search" style="font-size:20px"></fa-icon>
+        <input (ngModelChange)="onSearchTextChange($event)" [(ngModel)]="searchText" [readOnly]="selectedItem"
+               class="form-control m-2" type="text">
+        <button (click)="add()" [disabled]="!canAdd || selectedItem" class="btn btn-primary">
+          <fa-icon icon="plus" style="font-size:20px"></fa-icon>
+        </button>
+      </div>
+      <div class="picklist-viewport card bg-light">
+        <ng-container *ngIf="items | async as recipes" class="picklist-viewport">
+          <cdk-virtual-scroll-viewport (scrolledIndexChange)="nextBatch($event,recipes.length)"
+                                       class="picklist-viewport"
+                                       itemSize="50">
+            <div (click)="select(recipe)" *cdkVirtualFor="let recipe of recipes" class="example-item auto m-1">
+              <button
+                [ngClass]="{
+                  'btn-primary': recipe!==selectedItem,
+                  'btn-secondary': recipe===selectedItem}"
+                class=" btn  w-100">{{recipe.name}}</button>
+            </div>
+          </cdk-virtual-scroll-viewport>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="d-flex row flex-row-reverse m-2">
+  <div class="col-lg-12 p-2">
+    <div class="card">
+      <div class="picklist-viewport card bg-light">
+        <ng-container *ngIf="items | async as batches" class="picklist-viewport">
+          <cdk-virtual-scroll-viewport (scrolledIndexChange)="nextBatch($event,batches.length)"
+                                       class="picklist-viewport"
+                                       itemSize="50">
+            <div (click)="select(batch)" *cdkVirtualFor="let batch of batches" class="example-item auto m-1">
+              <button
+                class=" btn btn-primary w-100">{{batch.name}}</button>
+            </div>
+          </cdk-virtual-scroll-viewport>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

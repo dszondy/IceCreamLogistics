@@ -21,4 +21,8 @@
       <PackageReference Include="NSwag.AspNetCore" Version="13.13.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Model\Delivery" />
+    </ItemGroup>
+
 </Project>

@@ -8,6 +8,7 @@ using IceCreamLogistics.Application;
 using IceCreamLogistics.Domain;
 using IceCreamLogistics.Domain.Security;
 using IceCreamLogistics.Infrastructure.DAL.DBOs;
+using IceCreamLogistics.Presentation.Controllers;
 using IceCreamLogistics.Presentation.DTOs;
 using Mapster;
 using MapsterMapper;
@@ -55,6 +56,11 @@ namespace IceCreamLogistics.Presentation
             
             config.NewConfig<Client, ClientDbo>();
             config.NewConfig<ClientDbo, Client>();
+
+            config.NewConfig<OrderCreateItemDto, OrderItem>()
+                .AfterMapping((dto, item) => item.Recipe = new Recipe() { Id = dto.RecipeId });
+            config.NewConfig<OrderCreateDto, Order>()
+                .AfterMapping((dto, order) => order.Client = new Client() { Id = dto.ClientId });
             
             return config;
             

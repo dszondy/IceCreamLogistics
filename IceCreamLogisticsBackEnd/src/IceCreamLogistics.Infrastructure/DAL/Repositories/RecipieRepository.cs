@@ -32,32 +32,76 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                     .AdaptToType<Recipe>());
         }
 
-        public async Task<Recipe> Create(Recipe recipe)
+        public async Task<RecipeDetails> Get(int id)
+        {
+            var result = await DbContext.Recipes
+                .Include(x => x.Ingredients)
+                .ThenInclude(x => x.Ingredient)
+                .FirstAsync(x => x.Id == id);
+            return result.MapTo<RecipeDetails>();
+        }
+
+        public  async Task<IEnumerable<RecipeDetails>> GetMany(IEnumerable<int> ids)
+        {
+            var results = DbContext.Recipes
+                .Include(x => x.Ingredients)
+                .ThenInclude(x => x.Ingredient)
+                .Where(x => ids.Contains(x.Id))
+                .AsEnumerable();
+            
+            return results.Select(x => x.MapTo<RecipeDetails>());
+        }
+
+        public async Task<Recipe> Create(RecipeCreate recipe)
         {
             var recipeDbo = DboMappingProvider.Mapper
                 .From(recipe)
                 .AdaptToType<RecipeDbo>();
-            
+
             await DbContext.Recipes.AddAsync(recipeDbo);
             await DbContext.SaveChangesAsync();
-            
+
+            await DbContext.RecipeIngredients.AddRangeAsync(
+                recipe.Ingredients.Select(x => new RecipeIngredientDbo()
+                {
+                    RecipeId = recipeDbo.Id,
+                    IngredientId = x.IngredientId,
+                    Amount = x.Amount
+                }));
+            await DbContext.SaveChangesAsync();
+
+
             return DboMappingProvider.Mapper
                 .From(recipeDbo)
                 .AdaptToType<Recipe>();
         }
-
-        public async Task<Recipe> Update(Recipe recipe)
+        
+        public async Task<Recipe> Update(RecipeCreate recipe)
         {
+            
+            DbContext.RecipeIngredients.RemoveRange(DbContext.RecipeIngredients
+                .Where(x => x.RecipeId == recipe.Id));
             
             var recipeDbo = DboMappingProvider.Mapper
                 .From(recipe)
                 .AdaptTo<RecipeDbo>(await DbContext.Recipes.
                     FirstAsync(x => x.Id == recipe.Id));
-            
+
             await DbContext.SaveChangesAsync();
             
+            
+            await DbContext.RecipeIngredients.AddRangeAsync(
+                recipe.Ingredients.Select(x => new RecipeIngredientDbo()
+                {
+                    RecipeId = recipeDbo.Id,
+                    IngredientId = x.IngredientId,
+                    Amount = x.Amount
+                }));
+            await DbContext.SaveChangesAsync();
+
             return DboMappingProvider.Mapper
                 .From(recipeDbo)
-                .AdaptToType<Recipe>();        }
+                .AdaptToType<Recipe>();
+        }
     }
 }

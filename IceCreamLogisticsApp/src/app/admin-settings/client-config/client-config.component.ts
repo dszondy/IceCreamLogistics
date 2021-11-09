@@ -22,7 +22,6 @@ export class ClientConfigComponent implements OnInit {
 
   selectedItem: Client;
   canAdd = true;
-  private
 
   constructor(private clientClient: ClientClient) {
     this.reset();
@@ -59,7 +58,13 @@ export class ClientConfigComponent implements OnInit {
   }
 
   add(): void {
-    this.selectedItem = new Client({name: this.searchText, id: undefined, address: new Address()});
+    this.selectedItem = new Client({
+      name: this.searchText,
+      email: '',
+      phone: '',
+      id: undefined,
+      address: new Address()
+    });
   }
 
   close(): Observable<Client> {

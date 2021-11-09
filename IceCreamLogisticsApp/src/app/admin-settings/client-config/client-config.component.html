@@ -7,6 +7,20 @@
         </button>
       </div>
       <div class="form-group">
+        <label for="name">Név</label>
+        <input [(ngModel)]="selectedItem.name" class="form-control" id="name" type="text">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Telefonszám</label>
+        <input [(ngModel)]="selectedItem.phone" class="form-control" id="phone" type="text">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input [(ngModel)]="selectedItem.email" class="form-control" id="email" type="text">
+      </div>
+
+      <div class="form-group">
         <label for="country">Ország</label>
         <input [(ngModel)]="selectedItem.address.country" class="form-control" id="country" type="text">
       </div>
