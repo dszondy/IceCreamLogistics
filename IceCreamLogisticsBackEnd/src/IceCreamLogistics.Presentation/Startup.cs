@@ -48,7 +48,9 @@ namespace IceCreamLogistics.Presentation
             app.UseHttpsRedirection();
             app.UseCors(options => options
                 .AllowAnyOrigin()
-                .AllowAnyMethod());
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowAnyHeader());
             app.UseRouting();
             app.UseAuthorization();
             app.UseOpenApi();
