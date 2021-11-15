@@ -18,6 +18,11 @@ namespace IceCreamLogistics.Presentation
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
-    }
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+
+                    webBuilder.UseStartup<Startup>()
+                        .UseUrls("http://*:" + port);
+                });    }
 }
