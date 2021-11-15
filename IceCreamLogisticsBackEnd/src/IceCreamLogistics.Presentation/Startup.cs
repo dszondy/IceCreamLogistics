@@ -26,6 +26,7 @@ namespace IceCreamLogistics.Presentation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddControllers();
             
             
@@ -45,7 +46,7 @@ namespace IceCreamLogistics.Presentation
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors(options => options.AllowAnyOrigin());
             app.UseRouting();
             app.UseAuthorization();
             app.UseOpenApi();
