@@ -33,7 +33,14 @@ export class OrderItemsComponent implements OnInit {
   }
 
   addItem(): void {
-    this.orderItems.push(new OrderItem({amount: this.amount, recipe: this.recipeSelected}));
+    if (this.orderItems.find(item => item.recipe.id === this.recipeSelected.id)) {
+      this.orderItems.find(item => item.recipe.id === this.recipeSelected.id).amount += this.amount;
+    } else {
+      this.orderItems.push(new OrderItem({
+        recipe: this.recipeSelected,
+        amount: this.amount
+      }));
+    }
     this.asyncRecipeName = '',
       this.amount = undefined;
     this.recipeSelected = null;
@@ -42,6 +49,11 @@ export class OrderItemsComponent implements OnInit {
 
   onRecipeSelected($event: TypeaheadMatch): void {
     this.recipeSelected = $event.item;
+  }
+
+  removeItem(orderItem: OrderItem): void {
+    this.orderItems = this.orderItems.filter(item => item.recipe.id !== orderItem.recipe.id);
+    this.orderItemsChange.emit(this.orderItems);
   }
 
   private getRecipesAsObservable(token: string): Observable<Recipe[]> {

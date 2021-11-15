@@ -100,5 +100,27 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
            });
            await DbContext.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<AssociatedBatch>> GetAssociatedBatches(int orderId)
+        {
+            var mixingBatches= DbContext.MixingBatches
+                .Include(x => x.Members)
+                .ThenInclude(x => x.Order)
+                .ThenInclude(x => x.Client)
+                .Include(x => x.Members)
+                .ThenInclude(x => x.Items)
+                .ThenInclude(x => x.Recipe)
+                .Where(x => x.Members.Any(member => member.OrderId == orderId));
+
+            return await mixingBatches.Select(x => new AssociatedBatch()
+            {
+                MixingBatchId = x.Id,
+                Name = x.Name,
+                Created = x.Created,
+                BatchCompleted = x.IsCompleted,
+                Items = x.Members.First(member => member.OrderId == orderId).Items
+                    .Select(item => item.MapTo<MixingBatchItem>())
+            }).ToArrayAsync();
+        }
     }
 }

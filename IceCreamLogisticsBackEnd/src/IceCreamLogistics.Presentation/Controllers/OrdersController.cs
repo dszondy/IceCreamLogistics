@@ -30,6 +30,7 @@ namespace IceCreamLogistics.Presentation.Controllers
             return Ok(result
                 .ToLazyLoadingResponse(lazyLoadingParams));
         }
+
         
         [HttpGet]
         [Route("incomplete")]

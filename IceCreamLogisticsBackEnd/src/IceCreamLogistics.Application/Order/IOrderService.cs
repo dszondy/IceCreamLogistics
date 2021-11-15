@@ -12,5 +12,7 @@ namespace IceCreamLogistics.Application
 
         Task<IEnumerable<OrderPart>> SearchIncomplete(OrderSearchParams searchParams,
             LazyLoadingParams lazyLoadingParams);
+        
+        Task<OrderDetails> Get(int orderId);
     }
 }

@@ -10,6 +10,7 @@ public class OrderDetails
     public DateTime OrderCreated { get; set; }
     public DateTime RequestedDate { get; set; }
     public OrderState OrderState { get; set; }
+    public IEnumerable<AssociatedBatch> AssociatedBatches { get; set; }
 }
 
 public class OrderDetailsItem
@@ -18,4 +19,14 @@ public class OrderDetailsItem
     public decimal Amount { get; set; }
     public decimal SelectedMixingAmount { get; set; }
     public decimal MixedAmount { get; set; }
+}
+
+public class AssociatedBatch
+{
+    public int MixingBatchId { get; set; }
+    public bool BatchCompleted { get; set; }
+    public string Name { get; set; }
+    public DateTime Created { get; set; }
+
+    public IEnumerable<MixingBatchItem> Items { get; set; }
 }

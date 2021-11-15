@@ -11,6 +11,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.DBOs
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime Created { get; set; }
+        public bool IsCompleted { get; set; }
         
         public ICollection<MixingMemberDbo> Members { get; set; }
     }

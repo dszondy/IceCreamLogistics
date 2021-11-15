@@ -9,5 +9,7 @@ namespace IceCreamLogistics.Application
         Task<Order> Create(Order order);
         Task<Order> UpdateState(int orderId, OrderState state);
         Task<IEnumerable<Order>> GetOrdersBySearch(OrderSearchParams searchParams, LazyLoadingParams loadingParams);
+        Task<Order> Get(int orderId);
+
     }
 }

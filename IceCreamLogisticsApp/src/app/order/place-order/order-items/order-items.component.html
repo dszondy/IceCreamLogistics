@@ -25,10 +25,16 @@
         <fa-icon icon="plus"></fa-icon>
       </button>
     </div>
-    <hr>
-    <div *ngFor="let orderItem of orderItems" class="container row align-items-center">
-      <div class="col-8 p-2 pl-4">{{orderItem.recipe.name}}</div>
-      <div class="col-4 p-2  pl-4">{{orderItem.amount}} {{measurement}}</div>
+  </div>
+
+  <hr>
+  <div *ngFor="let orderItem of orderItems" class="container row align-items-center">
+    <div class="col-lg-8 col-6 p-2 pl-4 text-greater">{{orderItem.recipe.name}}</div>
+
+    <div class="col-lg-3 col-4 p-2  pl-4 text-greater">{{orderItem.amount}} {{measurement}}</div>
+    <div class="col-lg-1 col-2 p-2">
+      <button (click)="removeItem(orderItem)" class="btn btn-dark" type="button">
+        <fa-icon icon="trash"></fa-icon>
+      </button>
     </div>
   </div>
-</div>
