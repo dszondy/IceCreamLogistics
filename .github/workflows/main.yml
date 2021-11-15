@@ -18,4 +18,4 @@ jobs:
         angular_dist_build_folder: IceCreamLogisticsApp/dist/IceCreamLogisticsApp
         build_configuration: production # The build environment for the app. please look configurations in your angular.json
         base_href: /IceCreamLogistics/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
-        deploy_branch: main # The branch the action should deploy to.
+        deploy_branch: master # The branch the action should deploy to.
