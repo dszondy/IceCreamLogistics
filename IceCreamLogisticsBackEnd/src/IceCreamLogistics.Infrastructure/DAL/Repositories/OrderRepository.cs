@@ -96,5 +96,20 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .From(orderDbo)
                 .AdaptToType<Order>();  
         }
+
+        public async Task<OrderDetails> GetDetailed(int orderId)
+        {
+            var orderDbo = await DbContext.Orders
+                .Include(x => x.Items)
+                .ThenInclude(x => x.Recipe)
+                .Include(x => x.Client)
+                .ThenInclude(x => x.Address)
+                .FirstAsync(x => x.Id == orderId);
+                
+            
+            return DboMappingProvider.Mapper
+                .From(orderDbo)
+                .AdaptToType<OrderDetails>();
+        }
     }
 }
