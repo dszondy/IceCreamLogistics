@@ -43,9 +43,9 @@
       <app-tree-node *cdkVirtualFor="let order of orders">
         <ng-template #head>
           <div class="row align-items-center">
-            <div class="col-6">{{order.client.name}} ({{order.requestedDate | date:'yyyy-MM-dd'}})</div>
-            <div class="col-5">{{order.items.length}}</div>
-            <div class="col-1">
+            <div class="col-6"> <a [routerLink]="[order.id]" class="text-dark">{{order.client.name}} ({{order.requestedDate | date:'yyyy-MM-dd'}})</a></div>
+            <div class="col-3">{{order.items.length}}</div>
+            <div class="col-3">
               {{orderStatus[order.orderState]}}
             </div>
           </div>

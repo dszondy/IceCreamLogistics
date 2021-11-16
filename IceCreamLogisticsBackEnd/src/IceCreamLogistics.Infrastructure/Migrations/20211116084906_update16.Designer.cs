@@ -3,15 +3,17 @@ using System;
 using IceCreamLogistics.Infrastructure.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace IceCreamLogistics.Infrastructure.Migrations
 {
     [DbContext(typeof(IceCreamLogisticsDbContext))]
-    partial class IceCreamLogisticsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211116084906_update16")]
+    partial class update16
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

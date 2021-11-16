@@ -1,0 +1,28 @@
+<div *ngIf="order">
+  <div class="d-flex justify-content-between">
+    <h2>{{order.client.name}}</h2>
+    <button (click)="cancelOrder()" class="btn btn-danger" *ngIf="order.orderState == 1">Lemondás</button>
+  </div>
+  <h6>{{order.requestedDate | date:'yyyy-MM-dd'}}</h6>
+  <div>
+    <button class="btn btn-light float-right"
+            (click)="openPrintModal(printModal)">
+      <fa-icon icon="tags" ></fa-icon></button>
+    <div class="container row align-items-center">
+      <div class="col-6 p-2 pl-4 text-greater">Recept</div>
+      <div class=" col-3 p-2  pl-4 text-greater">Rendelés</div>
+      <div class=" col-3 p-2  pl-4 text-greater">Elkészült</div>
+    </div>
+    <div *ngFor="let orderItem of order.items" class="container row align-items-center">
+      <div class="col-6 p-2 pl-4 text-greater">{{orderItem.recipe.name}}</div>
+      <div class=" col-3 p-2  pl-4 text-greater">{{orderItem.amount}} adag</div>
+      <div class=" col-3 p-2  pl-4 text-greater">{{orderItem.mixedAmount}} adag</div>
+    </div>
+  </div>
+</div>
+<ng-template #printModal>
+  <div class="modal-header"></div>
+  <div class="modal-body">
+    <app-print-labels [order]="order" (printChange)="print=undefined"></app-print-labels>
+  </div>
+</ng-template>

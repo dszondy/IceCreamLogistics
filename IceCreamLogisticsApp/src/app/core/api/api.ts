@@ -851,7 +851,7 @@ export class OrdersClient {
         return _observableOf<LazyLoadingResponseOfOrderDto>(<any>null);
     }
 
-    placeOrderPOST(order: OrderCreateDto) : Observable<OrderDto> {
+    placeOrder(order: OrderCreateDto) : Observable<OrderDto> {
         let url_ = this.baseUrl + "/orders";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -868,11 +868,11 @@ export class OrdersClient {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processPlaceOrderPOST(response_);
+            return this.processPlaceOrder(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processPlaceOrderPOST(<any>response_);
+                    return this.processPlaceOrder(<any>response_);
                 } catch (e) {
                     return <Observable<OrderDto>><any>_observableThrow(e);
                 }
@@ -881,7 +881,7 @@ export class OrdersClient {
         }));
     }
 
-    protected processPlaceOrderPOST(response: HttpResponseBase): Observable<OrderDto> {
+    protected processPlaceOrder(response: HttpResponseBase): Observable<OrderDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -967,7 +967,7 @@ export class OrdersClient {
         return _observableOf<LazyLoadingResponseOfOrderPartDto>(<any>null);
     }
 
-    placeOrderGET(id: number) : Observable<OrderDetailsDto> {
+    getDetails(id: number) : Observable<OrderDetailsDto> {
         let url_ = this.baseUrl + "/orders/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -983,11 +983,11 @@ export class OrdersClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processPlaceOrderGET(response_);
+            return this.processGetDetails(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processPlaceOrderGET(<any>response_);
+                    return this.processGetDetails(<any>response_);
                 } catch (e) {
                     return <Observable<OrderDetailsDto>><any>_observableThrow(e);
                 }
@@ -996,7 +996,7 @@ export class OrdersClient {
         }));
     }
 
-    protected processPlaceOrderGET(response: HttpResponseBase): Observable<OrderDetailsDto> {
+    protected processGetDetails(response: HttpResponseBase): Observable<OrderDetailsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1016,6 +1016,57 @@ export class OrdersClient {
             }));
         }
         return _observableOf<OrderDetailsDto>(<any>null);
+    }
+
+    cancelOrder(id: number) : Observable<OrderDto> {
+        let url_ = this.baseUrl + "/orders/{id}/cancel";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCancelOrder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCancelOrder(<any>response_);
+                } catch (e) {
+                    return <Observable<OrderDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OrderDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCancelOrder(response: HttpResponseBase): Observable<OrderDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OrderDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OrderDto>(<any>null);
     }
 }
 

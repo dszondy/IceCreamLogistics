@@ -55,10 +55,19 @@ namespace IceCreamLogistics.Presentation.Controllers
         
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<OrderDetailsDto>> PlaceOrder([FromRoute] int id)
+        public async Task<ActionResult<OrderDetailsDto>> GetDetails([FromRoute] int id)
         {
             var result = await _orderService.Get(id);
             return Ok(result.MapTo<OrderDetailsDto>());
         }
+        
+        [HttpPost]
+        [Route("{id}/cancel")]
+        public async  Task<ActionResult<OrderDto>> CancelOrder([FromRoute] int id)
+        {
+            var result = await _orderService.Cancel(id);
+            return Ok(result.MapTo<OrderDto>());
+        }
+        
     }
 }

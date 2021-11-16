@@ -57,7 +57,8 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Recipe)
                 .Include(x => x.Client)
-                .Where(x => x.OrderState == OrderState.Active || x.OrderState == OrderState.ReadyForDelivery);
+                //.Where(x => x.OrderState == OrderState.Active || x.OrderState == OrderState.ReadyForDelivery)
+                ;
 
             if (searchParams.From is not null)
                 orders = orders.Where(x => x.RequestedDate >= searchParams.From);
