@@ -61,7 +61,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 ;
 
             if (searchParams.From is not null)
-                orders = orders.Where(x => x.RequestedDate >= searchParams.From);
+                orders = orders.Where(x => x.RequestedDate >= searchParams.From);   
             
             if (searchParams.To is not null)
                 orders = orders.Where(x => x.RequestedDate >= searchParams.To);     

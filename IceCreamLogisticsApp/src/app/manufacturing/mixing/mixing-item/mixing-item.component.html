@@ -5,7 +5,7 @@
       class="h4 p-2 mb-0"> {{item.recipeName}}</span>
     </div>
     <div class="">
-      <app-add-check [(checked)]="item.completed"></app-add-check>
+      <app-add-check [(checked)]="item.completed" (checkedChange)="change($event)"></app-add-check>
     </div>
   </div>
 </alert>

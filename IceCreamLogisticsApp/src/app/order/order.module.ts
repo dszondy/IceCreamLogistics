@@ -14,6 +14,7 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
 import {AlertModule} from 'ngx-bootstrap/alert';
 import { OrderDetailsComponent } from './order-details/order-details.component';
 import { PrintLabelsComponent } from './order-details/print-labels/print-labels.component';
+import {NgxPrintModule} from 'ngx-print';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { PrintLabelsComponent } from './order-details/print-labels/print-labels.
     TypeaheadModule,
     FontAwesomeModule,
     ScrollingModule,
-    AlertModule
+    AlertModule,
+    NgxPrintModule
   ]
 })
 export class OrderModule {

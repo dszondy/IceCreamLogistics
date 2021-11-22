@@ -13,7 +13,7 @@ import {map, mergeMap, scan, tap, throttleTime} from 'rxjs/operators';
 export class ListOrdersComponent implements OnInit {
   orderStatus = [
     'Törölve',
-    'Váraozó',
+    'Várakozó',
     'Folyamatban',
     'Előkészítve',
     'Kiszállítva'
