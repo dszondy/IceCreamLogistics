@@ -3,15 +3,17 @@ using System;
 using IceCreamLogistics.Infrastructure.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace IceCreamLogistics.Infrastructure.Migrations
 {
     [DbContext(typeof(IceCreamLogisticsDbContext))]
-    partial class IceCreamLogisticsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211122141302_update17_auth")]
+    partial class update17_auth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,8 +67,7 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                         new
                         {
                             UserId = 1,
-                            PasswordHash = "pZXky3qeBxGB/rvCAJ2JyS+hNUUoJEk/RGj/yTSJFlA9vj0SMEDimtg6TL4hjA9ErQoi+7liPxlwATXFNBYZtg==",
-                            Salt = "asd123"
+                            PasswordHash = "pZXky3qeBxGB/rvCAJ2JyS+hNUUoJEk/RGj/yTSJFlA9vj0SMEDimtg6TL4hjA9ErQoi+7liPxlwATXFNBYZtg=="
                         });
                 });
 

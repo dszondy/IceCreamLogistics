@@ -7,7 +7,6 @@ import {routes} from './routing';
 import {SharedModule} from '../shared/shared.module';
 import {FormsModule} from '@angular/forms';
 import {TypeaheadModule} from 'ngx-bootstrap/typeahead';
-import {ClientSelectComponent} from './place-order/client-select/client-select.component';
 import {OrderItemsComponent} from './place-order/order-items/order-items.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ScrollingModule} from '@angular/cdk/scrolling';
@@ -18,24 +17,25 @@ import {NgxPrintModule} from 'ngx-print';
 
 
 @NgModule({
-  declarations: [
-    PlaceOrderComponent,
-    ListOrdersComponent,
-    ClientSelectComponent,
-    OrderItemsComponent,
-    OrderDetailsComponent,
-    PrintLabelsComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    SharedModule,
-    FormsModule,
-    TypeaheadModule,
-    FontAwesomeModule,
-    ScrollingModule,
-    AlertModule,
-    NgxPrintModule
-  ]
+    declarations: [
+        PlaceOrderComponent,
+        ListOrdersComponent,
+        OrderItemsComponent,
+        OrderDetailsComponent,
+        PrintLabelsComponent],
+    exports: [
+    ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        SharedModule,
+        FormsModule,
+        TypeaheadModule,
+        FontAwesomeModule,
+        ScrollingModule,
+        AlertModule,
+        NgxPrintModule
+    ]
 })
 export class OrderModule {
 }

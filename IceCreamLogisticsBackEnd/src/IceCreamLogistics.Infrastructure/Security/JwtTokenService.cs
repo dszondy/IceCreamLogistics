@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -8,16 +8,21 @@ using System.Threading.Tasks;
 using IceCreamLogistics.Application.Security;
 using IceCreamLogistics.Domain;
 using IceCreamLogistics.Domain.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using User = IceCreamLogistics.Domain.User;
 
 namespace IceCreamLogistics.Infrastructure.Security
 {
-    public class JwtTokenService: ISecurityService, IUserTokenService
+    public class JwtTokenService: ICurrentUserService, IUserTokenService
     {
-        public JwtTokenService(IConfiguration config)
+        private readonly  HttpContext _httpContext;
+
+        public JwtTokenService(IConfiguration config, IHttpContextAccessor httpContextAccessor)
         {
             Config = config;
+            _httpContext = httpContextAccessor.HttpContext;
         }
 
         private IConfiguration Config { get; }
@@ -27,13 +32,19 @@ namespace IceCreamLogistics.Infrastructure.Security
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["Jwt:Key"]));    
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            IEnumerable<Claim> claims = new []
+            IEnumerable<Claim> claims = (new []
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Name),
-            }.Concat(
+                new Claim("UserId", user.Id.ToString())
+            }).Concat(
                 user.Roles
-                    .Select(x => new Claim(ClaimTypes.Role, x.ToString())));
+                    ?.Select(x => new Claim(ClaimTypes.Role, x.ToString())));
+            
+            if (user.Client is not null)
+            {
+                claims = claims.Append(new Claim("ClientId", user.Client?.Id.ToString()));
+            }
 
             var token = new JwtSecurityToken(Config["Jwt:Issuer"],    
                 Config["Jwt:Issuer"],    
@@ -47,29 +58,26 @@ namespace IceCreamLogistics.Infrastructure.Security
                 .WriteToken(token));    
         }
 
-        public Task<int> GetUserId()
+        public async Task<int> GetUserId()
         {
-            throw new NotImplementedException();
+           return int.Parse(_httpContext.User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
         }
 
-        public Task<Role[]> GetRoles()
+        public async Task<Role[]> GetRoles()
         {
-            throw new NotImplementedException();
+            return (_httpContext.User.Claims.Where(x => x.Type == ClaimTypes.Role)
+                .Select(x => (Role)Enum.Parse(typeof(Role), x.Value))).ToArray();
         }
 
-        public Task<bool> HasRole(Role role)
+        public async Task<bool> HasRole(Role role)
         {
-            throw new NotImplementedException();
+            var roles = await GetRoles();
+            return roles.Contains(role);
         }
 
-        public Task<int> GetClientId()
+        public async Task<int> GetClientId()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Client> GetClientOwned()
-        {
-            throw new NotImplementedException();
+            return int.Parse(_httpContext.User.Claims.FirstOrDefault(x => x.Type == "ClientId").Value);
         }
     }
 }

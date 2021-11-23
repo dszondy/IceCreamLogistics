@@ -1,0 +1,50 @@
+<div class="d-flex row flex-row-reverse m-2">
+  <div class="col-lg-6 p-2">
+    <div *ngIf="selectedItemDetails" class="card w-100 p-2">
+      <div class="d-flex justify-content-between align-items-center pb-2"><h2>{{selectedItemDetails.name}}</h2>
+        <button (click)="close().subscribe()" class="btn btn-light">
+          <fa-icon icon="times" style="font-size:20px"></fa-icon>
+        </button>
+      </div>
+      <tabset>
+        <tab heading="Megrendelő" class="mt-2" (selectTab)="onSetToClient(true)">
+          <app-client-select [(selectedClient)]="selectedItemDetails.client"></app-client-select>
+        </tab>
+        <tab heading="Belső felhasználó" class="mt-2" (selectTab)="onSetToClient(false)">
+          <h4>Title 2</h4>
+          <p>It has survived not only five centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged. It was popularised in the 1960s with the release of
+            Letraset sheets containing Lorem Ipsum passages</p>
+        </tab>
+      </tabset>
+    </div>
+  </div>
+
+  <div class="col-lg-6 p-2">
+    <div class="card">
+      <div class="d-flex align-items-center justify-content-lg-start">
+        <fa-icon icon="search" style="font-size:20px"></fa-icon>
+        <input (ngModelChange)="onSearchTextChange($event)" [(ngModel)]="searchText" [readOnly]="selectedItem"
+               class="form-control m-2" type="text">
+        <button (click)="add()" [disabled]="!canAdd || selectedItem" class="btn btn-primary">
+          <fa-icon icon="plus" style="font-size:20px"></fa-icon>
+        </button>
+      </div>
+      <div class="picklist-viewport card bg-light">
+        <ng-container *ngIf="items | async as users" class="picklist-viewport">
+          <cdk-virtual-scroll-viewport (scrolledIndexChange)="nextBatch($event,users.length)"
+                                       class="picklist-viewport"
+                                       itemSize="50">
+            <div (click)="select(user)" *cdkVirtualFor="let user of users" class="example-item auto m-1">
+              <button
+                [ngClass]="{
+                  'btn-primary': user!==selectedItem,
+                  'btn-secondary': user===selectedItem}"
+                class=" btn  w-100">{{user.name}}</button>
+            </div>
+          </cdk-virtual-scroll-viewport>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

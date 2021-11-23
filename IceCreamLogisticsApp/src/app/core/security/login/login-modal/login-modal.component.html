@@ -1,15 +1,19 @@
 <div class="modal-header">
-  <h2 class="modal-title">Login</h2>
+  <h2 class="modal-title">Bejelentkezés</h2>
 </div>
 <div class="modal-body">
-  <form>
+  <form [formGroup]="loginForm" (ngSubmit)="submit()">
     <div class="mb-3">
-      <label class="form-label" for="exampleInputEmail1">Email address</label>
-      <input aria-describedby="emailHelp" class="form-control" id="exampleInputEmail1" type="email">
+      <label class="form-label" for="username">Felhasználó</label>
+      <input class="form-control" id="username" type="text" [formControlName]="'email'">
     </div>
     <div class="mb-3">
-      <label class="form-label" for="exampleInputPassword1">Password</label>
-      <input class="form-control" id="exampleInputPassword1" type="password">
+      <label class="form-label" for="password">Jelszó</label>
+      <input class="form-control" id="password" type="password" [formControlName]="'password'">
+    </div>
+    <div class="mb-3">
+    <button class="btn btn-primary" type="submit" [disabled]="!loginForm.valid">Bejelentkezés</button>
     </div>
   </form>
+
 </div>

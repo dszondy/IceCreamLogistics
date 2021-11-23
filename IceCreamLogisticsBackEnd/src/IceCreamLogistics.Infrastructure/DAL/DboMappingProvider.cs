@@ -5,6 +5,7 @@ using IceCreamLogistics.Domain.Security;
 using IceCreamLogistics.Infrastructure.DAL.DBOs;
 using Mapster;
 using MapsterMapper;
+using User = IceCreamLogistics.Domain.User;
 
 namespace IceCreamLogistics.Infrastructure.DAL
 {

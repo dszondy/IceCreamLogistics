@@ -5,6 +5,7 @@
         Admin,
         Order,
         Production,
-        Delivery
+        Delivery,
+        Dashboard
     }
 }

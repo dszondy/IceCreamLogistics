@@ -1,7 +1,9 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
 using IceCreamLogistics.Domain;
 using IceCreamLogistics.Domain.Security;
 using IceCreamLogistics.Infrastructure.DAL.DBOs;
+using IceCreamLogistics.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -44,16 +46,17 @@ namespace IceCreamLogistics.Infrastructure.DAL
             modelBuilder
                 .Entity<RoleDbo>()
                 .HasKey(x =>
-                new {
-                    UserId = x.UserId,
-                    Role = x.Role,
-                });
-            
+                    new
+                    {
+                        UserId = x.UserId,
+                        Role = x.Role,
+                    });
+
             modelBuilder.Entity<UserDbo>()
                 .HasMany(x => x.Roles)
                 .WithOne()
                 .HasForeignKey(x => x.UserId);
-            
+
             modelBuilder.Entity<UserDbo>()
                 .HasOne(x => x.BasicAuthInfo)
                 .WithOne()
@@ -62,7 +65,7 @@ namespace IceCreamLogistics.Infrastructure.DAL
             modelBuilder.Entity<OrderItemDbo>()
                 .HasOne(x => x.Recipe)
                 .WithMany()
-                .HasForeignKey(x=> x.RecipeId);
+                .HasForeignKey(x => x.RecipeId);
 
             modelBuilder.Entity<AddressDbo>();
 
@@ -70,7 +73,7 @@ namespace IceCreamLogistics.Infrastructure.DAL
                 .HasOne(x => x.Address)
                 .WithOne()
                 .HasForeignKey<ClientDbo>(x => x.AddressId);
-            
+
             modelBuilder.Entity<OrderDbo>()
                 .HasMany(x => x.Items)
                 .WithOne()
@@ -85,7 +88,7 @@ namespace IceCreamLogistics.Infrastructure.DAL
                 .HasOne(x => x.Order)
                 .WithMany()
                 .HasForeignKey(x => x.OrderId);
-            
+
             modelBuilder.Entity<MixingMemberDbo>()
                 .HasMany(x => x.Items)
                 .WithOne()
@@ -105,12 +108,35 @@ namespace IceCreamLogistics.Infrastructure.DAL
                 .HasOne(x => x.Ingredient)
                 .WithMany()
                 .HasForeignKey(x => x.IngredientId);
-            
+
             modelBuilder.Entity<IngredientDbo>()
                 .HasMany<InventoryChangeDbo>()
                 .WithOne()
                 .HasForeignKey(x => x.IngredientId);
+            modelBuilder.Entity<UserDbo>()
+                .HasData(new UserDbo
+                {
+                    Id = 1,
+                    Email = "admin",
+                    IsActive = true,
+                    Name = "admin",
+                });
             
+            modelBuilder.Entity<BasicAuthInfoDbo>()
+                .HasData(new BasicAuthInfoDbo()
+                {
+                    UserId = 1,
+                    PasswordHash = HashingService.CalculateHash("admin", "asd123"),
+                    Salt = "asd123"
+                });
+
+            modelBuilder.Entity<RoleDbo>()
+                .HasData(new RoleDbo()
+                    {
+                        Role = Role.Admin,
+                        UserId = 1
+                    }
+                );
         }
     }
 }

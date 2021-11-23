@@ -1,6 +1,7 @@
 ﻿using IceCreamLogistics.Application.Manufacturing;
 using IceCreamLogistics.Application.Mixing;
 using IceCreamLogistics.Application.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IceCreamLogistics.Application
@@ -16,6 +17,8 @@ namespace IceCreamLogistics.Application
             services.AddTransient<IMixingService, MixingService>();
             services.AddTransient<IIngredientService, IngredientService>();
             services.AddTransient<IMixingInventoryCheckService, MixingInventoryCheckService>();
+            services.AddHttpContextAccessor();
+            services.AddTransient<IUserService, UserService>();
         }
 
     }

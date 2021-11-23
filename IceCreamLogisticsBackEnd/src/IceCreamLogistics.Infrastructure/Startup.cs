@@ -29,7 +29,8 @@ namespace IceCreamLogistics.Infrastructure
 
             services.AddTransient<IHashingService, HashingService>();
             services.AddTransient<IUserTokenService, JwtTokenService>();
-
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ICurrentUserService, JwtTokenService>();
             services.AddDbContext<IceCreamLogisticsDbContext>();
 
         }
