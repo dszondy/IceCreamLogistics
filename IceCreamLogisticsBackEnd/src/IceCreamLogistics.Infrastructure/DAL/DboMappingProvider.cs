@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Security.Claims;
+using IceCreamLogistics.Application;
 using IceCreamLogistics.Domain;
 using IceCreamLogistics.Domain.Security;
 using IceCreamLogistics.Infrastructure.DAL.DBOs;
@@ -68,6 +69,13 @@ namespace IceCreamLogistics.Infrastructure.DAL
                     MeasurementUnit = x.Ingredient.MeasurementUnit
                 })));
             return config;
+        }
+        internal static IQueryable<T> ApplyLazyLoading<T>(this IQueryable<T> queryable,
+            LazyLoadingParams lazyLoadingParams)
+        {
+            return queryable
+                .Skip(lazyLoadingParams.Offset)
+                .Take(lazyLoadingParams.Count + 1);
         }
     }
 }

@@ -30,9 +30,9 @@ namespace IceCreamLogistics.Application.Security
         private IUserTokenService UserTokenService { get; }
         private readonly RandomNumberGenerator _rng;
 
-        public async Task<string> AuthenticateUser(string email, string password)
+        public async Task<string> AuthenticateUser(string name, string password)
         {
-            var user = await UserRepository.GetUserByEmail(email.ToLower());
+            var user = await UserRepository.GetUserByName(name.ToLower());
             if (user is null)
                 return null;
                 var authInfo = await AuthRepository.GetAuthInfo(user.Id);

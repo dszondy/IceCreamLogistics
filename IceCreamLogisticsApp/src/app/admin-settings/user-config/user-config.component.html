@@ -6,6 +6,12 @@
           <fa-icon icon="times" style="font-size:20px"></fa-icon>
         </button>
       </div>
+      <div class="d-flex justify-content-between align-items-center pb-2">
+        <div class="form-group w-100">
+          <label for="email">Email: </label>
+          <input [(ngModel)]="selectedItemDetails.email" class="form-control" id="email" type="text">
+        </div>
+      </div>
       <tabset>
         <tab heading="Megrendelő" class="mt-2" (selectTab)="onSetToClient(true)">
           <app-client-select [(selectedClient)]="selectedItemDetails.client"></app-client-select>

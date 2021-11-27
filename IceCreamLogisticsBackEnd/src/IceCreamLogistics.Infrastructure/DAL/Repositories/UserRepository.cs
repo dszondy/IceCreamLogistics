@@ -30,11 +30,11 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .AdaptToType<User>();
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<User> GetUserByName(string name)
         {
             var user = await DbContext.Users
                 .Include(x => x.Roles)
-                .FirstOrDefaultAsync(x => x.Email == email);
+                .FirstOrDefaultAsync(x => x.Name == name);
             return  DboMappingProvider.Mapper
                 .From(user)
                 .AdaptToType<User>();

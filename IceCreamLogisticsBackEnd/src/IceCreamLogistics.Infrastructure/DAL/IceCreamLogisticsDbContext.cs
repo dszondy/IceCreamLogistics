@@ -33,7 +33,6 @@ namespace IceCreamLogistics.Infrastructure.DAL
         
         public DbSet<RecipeIngredientDbo> RecipeIngredients { get; set; }
         public DbSet<IngredientDbo> Ingredients { get; set; }
-        public DbSet<InventoryChangeDbo> InventoryChanges { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -108,11 +107,7 @@ namespace IceCreamLogistics.Infrastructure.DAL
                 .HasOne(x => x.Ingredient)
                 .WithMany()
                 .HasForeignKey(x => x.IngredientId);
-
-            modelBuilder.Entity<IngredientDbo>()
-                .HasMany<InventoryChangeDbo>()
-                .WithOne()
-                .HasForeignKey(x => x.IngredientId);
+            
             modelBuilder.Entity<UserDbo>()
                 .HasData(new UserDbo
                 {

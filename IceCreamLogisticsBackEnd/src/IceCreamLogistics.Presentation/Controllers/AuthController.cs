@@ -22,7 +22,7 @@ namespace IceCreamLogistics.Presentation.Controllers
         [HttpPost]    
         public async Task<ActionResult<string>> Login([FromBody] LoginDto loginDto)
         {
-            var token = await AuthService.AuthenticateUser(loginDto.Email, loginDto.Password);
+            var token = await AuthService.AuthenticateUser(loginDto.Name, loginDto.Password);
             if (token is not null)
             {
                 return Ok(token);

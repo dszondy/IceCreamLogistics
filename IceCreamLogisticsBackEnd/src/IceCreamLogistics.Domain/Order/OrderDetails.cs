@@ -19,6 +19,7 @@ public class OrderDetailsItem
     public decimal Amount { get; set; }
     public decimal SelectedMixingAmount { get; set; }
     public decimal MixedAmount { get; set; }
+    public decimal CancelledAmount { get; set; }
 }
 
 public class AssociatedBatch

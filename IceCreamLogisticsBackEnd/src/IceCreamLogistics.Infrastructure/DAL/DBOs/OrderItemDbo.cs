@@ -13,6 +13,8 @@ namespace IceCreamLogistics.Infrastructure.DAL.DBOs
         public RecipeDbo Recipe { get; set; }
         public decimal Amount { get; set; }
         public decimal SelectedMixingAmount { get; set; }
+        public decimal CancelledMixingAmount { get; set; }
+
         public decimal MixedAmount { get; set; }
 
 

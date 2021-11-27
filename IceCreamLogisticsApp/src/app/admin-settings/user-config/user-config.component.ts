@@ -139,6 +139,6 @@ export class UserConfigComponent implements OnInit {
   }
 
   hasRole(role: Role): boolean {
-    return this.selectedItemDetails?.roles.includes(role);
+    return this.selectedItemDetails.roles?.includes(role);
   }
 }

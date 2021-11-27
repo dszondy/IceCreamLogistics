@@ -11,7 +11,7 @@ import {AuthClient} from '../../../api/api';
 export class LoginModalComponent {
 
   loginForm = this.fb.group({
-    email: ['', Validators.required],
+    name: ['', Validators.required],
     password: ['', Validators.required]
     });
   constructor(private fb: FormBuilder, private authService: AuthService, private authClient: AuthClient) {

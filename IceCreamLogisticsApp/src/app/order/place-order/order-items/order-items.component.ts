@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {OrderItem, Recipe, RecipeClient} from 'src/app/core/api/api';
+import {OrderItem, Recipe, RecipeClient, RecipeDto} from 'src/app/core/api/api';
 import {Observable, Subscriber} from 'rxjs';
 import {TypeaheadMatch} from 'ngx-bootstrap/typeahead';
 import {map, mergeMap} from 'rxjs/operators';
@@ -18,8 +18,13 @@ export class OrderItemsComponent implements OnInit {
   @Output()
   orderItemsChange = new EventEmitter<OrderItem[]>();
   orderItems: OrderItem[] = [];
-  recipes: Observable<Recipe[]>;
-
+  recipes: Observable<RecipeDto[]>;
+  get totalPrice(): number{
+    return this.orderItems.reduce((acc, cur) => acc + cur.amount * cur.recipe.pricePerUnit, 0);
+  }
+  get totalAmount(): number {
+    return this.orderItems.reduce((acc, cur) => acc + cur.amount, 0);
+  }
   constructor(private recipeClient: RecipeClient) {
     this.recipes = new Observable((observer: Subscriber<string>) => {
       observer.next(this.asyncRecipeName);
@@ -56,7 +61,7 @@ export class OrderItemsComponent implements OnInit {
     this.orderItemsChange.emit(this.orderItems);
   }
 
-  private getRecipesAsObservable(token: string): Observable<Recipe[]> {
+  private getRecipesAsObservable(token: string): Observable<RecipeDto[]> {
     return this.recipeClient.list(0, 10, token)
       .pipe(map(x => x.content));
   }
