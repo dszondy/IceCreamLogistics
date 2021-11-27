@@ -3535,9 +3535,10 @@ export interface IUserSecurityInfoDto {
 export enum Role {
     Admin = 0,
     Order = 1,
-    Production = 2,
+    Manufacturing = 2,
     Delivery = 3,
     Dashboard = 4,
+    Configuration = 5,
 }
 
 export class UserCreateDto implements IUserCreateDto {

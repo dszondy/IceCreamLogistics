@@ -18,12 +18,6 @@ export class TokenInterceptor implements HttpInterceptor {
       }
     });
     const handle = next.handle(request);
-    handle.subscribe(_ => {
-    }, err => {
-      if (err.status === 401) {
-        this.auth.Logout();
-      }
-    });
     return handle;
   }
 }

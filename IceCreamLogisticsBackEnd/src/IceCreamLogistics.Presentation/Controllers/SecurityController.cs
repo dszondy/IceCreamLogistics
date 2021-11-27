@@ -37,7 +37,7 @@ namespace IceCreamLogistics.Presentation.Controllers
         public async Task<ActionResult<UserSecurityInfoDto>> Update([FromBody] UserCreateDto userDto, [FromRoute] int id){
             var result = await _userService.Update(id, userDto.MapTo<UserCreate>());
             return Ok(result.MapTo<UserSecurityInfoDto>());
-        }   
+        }       
         
         [HttpPost]
         [Route("{id}/password")]

@@ -51,16 +51,26 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 
         public async Task<User> Update(int id, UserCreate user)
         {
-            var dbo = await DbContext.Users.Include(x =>x.Roles).FirstOrDefaultAsync(x => x.Id == id);
+            var dbo = await DbContext.Users
+                .Include(x =>x.Roles)
+                .FirstOrDefaultAsync(x => x.Id == id);
             dbo.Email = user.Email;
-            dbo.Roles = user.Roles
-                .Select(x => new RoleDbo()
-                {
-                    UserId = id,
-                    Role = x
-                }).ToArray();
+            dbo.Roles.Clear();
+            if (user.Roles is not null)
+            {
+                user.Roles
+                    .Select(x => new RoleDbo()
+                        {
+                            UserId = id,
+                            Role = x
+                        })
+                    .ToList()
+                    .ForEach(x => dbo.Roles.Add(x));
+            }
+
             await DbContext.SaveChangesAsync();
-            return await GetUserById(dbo.Id);        }
+            return await GetUserById(dbo.Id);       
+        }
 
         public async Task<IEnumerable<UserShallow>> Search(string search, LazyLoadingParams lazyLoadingParams)
         {

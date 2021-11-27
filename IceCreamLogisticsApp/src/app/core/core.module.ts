@@ -11,10 +11,11 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {RouterModule} from "@angular/router";
 import {TokenInterceptor} from './security/token-interceptor';
+import { PasswordChangeModalComponent } from './security/password-change-modal/password-change-modal.component';
 
 
 @NgModule({
-  declarations: [LoginComponent, LoginModalComponent, NavbarComponent],
+  declarations: [LoginComponent, LoginModalComponent, NavbarComponent, PasswordChangeModalComponent],
   exports: [
     LoginComponent,
     NavbarComponent

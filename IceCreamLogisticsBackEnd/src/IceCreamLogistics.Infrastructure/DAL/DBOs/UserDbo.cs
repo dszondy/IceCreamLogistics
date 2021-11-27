@@ -9,10 +9,8 @@ namespace IceCreamLogistics.Infrastructure.DAL.DBOs
         [Key]
         public int Id { get; set; }
     
-        [EmailAddress]
         public string Email { get; set; }
     
-        [MaxLength(127)]
         public string Name { get; set; }
     
 

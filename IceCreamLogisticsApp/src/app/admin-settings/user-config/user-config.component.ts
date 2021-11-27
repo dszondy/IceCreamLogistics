@@ -1,10 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {BehaviorSubject, Observable, of} from 'rxjs';
-import {
-  SecurityClient, UserCreateDto,
-  UserSecurityInfoDto, UserShallowDto
-} from '../../core/api/api';
+import {Role, SecurityClient, UserCreateDto, UserSecurityInfoDto, UserShallowDto} from '../../core/api/api';
 import {map, mergeMap, scan, switchMap, tap, throttleTime} from 'rxjs/operators';
 
 @Component({
@@ -13,6 +10,14 @@ import {map, mergeMap, scan, switchMap, tap, throttleTime} from 'rxjs/operators'
   styleUrls: ['./user-config.component.css']
 })
 export class UserConfigComponent implements OnInit {
+  roles = new Map<Role, string>([
+    [Role.Admin, 'Admin'],
+    [Role.Order, 'Megrendelés'],
+    [Role.Manufacturing, 'Gyártás'],
+    [Role.Delivery, 'Kiszállíás'],
+    [Role.Configuration, 'Konfigurácio'],
+  ]);
+  roleTypes = [...this.roles.keys()];
 
   @ViewChild(CdkVirtualScrollViewport)
   viewport: CdkVirtualScrollViewport;
@@ -116,9 +121,24 @@ export class UserConfigComponent implements OnInit {
     this.items = batchMap.pipe();
   }
 
-  onSetToClient(isClient: boolean) {
-    if(!isClient) {
+  onSetToClient(isClient: boolean): void   {
+    if (!isClient) {
       this.selectedItemDetails.client = null;
     }
+  }
+
+  setRole(role: Role, $event: any): void {
+    if(!this.selectedItemDetails.roles)
+      this.selectedItemDetails.roles = [];
+    if ($event){
+      this.selectedItemDetails.roles.splice(this.selectedItemDetails.roles.indexOf(role), 1);
+    }
+    else {
+      this.selectedItemDetails.roles.push(role);
+    }
+  }
+
+  hasRole(role: Role): boolean {
+    return this.selectedItemDetails?.roles.includes(role);
   }
 }

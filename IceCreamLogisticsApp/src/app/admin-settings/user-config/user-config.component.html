@@ -11,10 +11,15 @@
           <app-client-select [(selectedClient)]="selectedItemDetails.client"></app-client-select>
         </tab>
         <tab heading="Belső felhasználó" class="mt-2" (selectTab)="onSetToClient(false)">
-          <h4>Title 2</h4>
-          <p>It has survived not only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages</p>
+          <h4>Jogosultságok:</h4>
+          <div class="form-check" *ngFor="let role of roleTypes">
+            <div>
+              <input class="form-check-input p-2 bg-light" type="checkbox" id="role-{{role}}"
+                     [ngModel]="hasRole(role)"
+                     (ngModelChange)="setRole(role, $event)">
+              <label class="form-check-label ml-2" for="role-{{role}}">{{roles.get(role)}}</label>
+            </div>
+          </div>
         </tab>
       </tabset>
     </div>

@@ -7,7 +7,6 @@ namespace IceCreamLogistics.Domain
 {
     public class User
     {
-        [Key]
         public int Id { get; set; }
         
         public string Email { get; init; }
