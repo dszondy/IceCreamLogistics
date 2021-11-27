@@ -2,6 +2,6 @@
 {
     public interface IHashingService
     {
-        string CalculateHash(string value);
+        string CalculateHash(string password, string salt);
     }
 }

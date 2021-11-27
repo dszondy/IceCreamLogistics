@@ -3,31 +3,41 @@ import {CommonModule} from '@angular/common';
 import {LoginComponent} from './security/login/login.component';
 import {ModalModule} from 'ngx-bootstrap/modal';
 import {LoginModalComponent} from './security/login/login-modal/login-modal.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NavbarComponent} from './components/navbar/navbar.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {RouterModule} from "@angular/router";
+import {TokenInterceptor} from './security/token-interceptor';
+import { PasswordChangeModalComponent } from './security/password-change-modal/password-change-modal.component';
 
 
 @NgModule({
-  declarations: [LoginComponent, LoginModalComponent, NavbarComponent],
+  declarations: [LoginComponent, LoginModalComponent, NavbarComponent, PasswordChangeModalComponent],
   exports: [
     LoginComponent,
     NavbarComponent
   ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    BsDropdownModule,
-    ModalModule.forRoot(),
-    FontAwesomeModule,
-    RouterModule,
-    ModalModule.forRoot(),
+    imports: [
+        CommonModule,
+        FormsModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        BsDropdownModule,
+        ModalModule.forRoot(),
+        FontAwesomeModule,
+        RouterModule,
+        ModalModule.forRoot(),
+        ReactiveFormsModule,
+    ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ]
 })
 export class CoreModule {

@@ -39,9 +39,13 @@ export class MixingComponent implements OnInit {
             recipeId: item.recipe.id,
             recipeName: item.recipe.name,
             amount: 0,
+            completedAmount: 0,
             completed: false,
           });
-          itemMap.get(item.recipe.id).amount += item.amount;
+          const mapItem = itemMap.get(item.recipe.id);
+          mapItem.amount += item.amount;
+          mapItem.completedAmount += item.completedAmount;
+          mapItem.completed = item.completedAmount === mapItem.amount;
         }
       });
     });
@@ -62,7 +66,7 @@ export class MixingComponent implements OnInit {
         .map(member => new MixingBatchCreateMemberDto({
           orderId: member.order.id,
           items: member.items.map(item => new MixingBatchCreateItemDto({
-            amount: item.amount,
+            amount: this.items.find(x => x.recipeId === item.recipe.id).completed ? item.amount : 0,
             recipeId: item.recipe.id
           }))
         }))

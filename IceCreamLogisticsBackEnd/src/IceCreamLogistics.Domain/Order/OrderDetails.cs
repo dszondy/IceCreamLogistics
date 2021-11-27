@@ -5,7 +5,7 @@ using IceCreamLogistics.Domain;
 public class OrderDetails
 {
     public int Id { get; set; }
-    public IEnumerable<OrderItem> Items { get; set; }
+    public IEnumerable<OrderDetailsItem> Items { get; set; }
     public Client Client { get; set; }
     public DateTime OrderCreated { get; set; }
     public DateTime RequestedDate { get; set; }
@@ -19,6 +19,7 @@ public class OrderDetailsItem
     public decimal Amount { get; set; }
     public decimal SelectedMixingAmount { get; set; }
     public decimal MixedAmount { get; set; }
+    public decimal CancelledAmount { get; set; }
 }
 
 public class AssociatedBatch

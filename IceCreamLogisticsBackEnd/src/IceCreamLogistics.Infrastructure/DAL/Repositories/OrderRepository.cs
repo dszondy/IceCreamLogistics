@@ -57,10 +57,11 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Recipe)
                 .Include(x => x.Client)
-                .Where(x => x.OrderState == OrderState.Active || x.OrderState == OrderState.ReadyForDelivery);
+                //.Where(x => x.OrderState == OrderState.Active || x.OrderState == OrderState.ReadyForDelivery)
+                ;
 
             if (searchParams.From is not null)
-                orders = orders.Where(x => x.RequestedDate >= searchParams.From);
+                orders = orders.Where(x => x.RequestedDate >= searchParams.From);   
             
             if (searchParams.To is not null)
                 orders = orders.Where(x => x.RequestedDate >= searchParams.To);     
@@ -95,6 +96,21 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
             return DboMappingProvider.Mapper
                 .From(orderDbo)
                 .AdaptToType<Order>();  
+        }
+
+        public async Task<OrderDetails> GetDetailed(int orderId)
+        {
+            var orderDbo = await DbContext.Orders
+                .Include(x => x.Items)
+                .ThenInclude(x => x.Recipe)
+                .Include(x => x.Client)
+                .ThenInclude(x => x.Address)
+                .FirstAsync(x => x.Id == orderId);
+                
+            
+            return DboMappingProvider.Mapper
+                .From(orderDbo)
+                .AdaptToType<OrderDetails>();
         }
     }
 }

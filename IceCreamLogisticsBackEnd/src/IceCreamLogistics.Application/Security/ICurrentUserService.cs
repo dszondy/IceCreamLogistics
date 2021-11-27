@@ -4,7 +4,7 @@ using IceCreamLogistics.Domain.Security;
 
 namespace IceCreamLogistics.Application.Security
 {
-    public interface ISecurityService
+    public interface ICurrentUserService
     {
         Task<int> GetUserId();
         
@@ -12,6 +12,5 @@ namespace IceCreamLogistics.Application.Security
         Task<bool> HasRole(Role role);
         
         Task<int> GetClientId();
-        Task<Client> GetClientOwned();
     }
 }

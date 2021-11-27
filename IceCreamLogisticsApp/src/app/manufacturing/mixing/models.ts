@@ -3,4 +3,5 @@ export interface MixingItem {
   recipeId: number;
   amount: number;
   completed: boolean;
+  completedAmount: number;
 }

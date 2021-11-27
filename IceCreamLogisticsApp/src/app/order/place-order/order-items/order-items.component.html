@@ -1,6 +1,6 @@
 <div class="card">
   <div class="container row align-items-center">
-    <div class="col-lg-8 p-2">
+    <div class="col-lg-6 p-2">
       <label class="form-label" for="client">Recept: </label>
       <input (typeaheadOnSelect)="onRecipeSelected($event)"
              [(ngModel)]="asyncRecipeName"
@@ -12,7 +12,7 @@
              placeholder="Keresés..."
              typeaheadOptionField="name">
     </div>
-    <div class="col-lg-3 col-11 p-2">
+    <div class="col-lg-3 col-5 p-2">
       <label class="form-label" for="amount">Mennyiség: </label>
       <input [(ngModel)]="amount"
              [min]="0"
@@ -20,7 +20,10 @@
              id="amount"
              type="number">
     </div>
-    <div class="col-1 p-2">
+    <div class="col-lg-2 col-5 p-2">
+      {{recipeSelected ? recipeSelected.pricePerUnit * amount + ' Ft' : '' }}
+    </div>
+    <div class="col-lg-1 col-2 p-2">
       <button (click)="addItem()" [disabled]="!(recipeSelected && amount)" class="btn btn-primary" type="button">
         <fa-icon icon="plus"></fa-icon>
       </button>
@@ -29,12 +32,24 @@
 
   <hr>
   <div *ngFor="let orderItem of orderItems" class="container row align-items-center">
-    <div class="col-lg-8 col-6 p-2 pl-4 text-greater">{{orderItem.recipe.name}}</div>
+    <div class="col-lg-6 col-12 pl-4 text-greater">{{orderItem.recipe.name}}</div>
 
-    <div class="col-lg-3 col-4 p-2  pl-4 text-greater">{{orderItem.amount}} {{measurement}}</div>
-    <div class="col-lg-1 col-2 p-2">
+    <div class="col-lg-3 col-5  pl-4 text-greater">{{orderItem.amount}} {{measurement}}</div>
+    <div class="col-lg-2 col-5">
+      {{orderItem.recipe.pricePerUnit * orderItem.amount }} Ft
+    </div>
+    <div class="col-lg-1 col-2">
       <button (click)="removeItem(orderItem)" class="btn btn-dark" type="button">
         <fa-icon icon="trash"></fa-icon>
       </button>
     </div>
   </div>
+  <hr>
+  <div class="container row align-items-center">
+    <div class="col-lg-6 col-12 pl-4 text-greater">Összesen:</div>
+    <div class="col-lg-3 col-5   pl-4 text-greater">{{totalAmount}} {{measurement}}</div>
+    <div class="col-lg-2 col-5">
+      {{totalPrice}} Ft
+    </div>
+  </div>
+</div>

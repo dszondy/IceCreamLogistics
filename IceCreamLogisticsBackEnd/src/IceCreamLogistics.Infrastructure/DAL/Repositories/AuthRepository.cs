@@ -23,7 +23,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
             await DbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateAuthInfo(BasicAuthInfo authInfo)
+        public async Task UpsertAuthInfo(BasicAuthInfo authInfo)
         {
             var authInfoDbo = await GetAuthInfosByUserIdQuery( authInfo.UserId).FirstAsync();
             authInfoDbo.PasswordHash = authInfo.PasswordHash;

@@ -1,7 +1,7 @@
-import {Routes} from "@angular/router";
-import {PlaceOrderComponent} from "./place-order/place-order.component";
-import {ListOrdersComponent} from "./list-orders/list-orders.component";
-import {ViewOrderComponent} from "./view-order/view-order.component";
+import {Routes} from '@angular/router';
+import {PlaceOrderComponent} from './place-order/place-order.component';
+import {ListOrdersComponent} from './list-orders/list-orders.component';
+import {OrderDetailsComponent} from './order-details/order-details.component';
 
 export const routes: Routes = [
   {
@@ -14,5 +14,5 @@ export const routes: Routes = [
   },
   {
     path: ':id',
-    component: ViewOrderComponent
+    component: OrderDetailsComponent
   }];

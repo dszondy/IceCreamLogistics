@@ -1,0 +1,49 @@
+<div *ngIf="order">
+  <div class="d-flex justify-content-between">
+    <h2>{{order.client.name}}</h2>
+    <button (click)="cancelOrder()" class="btn btn-danger" *ngIf="order.orderState == 1">Lemondás</button>
+  </div>
+  <h6>{{order.requestedDate | date:'yyyy-MM-dd'}}</h6>
+  <div class="col">
+    <div>
+    Tartalom:
+    <button class="btn btn-light float-right"
+            printTitle="cimkek"
+            printSectionId="printModal"
+            ngxPrint>
+      <fa-icon icon="print" ></fa-icon></button>
+    </div>
+    <div class="row align-items-center">
+      <div class="col-6 p-2 pl-4 text-greater">Recept</div>
+      <div class=" col-3 p-2  pl-4 text-greater">Rendelés</div>
+      <div class=" col-3 p-2  pl-4 text-greater">Elkészült</div>
+    </div>
+    <div *ngFor="let orderItem of order.items" class="row align-items-center">
+      <div class="col-6 p-2 pl-4 text-greater">{{orderItem.recipe.name}}</div>
+      <div class=" col-3 p-2  pl-4 text-greater">{{orderItem.amount}} adag</div>
+      <div class=" col-3 p-2  pl-4 text-greater">{{orderItem.mixedAmount}} adag</div>
+    </div>
+  </div>
+  <div>
+    Kapcsolódó keverések:
+    <div *ngFor="let batch of order.associatedBatches">
+      <div class="row align-items-center">
+        <div class="col-6 p-2 pl-4 text-greater"><a [routerLink]="'/manufacturing/batch/'+batch.mixingBatchId">{{batch.name}}({{batch.created | date:'yyyy-MM-dd'}})</a></div>
+        <div class=" col-3 p-2  pl-4 text-greater">{{batch.batchCompleted}} adag</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div style="height: 0; overflow: hidden">
+  <div #printModal id="printModal">
+    <div class="modal-header"></div>
+    <div class="modal-body">
+      <app-print-labels [order]="order" (printChange)="print=undefined"></app-print-labels>
+    </div>
+  </div>
+</div>

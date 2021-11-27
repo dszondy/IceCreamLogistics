@@ -4,7 +4,9 @@
     {
         Admin,
         Order,
-        Production,
-        Delivery
+        Manufacturing,
+        Delivery,
+        Dashboard,
+        Configuration
     }
 }

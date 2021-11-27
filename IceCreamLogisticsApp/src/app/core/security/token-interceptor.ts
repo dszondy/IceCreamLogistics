@@ -14,16 +14,10 @@ export class TokenInterceptor implements HttpInterceptor {
 
     request = request.clone({
       setHeaders: {
-        Authorization: `Bearer ${this.auth.getToken()}`
+        Authorization   : `Bearer ${this.auth.getToken()}`
       }
     });
     const handle = next.handle(request);
-    handle.subscribe(_ => {
-    }, err => {
-      if (err.status === 401) {
-        this.auth.Logout();
-      }
-    });
     return handle;
   }
 }

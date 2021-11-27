@@ -12,16 +12,20 @@ import {HttpClientModule} from "@angular/common/http";
 import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 import {ModalModule} from "ngx-bootstrap/modal";
 import {YesNoCheckComponent} from './components/yes-no-check/yes-no-check.component';
+import {SelectOrdersComponent} from '../manufacturing/create-mixing-batch/select-orders/select-orders.component';
+import {ClientSelectComponent} from './components/client-select/client-select.component';
+import {TypeaheadModule} from 'ngx-bootstrap/typeahead';
 
 
 @NgModule({
-  declarations: [ClientDetailsComponent, TreeListComponent, TreeNodeComponent, AddCheckComponent, YesNoCheckComponent],
+  declarations: [ClientDetailsComponent, TreeListComponent, TreeNodeComponent, AddCheckComponent, YesNoCheckComponent, ClientSelectComponent],
   exports: [
     ClientDetailsComponent,
     TreeListComponent,
     TreeNodeComponent,
     AddCheckComponent,
-    YesNoCheckComponent
+    YesNoCheckComponent,
+    ClientSelectComponent
   ],
   imports: [
     CommonModule,
@@ -32,6 +36,7 @@ import {YesNoCheckComponent} from './components/yes-no-check/yes-no-check.compon
     HttpClientModule,
     BsDropdownModule,
     ModalModule.forRoot(),
+    TypeaheadModule,
   ]
 })
 export class SharedModule {

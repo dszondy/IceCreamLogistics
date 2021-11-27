@@ -48,7 +48,7 @@ namespace IceCreamLogistics.Application
         public async Task<OrderDetails> Get(int orderId)
         {
             var batches = await _mixingRepository.GetAssociatedBatches(orderId);
-            var order = await _orderRepository.Get(orderId);
+            var order = await _orderRepository.GetDetailed(orderId);
             return new OrderDetails()
             {
                 AssociatedBatches = batches,

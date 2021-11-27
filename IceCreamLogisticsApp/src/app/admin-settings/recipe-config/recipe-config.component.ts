@@ -71,6 +71,8 @@ export class RecipeConfigComponent implements OnInit {
 
   add(): void {
     this.selectedItemDetails = new RecipeDetailsDto({
+      descriptionForLabels: '',
+      pricePerUnit: 0,
       name: this.searchText,
       id: undefined,
       canBeOrdered: true,
@@ -78,12 +80,14 @@ export class RecipeConfigComponent implements OnInit {
     });
   }
 
-  close(): Observable<Recipe> {
+  close(): Observable<RecipeDetailsDto> {
     if (this.selectedItemDetails) {
       const recipe = new RecipeCreateDto({
         id: this.selectedItemDetails.id,
         name: this.selectedItemDetails.name,
         canBeOrdered: this.selectedItemDetails.canBeOrdered,
+        descriptionForLabels: this.selectedItemDetails.descriptionForLabels,
+        pricePerUnit: this.selectedItemDetails.pricePerUnit,
         ingredients: [...this.selectedItemDetails.ingredients.map(
           ingredient => new RecipeCreateIngredientDto({
             ingredientId: ingredient.ingredientId,

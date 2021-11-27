@@ -5,9 +5,7 @@ namespace IceCreamLogistics.Application.Security
 {
     public interface IAuthRepository
     {
-        Task CreateAuthInfo(BasicAuthInfo authInfo);
-        
-        Task UpdateAuthInfo(BasicAuthInfo authInfo);
+        Task UpsertAuthInfo(BasicAuthInfo authInfo);
         
         Task<BasicAuthInfo> GetAuthInfo(int userId);
     }

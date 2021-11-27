@@ -7,11 +7,16 @@ namespace IceCreamLogistics.Infrastructure.Security
 {
     public class HashingService: IHashingService
     {
-        private static readonly MD5 Md5 = MD5.Create();
-        public string CalculateHash(string value)
+        private static readonly SHA512 Hasher = SHA512.Create();
+        public static string CalculateHash(string password, string salt)
         {
-            return Convert.ToBase64String(Md5.ComputeHash(Encoding.Unicode.GetBytes(value)));
+            return Convert.ToBase64String(Hasher.ComputeHash(Encoding.Unicode.GetBytes(password+salt)));
 
+        }
+
+        string IHashingService.CalculateHash(string password, string salt)
+        {
+            return CalculateHash(password, salt);
         }
     }
 }

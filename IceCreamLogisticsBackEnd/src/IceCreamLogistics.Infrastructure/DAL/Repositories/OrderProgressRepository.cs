@@ -46,7 +46,9 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         {
             var orders = await DbContext.Orders
                 .Include(x => x.Items)
-                .Where(x => members.Select(member => member.OrderId).Contains(x.Id)).ToArrayAsync();
+                .Where(x => members.Select(member => member.OrderId)
+                    .Contains(x.Id))
+                .ToArrayAsync();
                 
             var items =  orders.SelectMany(x => x.Items);
 
@@ -72,7 +74,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .Include(x => x.Items).ThenInclude(x => x.Recipe)
                 .Include(x => x.Client)
                 .Where(x => x.OrderState == OrderState.Active)
-                .Where(x => x.Items.Sum(item => item.Amount - item.SelectedMixingAmount) > 0);
+                .Where(x => x.Items.Sum(item => item.Amount - item.SelectedMixingAmount - item.CancelledMixingAmount) > 0);
 
             if (searchParams.From is not null)
                 orders = orders.Where(x => x.RequestedDate >= searchParams.From);
