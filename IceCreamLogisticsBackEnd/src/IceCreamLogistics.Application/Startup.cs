@@ -1,4 +1,5 @@
-﻿using IceCreamLogistics.Application.Manufacturing;
+﻿using IceCreamLogistics.Application.Delivery;
+using IceCreamLogistics.Application.Manufacturing;
 using IceCreamLogistics.Application.Mixing;
 using IceCreamLogistics.Application.Security;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +20,7 @@ namespace IceCreamLogistics.Application
             services.AddTransient<IMixingInventoryCheckService, MixingInventoryCheckService>();
             services.AddHttpContextAccessor();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IDeliveryService, DeliveryService>();
         }
 
     }

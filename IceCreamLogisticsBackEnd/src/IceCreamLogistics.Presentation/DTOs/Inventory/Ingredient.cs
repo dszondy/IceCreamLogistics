@@ -1,4 +1,4 @@
-﻿namespace IceCreamLogistics.Domain
+﻿namespace IceCreamLogistics.Presentation.DTOs
 {
     public class IngredientDto  
     {

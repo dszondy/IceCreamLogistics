@@ -5,8 +5,7 @@
   </div>
   <h6>{{order.requestedDate | date:'yyyy-MM-dd'}}</h6>
   <div class="col">
-    <div>
-    Tartalom:
+    <div class="d-flex justify-content-end align-items-center">
     <button class="btn btn-light float-right"
             printTitle="cimkek"
             printSectionId="printModal"
@@ -14,14 +13,16 @@
       <fa-icon icon="print" ></fa-icon></button>
     </div>
     <div class="row align-items-center">
-      <div class="col-6 p-2 pl-4 text-greater">Recept</div>
-      <div class=" col-3 p-2  pl-4 text-greater">Rendelés</div>
-      <div class=" col-3 p-2  pl-4 text-greater">Elkészült</div>
+      <div class="col-6 p-2   text-greater">Recept</div>
+      <div class=" col-2 p-2  text-greater">Rendelés</div>
+      <div class=" col-2 p-2  text-greater">Törölve</div>
+      <div class=" col-2 p-2  text-greater">Elkészült</div>
     </div>
     <div *ngFor="let orderItem of order.items" class="row align-items-center">
-      <div class="col-6 p-2 pl-4 text-greater">{{orderItem.recipe.name}}</div>
-      <div class=" col-3 p-2  pl-4 text-greater">{{orderItem.amount}} adag</div>
-      <div class=" col-3 p-2  pl-4 text-greater">{{orderItem.mixedAmount}} adag</div>
+      <div class="col-6 p-2   text-greater">{{orderItem.recipe.name}}</div>
+      <div class=" col-2 p-2  text-greater">{{orderItem.amount}} adag</div>
+      <div class=" col-2 p-2  text-greater">{{orderItem.cancelledAmount}} adag</div>
+      <div class=" col-2 p-2  text-greater">{{orderItem.mixedAmount}} adag</div>
     </div>
   </div>
   <div>

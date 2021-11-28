@@ -67,14 +67,32 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
             await DbContext.SaveChangesAsync();
         }
 
+        public async Task RegisterCancelledAmounts(IEnumerable<OrderItemCancellation> items)
+        {
+            var orders = DbContext.Orders
+                .Include(x => x.Items)
+                .Where(x => items.Select(item => item.OrderId).Contains(x.Id));
+            
+            DbContext.OrderItemCancellations.AddRange(items.Select(x => new OrderItemCancellationDbo()
+            {
+                OrderItemId = orders
+                    .First(order => order.Id == x.OrderId)
+                    .Items
+                    .First(item => item.RecipeId == x.RecipeId)
+                    .Id,
+                Amount = x.Amount
+            }));
+        }
+
 
         public async Task<IEnumerable<OrderPart>> GetIncompleteParts(OrderSearchParams searchParams, LazyLoadingParams loadingParams)
         {
             IQueryable<OrderDbo> orders = DbContext.Orders
                 .Include(x => x.Items).ThenInclude(x => x.Recipe)
+                .Include(x =>x.Items).ThenInclude(x => x.Cancellations)
                 .Include(x => x.Client)
                 .Where(x => x.OrderState == OrderState.Active)
-                .Where(x => x.Items.Sum(item => item.Amount - item.SelectedMixingAmount - item.CancelledMixingAmount) > 0);
+                .Where(x => x.Items.Sum(item => item.Amount - item.SelectedMixingAmount - item.CancelledAmount) > 0);
 
             if (searchParams.From is not null)
                 orders = orders.Where(x => x.RequestedDate >= searchParams.From);

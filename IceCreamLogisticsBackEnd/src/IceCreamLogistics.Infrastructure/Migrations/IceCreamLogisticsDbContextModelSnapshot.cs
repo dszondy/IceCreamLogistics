@@ -100,6 +100,24 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.DeliveryDbo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Deliveries");
+                });
+
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.IngredientDbo", b =>
                 {
                     b.Property<int>("Id")
@@ -205,6 +223,9 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("DeliveryId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("OrderCreated")
                         .HasColumnType("timestamp without time zone");
 
@@ -218,7 +239,29 @@ namespace IceCreamLogistics.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("DeliveryId");
+
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderItemCancellationDbo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("OrderItemCancellations");
                 });
 
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderItemDbo", b =>
@@ -229,9 +272,6 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("CancelledMixingAmount")
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("MixedAmount")
@@ -416,7 +456,20 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.DeliveryDbo", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("DeliveryId");
+
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderItemCancellationDbo", b =>
+                {
+                    b.HasOne("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderItemDbo", null)
+                        .WithMany("Cancellations")
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderItemDbo", b =>
@@ -462,6 +515,11 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.DeliveryDbo", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.MixingBatchDbo", b =>
                 {
                     b.Navigation("Members");
@@ -475,6 +533,11 @@ namespace IceCreamLogistics.Infrastructure.Migrations
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderDbo", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.OrderItemDbo", b =>
+                {
+                    b.Navigation("Cancellations");
                 });
 
             modelBuilder.Entity("IceCreamLogistics.Infrastructure.DAL.DBOs.RecipeDbo", b =>

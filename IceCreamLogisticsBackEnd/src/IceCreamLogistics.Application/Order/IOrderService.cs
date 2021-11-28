@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using IceCreamLogistics.Domain;
+using IceCreamLogistics.Domain.Delivery;
 
 namespace IceCreamLogistics.Application
 {
@@ -14,5 +16,6 @@ namespace IceCreamLogistics.Application
             LazyLoadingParams lazyLoadingParams);
         
         Task<OrderDetails> Get(int orderId);
+        Task<IEnumerable<OrderForDelivery>> SearchForDelivery(OrderForDeliverySearchParams searchParams, LazyLoadingParams lazyLoadingParams);
     }
 }
