@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IceCreamLogistics.Application;
 using IceCreamLogistics.Domain;
+using IceCreamLogistics.Domain.Delivery;
 using IceCreamLogistics.Infrastructure.DAL.DBOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,66 +53,74 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .AdaptToType<Order>();  
         }
 
-        public async Task<IEnumerable<Order>> GetOrdersBySearch(OrderSearchParams searchParams, LazyLoadingParams loadingParams)
+        public async Task<IEnumerable<Order>> ListOrders(OrderSearchParams searchParams, LazyLoadingParams loadingParams)
         {
-            IQueryable<OrderDbo> orders = DbContext.Orders
-                .Include(x => x.Items)
-                .ThenInclude(x => x.Recipe)
-                .Include(x => x.Client)
-                //.Where(x => x.OrderState == OrderState.Active || x.OrderState == OrderState.ReadyForDelivery)
-                ;
+            IQueryable<OrderDbo> orders = GetOrdersWithDefaultIncludes();
 
+            // Filter
             if (searchParams.From is not null)
-                orders = orders.Where(x => x.RequestedDate >= searchParams.From);   
-            
+                orders = orders.Where(x => x.RequestedDate >= searchParams.From);
             if (searchParams.To is not null)
-                orders = orders.Where(x => x.RequestedDate >= searchParams.To);     
-            
+                orders = orders.Where(x => x.RequestedDate >= searchParams.To);
             if (!string.IsNullOrWhiteSpace(searchParams.ClientName))
-                orders = orders.Where(x => x.Client.Name.StartsWith(searchParams.ClientName));    
-            
+                orders = orders.Where(x => x.Client.Name.StartsWith(searchParams.ClientName));
             if (!string.IsNullOrWhiteSpace(searchParams.RecipeName))
                 orders = orders.Where(x => x.Items.Any(item => item.Recipe.Name.StartsWith(searchParams.RecipeName)));
             
-            return orders
-                .OrderByDescending(x => x.RequestedDate)
-                .ThenBy(x => x.Client.Name)
-                .ThenBy(x => x.OrderCreated)
+            // Sort
+            orders = ApplyDefaultOrdering(orders);
+            
+            // Paging
+            return  orders
                 .ApplyLazyLoading(loadingParams)
                 .ToArray()
                 .Select(x => DboMappingProvider.Mapper
                     .From(x)
                     .AdaptToType<Order>());
         }
-
-        public async Task<Order> Get(int orderId)
+        
+        public async Task<OrderDetails> GetOrderDetailsById(int orderId)
         {
-            var orderDbo = await DbContext.Orders
-                .Include(x => x.Items)
-                .ThenInclude(x => x.Recipe)
-                .Include(x => x.Client)
-                .ThenInclude(x => x.Address)
+            var orderDbo = await GetOrdersWithDefaultIncludes()
                 .FirstAsync(x => x.Id == orderId);
-                
             
-            return DboMappingProvider.Mapper
-                .From(orderDbo)
-                .AdaptToType<Order>();  
+            return orderDbo.MapTo<OrderDetails>();
         }
 
-        public async Task<OrderDetails> GetDetailed(int orderId)
+        public async Task<IEnumerable<OrderForDelivery>> ListOrdersForDelivery(OrderForDeliverySearchParams searchParams, LazyLoadingParams lazyLoadingParams)
         {
-            var orderDbo = await DbContext.Orders
-                .Include(x => x.Items)
-                .ThenInclude(x => x.Recipe)
-                .Include(x => x.Client)
-                .ThenInclude(x => x.Address)
-                .FirstAsync(x => x.Id == orderId);
-                
+            var orders = GetOrdersWithDefaultIncludes();
+
+            // Filter
+            orders = orders
+                .Where(x => x.OrderState != OrderState.Delivered && x.OrderState != OrderState.Cancelled)
+                .Where(x => x.DeliveryId == null);
             
-            return DboMappingProvider.Mapper
-                .From(orderDbo)
-                .AdaptToType<OrderDetails>();
+            // Order
+            orders = ApplyDefaultOrdering(orders);
+            
+            // Map
+            return orders
+                .ApplyLazyLoading(lazyLoadingParams)
+                .ToArray()
+                .Select(x => x.MapTo<OrderForDelivery>());
+        }
+
+        private IQueryable<OrderDbo> GetOrdersWithDefaultIncludes()
+        {
+            return DbContext.Orders
+                .Include(x => x.Items).ThenInclude(x => x.Cancellations)
+                .Include(x => x.Items).ThenInclude(x => x.Recipe)
+                .Include(x => x.Client).ThenInclude(x => x.Address);
+        }
+        
+        
+        private static IQueryable<OrderDbo> ApplyDefaultOrdering(IQueryable<OrderDbo> orders)
+        {
+            return orders
+                .OrderByDescending(x => x.RequestedDate)
+                .ThenBy(x => x.Client.Name)
+                .ThenBy(x => x.OrderCreated);
         }
     }
 }

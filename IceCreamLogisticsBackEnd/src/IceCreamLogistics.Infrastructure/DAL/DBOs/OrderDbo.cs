@@ -16,5 +16,6 @@ namespace IceCreamLogistics.Infrastructure.DAL.DBOs
         public DateTime OrderCreated { get; set; }
         public DateTime RequestedDate { get; set; }
         public OrderState OrderState { get; set; }
+        public int? DeliveryId { get; set; }
     }
 }

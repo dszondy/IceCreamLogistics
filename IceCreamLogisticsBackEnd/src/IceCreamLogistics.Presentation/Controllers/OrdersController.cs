@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
 using IceCreamLogistics.Application;
 using IceCreamLogistics.Domain;
+using IceCreamLogistics.Domain.Delivery;
 using IceCreamLogistics.Presentation.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +15,7 @@ namespace IceCreamLogistics.Presentation.Controllers
     {
 
         private readonly IOrderService _orderService;
+        private readonly  IOrderProgressRepository _orderProcessingService;
 
         public OrdersController(IOrderService orderService)
         {
@@ -43,6 +47,21 @@ namespace IceCreamLogistics.Presentation.Controllers
                 .ToLazyLoadingResponse(lazyLoadingParams));
         }
         
+        [HttpGet]
+        [Route("for-delivery")]
+        public async Task<ActionResult<LazyLoadingResponse<OrderForDeliveryDto>>> SearchForDelivery([FromQuery]OrderForDeliverySearchParamsDto orderSearchParams, 
+            [FromQuery]LazyLoadingParamsDto lazyLoadingParams)
+        {
+            var result = await _orderService.SearchForDelivery(
+                new OrderForDeliverySearchParams(), 
+                lazyLoadingParams.MapTo<LazyLoadingParams>());
+            
+            return Ok(result
+                .Select(x => x.MapTo<OrderForDeliveryDto>())
+                .ToLazyLoadingResponse(lazyLoadingParams));
+        }
+
+        
         
         [HttpPost]
         [Route("")]
@@ -69,5 +88,12 @@ namespace IceCreamLogistics.Presentation.Controllers
             return Ok(result.MapTo<OrderDto>());
         }
         
+        [HttpPost]
+        [Route("cancel-item")]
+        public async  Task<ActionResult> CancelItems([FromBody] OrderItemCancellationDto cancellationDto)
+        {
+            await _orderProcessingService.RegisterCancelledAmounts(new []{ cancellationDto.MapTo<OrderItemCancellation>()});
+            return Ok();
+        }
     }
 }

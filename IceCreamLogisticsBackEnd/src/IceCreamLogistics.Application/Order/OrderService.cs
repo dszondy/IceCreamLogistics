@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using IceCreamLogistics.Application.Mixing;
 using IceCreamLogistics.Domain;
+using IceCreamLogistics.Domain.Delivery;
 
 namespace IceCreamLogistics.Application
 {
@@ -36,7 +37,7 @@ namespace IceCreamLogistics.Application
 
         public Task<IEnumerable<Order>> Search(OrderSearchParams searchParams, LazyLoadingParams lazyLoadingParams)
         {
-            return _orderRepository.GetOrdersBySearch(searchParams, lazyLoadingParams);
+            return _orderRepository.ListOrders(searchParams, lazyLoadingParams);
         }
 
         public Task<IEnumerable<OrderPart>> SearchIncomplete(OrderSearchParams searchParams,
@@ -48,17 +49,13 @@ namespace IceCreamLogistics.Application
         public async Task<OrderDetails> Get(int orderId)
         {
             var batches = await _mixingRepository.GetAssociatedBatches(orderId);
-            var order = await _orderRepository.GetDetailed(orderId);
-            return new OrderDetails()
-            {
-                AssociatedBatches = batches,
-                Client = order.Client,
-                Id = orderId,
-                Items = order.Items,
-                OrderCreated = order.OrderCreated,
-                OrderState = order.OrderState,
-                RequestedDate = order.RequestedDate,
-            };
+            var order = await _orderRepository.GetOrderDetailsById(orderId);
+            return order;
+        }
+
+        public Task<IEnumerable<OrderForDelivery>> SearchForDelivery(OrderForDeliverySearchParams searchParams, LazyLoadingParams lazyLoadingParams)
+        {
+            return _orderRepository.ListOrdersForDelivery(searchParams, lazyLoadingParams);
         }
     }
 }

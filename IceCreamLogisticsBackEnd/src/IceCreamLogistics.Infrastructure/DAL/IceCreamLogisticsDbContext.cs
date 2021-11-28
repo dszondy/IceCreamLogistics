@@ -24,15 +24,17 @@ namespace IceCreamLogistics.Infrastructure.DAL
         public DbSet<RoleDbo> Roles { get; set; }
         public DbSet<RecipeDbo> Recipes { get; set; }
         public  DbSet<OrderDbo>  Orders { get; set; }
+        
+        public DbSet<OrderItemCancellationDbo> OrderItemCancellations { get; set; }
         public  DbSet<OrderItemDbo>  OrderItems { get; set; }
         public  DbSet<MixingBatchDbo>  MixingBatches { get; set; }
         public  DbSet<MixingMemberDbo>  MixingBatchMembers { get; set; }
         public  DbSet<ClientDbo>  Clients { get; set; }
         public DbSet<AddressDbo> Addresses { get; set; }
         public DbSet<MixingItemDbo> MixingItems { get; set; }
-        
         public DbSet<RecipeIngredientDbo> RecipeIngredients { get; set; }
         public DbSet<IngredientDbo> Ingredients { get; set; }
+        public DbSet<DeliveryDbo> Deliveries { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -132,6 +134,16 @@ namespace IceCreamLogistics.Infrastructure.DAL
                         UserId = 1
                     }
                 );
+            modelBuilder.Entity<OrderItemCancellationDbo>()
+                .HasOne<OrderItemDbo>()
+                .WithMany(x => x.Cancellations)
+                .HasForeignKey(x =>x.OrderItemId);
+            
+            modelBuilder.Entity<DeliveryDbo>()
+                .HasMany(x => x.Orders)
+                .WithOne()
+                .HasForeignKey(x => x.DeliveryId);
+                
         }
     }
 }

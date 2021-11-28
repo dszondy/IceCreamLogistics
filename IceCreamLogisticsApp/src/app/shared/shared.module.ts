@@ -15,10 +15,11 @@ import {YesNoCheckComponent} from './components/yes-no-check/yes-no-check.compon
 import {SelectOrdersComponent} from '../manufacturing/create-mixing-batch/select-orders/select-orders.component';
 import {ClientSelectComponent} from './components/client-select/client-select.component';
 import {TypeaheadModule} from 'ngx-bootstrap/typeahead';
+import { OrderItemCancellationModalComponent } from './services/order-item-cancellation-modal/order-item-cancellation-modal.component';
 
 
 @NgModule({
-  declarations: [ClientDetailsComponent, TreeListComponent, TreeNodeComponent, AddCheckComponent, YesNoCheckComponent, ClientSelectComponent],
+  declarations: [ClientDetailsComponent, TreeListComponent, TreeNodeComponent, AddCheckComponent, YesNoCheckComponent, ClientSelectComponent, OrderItemCancellationModalComponent],
   exports: [
     ClientDetailsComponent,
     TreeListComponent,

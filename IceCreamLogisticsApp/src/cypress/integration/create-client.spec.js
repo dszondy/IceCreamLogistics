@@ -1,7 +1,8 @@
-describe('My First Test', () => {
+describe('Login test', () => {
 
-  it('Does not do much!', () => {
-    cy.visit("localhost:4200/settings/recipes")
-    expect(true).to.equal(true)
+  it('Can login with valid credentials', () => {
+    cy.visit("localhost:4200")
+    cy.get('#name').type('admin')
+    cy.get('#password').type('admin')
   })
 })

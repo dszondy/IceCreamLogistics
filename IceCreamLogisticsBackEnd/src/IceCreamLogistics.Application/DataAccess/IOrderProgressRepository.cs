@@ -9,5 +9,7 @@ namespace IceCreamLogistics.Application
         Task<IEnumerable<OrderPart>> GetIncompleteParts(OrderSearchParams searchParams, LazyLoadingParams loadingParams);
         Task RegisterSelectedMixingAmounts(IEnumerable<MixingBatchCreateMember> members);
         Task RegisterCompletedMixingAmounts(IEnumerable<MixingBatchCreateMember> members);
+        Task RegisterCancelledAmounts(IEnumerable<OrderItemCancellation> items);
+
     }
 }

@@ -1,0 +1,28 @@
+<div class="m-2 p-2" *ngIf="delivery">
+  <div class="d-flex row justify-content-end">
+    <button (click)="save()" class="btn btn-success">
+      Mentés
+    </button>
+  </div>
+  <div class="row mb-4">
+    <div class="row p-2 col-lg-7 m-0">
+      <label for="name">Név: </label>
+      <input [(ngModel)]="delivery.name" class="form-control" id="name" placeholder="Name" type="text">
+    </div>
+    <div class="row p-2 col-5 m-0">
+      <label for="date">Kiszállítás dátuma: </label>
+      <input [(ngModel)]="delivery.deliveryDate" class="form-control" id="date" type="date">
+    </div>
+  </div>
+  <tabset>
+    <tab #searchTab="tab" heading="Keresés">
+      <app-list-orders-for-delivery
+        (orderAdded)="orderAdded($event)"
+        (orderRemoved)="orderRemoved($event)"
+        [selectedOrdersById]="selectedOrdersById"></app-list-orders-for-delivery>
+    </tab>
+    <tab heading="Részletek">
+      <app-preview-batch></app-preview-batch>
+    </tab>
+  </tabset>
+</div>
