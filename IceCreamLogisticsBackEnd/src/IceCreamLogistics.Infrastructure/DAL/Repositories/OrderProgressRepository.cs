@@ -93,7 +93,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .Include(x =>x.Items).ThenInclude(x => x.Cancellations)
                 .Include(x => x.Client)
                 .Where(x => x.OrderState == OrderState.Active)
-                .Where(x => x.Items.Sum(item => item.Amount - item.SelectedMixingAmount - item.CancelledAmount) > 0);
+                .Where(x => x.Items.Sum(item => item.Amount - item.SelectedMixingAmount - item.Cancellations.Sum(x => x.Amount)) > 0);
 
             if (searchParams.From is not null)
                 orders = orders.Where(x => x.RequestedDate >= searchParams.From);
