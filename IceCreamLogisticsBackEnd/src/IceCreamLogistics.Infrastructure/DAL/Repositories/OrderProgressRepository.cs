@@ -12,12 +12,13 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 {
     internal class OrderProgressRepository : IOrderProgressRepository
     {
+        private readonly IceCreamLogisticsDbContext _dbContext;
+
         public OrderProgressRepository(IceCreamLogisticsDbContext dbContext)
         {
-            DbContext = dbContext;
+            _dbContext = dbContext;
         }
 
-        private IceCreamLogisticsDbContext DbContext { get; }
 
         class KeyPair
         {
@@ -26,7 +27,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         }
         public async Task RegisterSelectedMixingAmounts(IEnumerable<MixingBatchCreateMember> members)
         {
-            var items = DbContext.Orders
+            var items = _dbContext.Orders
                 .Include(x => x.Items)
                 .Where(x => members.Select(member => member.OrderId).Contains(x.Id))
                 .SelectMany(x => x.Items);
@@ -35,16 +36,16 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .First(x => item.OrderId == x.OrderId).Items
                 .First(x => item.RecipeId == x.RecipeId).Amount);
             
-            await DbContext.Orders          
+            await _dbContext.Orders          
                 .Where(x => members.Select(member => member.OrderId).Contains(x.Id))
                 .ForEachAsync(order => order.OrderState = OrderState.Active);
             
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task RegisterCompletedMixingAmounts(IEnumerable<MixingBatchCreateMember> members)
         {
-            var orders = await DbContext.Orders
+            var orders = await _dbContext.Orders
                 .Include(x => x.Items)
                 .Where(x => members.Select(member => member.OrderId)
                     .Contains(x.Id))
@@ -64,16 +65,16 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 order.OrderState = order.Items.All(item => item.MixedAmount == item.Amount) ? OrderState.ReadyForDelivery : OrderState.Active;
             }
             
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task RegisterCancelledAmounts(IEnumerable<OrderItemCancellation> items)
         {
-            var orders = DbContext.Orders
+            var orders = _dbContext.Orders
                 .Include(x => x.Items)
                 .Where(x => items.Select(item => item.OrderId).Contains(x.Id));
             
-            DbContext.OrderItemCancellations.AddRange(items.Select(x => new OrderItemCancellationDbo()
+            _dbContext.OrderItemCancellations.AddRange(items.Select(x => new OrderItemCancellationDbo()
             {
                 OrderItemId = orders
                     .First(order => order.Id == x.OrderId)
@@ -87,7 +88,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 
         public async Task<IEnumerable<OrderPart>> GetIncompleteParts(OrderSearchParams searchParams, LazyLoadingParams loadingParams)
         {
-            IQueryable<OrderDbo> orders = DbContext.Orders
+            IQueryable<OrderDbo> orders = _dbContext.Orders
                 .Include(x => x.Items).ThenInclude(x => x.Recipe)
                 .Include(x =>x.Items).ThenInclude(x => x.Cancellations)
                 .Include(x => x.Client)

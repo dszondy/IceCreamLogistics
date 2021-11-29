@@ -27,6 +27,8 @@ namespace IceCreamLogistics.Infrastructure
             services.AddTransient<IMixingRepository, MixingRepository>();
             services.AddTransient<IIngredientRepository, IngredientRepository>();
             services.AddTransient<IDeliveryRepository, DeliveryRepository>();
+            services.AddTransient<IInventoryStatusRepository, InventoryStatusRepository>();
+            services.AddTransient<IInventoryRepository, InventoryRepository>();
 
             services.AddTransient<IHashingService, HashingService>();
             services.AddTransient<IUserTokenService, JwtTokenService>();

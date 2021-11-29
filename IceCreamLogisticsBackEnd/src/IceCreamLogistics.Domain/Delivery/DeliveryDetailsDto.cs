@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using IceCreamLogistics.Domain;
-using IceCreamLogistics.Domain.Delivery;
 
-namespace IceCreamLogistics.Presentation.DTOs
+namespace IceCreamLogistics.Domain
 {
     public class DeliveryDetails
     {

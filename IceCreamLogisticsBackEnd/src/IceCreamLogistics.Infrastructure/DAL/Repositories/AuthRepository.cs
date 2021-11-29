@@ -10,17 +10,17 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 {
     internal class AuthRepository: IAuthRepository
     {
-        private IceCreamLogisticsDbContext DbContext { get; }
+        private readonly IceCreamLogisticsDbContext _dbContext;
 
         public AuthRepository(IceCreamLogisticsDbContext dbContext)
         {
-            DbContext = dbContext;
+            _dbContext = dbContext;
         }
 
         public async Task CreateAuthInfo(BasicAuthInfo authInfo)
         {
-            await DbContext.AddAsync(authInfo.Adapt<BasicAuthInfoDbo>());
-            await DbContext.SaveChangesAsync();
+            await _dbContext.AddAsync(authInfo.Adapt<BasicAuthInfoDbo>());
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task UpsertAuthInfo(BasicAuthInfo authInfo)
@@ -28,7 +28,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
             var authInfoDbo = await GetAuthInfosByUserIdQuery( authInfo.UserId).FirstAsync();
             authInfoDbo.PasswordHash = authInfo.PasswordHash;
             authInfo.Salt = authInfo.Salt;
-            await DbContext.SaveChangesAsync();        
+            await _dbContext.SaveChangesAsync();        
         }
         
         public async Task<BasicAuthInfo> GetAuthInfo(int userId)
@@ -41,7 +41,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         
         private IQueryable<BasicAuthInfoDbo> GetAuthInfosByUserIdQuery(int userId)
         {
-            return DbContext.AuthInfos
+            return _dbContext.AuthInfos
                 .Where(x => x.UserId == userId);
         }
     }

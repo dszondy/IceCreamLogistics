@@ -12,10 +12,11 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {RouterModule} from "@angular/router";
 import {TokenInterceptor} from './security/token-interceptor';
 import { PasswordChangeModalComponent } from './security/password-change-modal/password-change-modal.component';
+import { InventoryWarningComponent } from './components/inventory-warning/inventory-warning.component';
 
 
 @NgModule({
-  declarations: [LoginComponent, LoginModalComponent, NavbarComponent, PasswordChangeModalComponent],
+  declarations: [LoginComponent, LoginModalComponent, NavbarComponent, PasswordChangeModalComponent, InventoryWarningComponent],
   exports: [
     LoginComponent,
     NavbarComponent

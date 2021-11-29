@@ -11,31 +11,32 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 {
     internal class MixingRepository : IMixingRepository
     {
+        private readonly IceCreamLogisticsDbContext _dbContext;
+
         public MixingRepository(IceCreamLogisticsDbContext dbContext)
         {
-            DbContext = dbContext;
+            _dbContext = dbContext;
         }
 
-        private IceCreamLogisticsDbContext DbContext { get; }
         
 
 
         public async Task<int> Create(MixingBatchCreate batch)
         {
             var mixingBatch = batch.MapTo<MixingBatchDbo>();
-            await DbContext.MixingBatches.AddAsync(mixingBatch);
+            await _dbContext.MixingBatches.AddAsync(mixingBatch);
 
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             var members = batch.Members.Select(x => new MixingMemberDbo()
             {
                 MixingBatchId = mixingBatch.Id,
                 OrderId = x.OrderId
             }).ToArray();
             
-            DbContext.MixingBatchMembers.AddRange(members);
-            await DbContext.SaveChangesAsync();
+            _dbContext.MixingBatchMembers.AddRange(members);
+            await _dbContext.SaveChangesAsync();
             
-            DbContext.MixingItems
+            _dbContext.MixingItems
                 .AddRange(batch.Members
                     .SelectMany(x => x.Items.Select(item =>new MixingItemDbo()
                     {
@@ -43,13 +44,13 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                         MixingMemberId = members.First(member =>member.OrderId == x.OrderId).Id,
                         Amount = item.Amount
                     })));
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return mixingBatch.Id;
         }
 
         public async Task<MixingBatchDetails> Get(int id)
         { 
-            var mixingBatchDbo = await DbContext.MixingBatches
+            var mixingBatchDbo = await _dbContext.MixingBatches
                 .Include(x => x.Members)
                 .ThenInclude(x => x.Order)
                 .ThenInclude(x => x.Client)
@@ -63,7 +64,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 
         public async Task<IEnumerable<MixingBatchShallow>> List(MixingSearchParams mixingSearchParams, LazyLoadingParams loadingParams)
         {
-            var batches = DbContext.MixingBatches
+            var batches = _dbContext.MixingBatches
                 .Include(x => x.Members)
                 .ThenInclude(x => x.Items).AsQueryable();
             
@@ -82,7 +83,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 
         public async Task AdministerAbsolute(int batchId, IEnumerable<MixingBatchCreateMember> members)
         {
-           var membersAffected = DbContext.MixingBatchMembers
+           var membersAffected = _dbContext.MixingBatchMembers
                .Include(x => x.Items)
                .Where(x => x.MixingBatchId == batchId)
                .Where(x => members.Select(y => y.OrderId)
@@ -98,12 +99,12 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                        .Amount;
                }
            });
-           await DbContext.SaveChangesAsync();
+           await _dbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<AssociatedBatch>> GetAssociatedBatches(int orderId)
         {
-            var mixingBatches= DbContext.MixingBatches
+            var mixingBatches= _dbContext.MixingBatches
                 .Include(x => x.Members)
                 .ThenInclude(x => x.Order)
                 .ThenInclude(x => x.Client)
