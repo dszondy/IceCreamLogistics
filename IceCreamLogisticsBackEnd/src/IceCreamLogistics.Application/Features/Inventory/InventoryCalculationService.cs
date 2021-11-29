@@ -6,13 +6,13 @@ using IceCreamLogistics.Domain;
 
 namespace IceCreamLogistics.Application
 {
-    class InventoryCheckService : IInventoryCheckService
+    class InventoryCalculationService
     {
         private readonly IRecipeRepository _recipeRepository;
         private readonly IOrderService _orderService;
         private readonly IRecipeAmountRepository _recipeAmountRepository;
 
-        public InventoryCheckService(IRecipeRepository recipeRepository, IOrderService orderService, IRecipeAmountRepository recipeAmountRepository)
+        public InventoryCalculationService(IRecipeRepository recipeRepository, IOrderService orderService, IRecipeAmountRepository recipeAmountRepository)
         {
             _recipeRepository = recipeRepository;
             _orderService = orderService;

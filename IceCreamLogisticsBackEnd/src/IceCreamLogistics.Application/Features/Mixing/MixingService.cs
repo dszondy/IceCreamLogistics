@@ -11,11 +11,15 @@ namespace IceCreamLogistics.Application.Manufacturing
     {
         private readonly IMixingRepository _mixingRepository;
         private readonly IOrderProgressRepository _orderProgressRepository;
+        private readonly IRecipeRepository _recipeRepository;
+        private readonly IInventoryRepository _inventoryRepository;
 
-        public MixingService(IMixingRepository mixingRepository, IOrderProgressRepository orderProgressRepository)
+        public MixingService(IMixingRepository mixingRepository, IOrderProgressRepository orderProgressRepository, IRecipeRepository recipeRepository, IInventoryRepository inventoryRepository)
         {
             _mixingRepository = mixingRepository;
             _orderProgressRepository = orderProgressRepository;
+            _recipeRepository = recipeRepository;
+            _inventoryRepository = inventoryRepository;
         }
 
         public async Task<int> Create(MixingBatchCreate mixingBatch)
@@ -59,6 +63,22 @@ namespace IceCreamLogistics.Application.Manufacturing
                         .Sum(i => i.Amount),
                 })
             });
+
+            var recipes = await _recipeRepository
+                .GetMany(membersDeltas
+                    .SelectMany(x => x.Items)
+                    .Select(x => x.RecipeId)
+                    .Distinct());
+            
+            await _inventoryRepository.Deplete(membersDeltas
+                .SelectMany(x => x.Items)
+                .SelectMany(x => recipes
+                    .First(recipe => recipe.Id == x.RecipeId)
+                    .Ingredients.Select(ingredient => new IngredientAmountEdit()
+                    {
+                        IngredientId = ingredient.IngredientId,
+                        Amount = x.Amount * ingredient.Amount
+                    })));
 
             await _orderProgressRepository.RegisterCompletedMixingAmounts(membersDeltas);
             

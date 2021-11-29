@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IceCreamLogistics.Application;
 using IceCreamLogistics.Application.Delivery;
+using IceCreamLogistics.Application.Model;
 using IceCreamLogistics.Domain;
 using IceCreamLogistics.Domain.Delivery;
 using IceCreamLogistics.Presentation.DTOs;

@@ -720,6 +720,236 @@ export class IngredientClient {
 @Injectable({
     providedIn: 'root'
 })
+export class InventoryClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:5000";
+    }
+
+    searchInventory(searchParams: InventorySearchParamsDto | null | undefined, offset: number | undefined, count: number | undefined) : Observable<LazyLoadingResponseOfInventoryStatusDto> {
+        let url_ = this.baseUrl + "/inventory?";
+        if (searchParams !== undefined && searchParams !== null)
+            url_ += "searchParams=" + encodeURIComponent("" + searchParams) + "&";
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "Offset=" + encodeURIComponent("" + offset) + "&";
+        if (count === null)
+            throw new Error("The parameter 'count' cannot be null.");
+        else if (count !== undefined)
+            url_ += "Count=" + encodeURIComponent("" + count) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearchInventory(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearchInventory(<any>response_);
+                } catch (e) {
+                    return <Observable<LazyLoadingResponseOfInventoryStatusDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<LazyLoadingResponseOfInventoryStatusDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processSearchInventory(response: HttpResponseBase): Observable<LazyLoadingResponseOfInventoryStatusDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = LazyLoadingResponseOfInventoryStatusDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<LazyLoadingResponseOfInventoryStatusDto>(<any>null);
+    }
+
+    getInventoryWarning() : Observable<InventoryWarningDto> {
+        let url_ = this.baseUrl + "/inventory/warning";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetInventoryWarning(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetInventoryWarning(<any>response_);
+                } catch (e) {
+                    return <Observable<InventoryWarningDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<InventoryWarningDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetInventoryWarning(response: HttpResponseBase): Observable<InventoryWarningDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<InventoryWarningDto>(<any>null);
+    }
+
+    setInventory(id: number, amount: number) : Observable<InventoryStatusDto> {
+        let url_ = this.baseUrl + "/inventory/{id}/set";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(amount);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSetInventory(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSetInventory(<any>response_);
+                } catch (e) {
+                    return <Observable<InventoryStatusDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<InventoryStatusDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processSetInventory(response: HttpResponseBase): Observable<InventoryStatusDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InventoryStatusDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<InventoryStatusDto>(<any>null);
+    }
+
+    addToInventory(id: number, amount: number) : Observable<InventoryStatusDto> {
+        let url_ = this.baseUrl + "/inventory/{id}/add";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(amount);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddToInventory(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddToInventory(<any>response_);
+                } catch (e) {
+                    return <Observable<InventoryStatusDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<InventoryStatusDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAddToInventory(response: HttpResponseBase): Observable<InventoryStatusDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InventoryStatusDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<InventoryStatusDto>(<any>null);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class MixingBatchClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -2957,6 +3187,162 @@ export interface IIngredientCreateDto {
     measurementUnit?: string | undefined;
     quantityPerPackage: number;
     warningThreshold: number;
+}
+
+export class LazyLoadingResponseOfInventoryStatusDto implements ILazyLoadingResponseOfInventoryStatusDto {
+    offset!: number;
+    count!: number;
+    nextOffset!: number;
+    hasMore!: boolean;
+    content?: InventoryStatusDto[] | undefined;
+
+    constructor(data?: ILazyLoadingResponseOfInventoryStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.offset = _data["offset"];
+            this.count = _data["count"];
+            this.nextOffset = _data["nextOffset"];
+            this.hasMore = _data["hasMore"];
+            if (Array.isArray(_data["content"])) {
+                this.content = [] as any;
+                for (let item of _data["content"])
+                    this.content!.push(InventoryStatusDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): LazyLoadingResponseOfInventoryStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new LazyLoadingResponseOfInventoryStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["offset"] = this.offset;
+        data["count"] = this.count;
+        data["nextOffset"] = this.nextOffset;
+        data["hasMore"] = this.hasMore;
+        if (Array.isArray(this.content)) {
+            data["content"] = [];
+            for (let item of this.content)
+                data["content"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ILazyLoadingResponseOfInventoryStatusDto {
+    offset: number;
+    count: number;
+    nextOffset: number;
+    hasMore: boolean;
+    content?: InventoryStatusDto[] | undefined;
+}
+
+export class InventoryStatusDto implements IInventoryStatusDto {
+    id!: number;
+    name?: string | undefined;
+    amountOnHand!: number;
+    measurementUnit?: string | undefined;
+    quantityPerPackage!: number;
+    warningThreshold!: number;
+    amountRequired!: number;
+
+    constructor(data?: IInventoryStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.amountOnHand = _data["amountOnHand"];
+            this.measurementUnit = _data["measurementUnit"];
+            this.quantityPerPackage = _data["quantityPerPackage"];
+            this.warningThreshold = _data["warningThreshold"];
+            this.amountRequired = _data["amountRequired"];
+        }
+    }
+
+    static fromJS(data: any): InventoryStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new InventoryStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["amountOnHand"] = this.amountOnHand;
+        data["measurementUnit"] = this.measurementUnit;
+        data["quantityPerPackage"] = this.quantityPerPackage;
+        data["warningThreshold"] = this.warningThreshold;
+        data["amountRequired"] = this.amountRequired;
+        return data; 
+    }
+}
+
+export interface IInventoryStatusDto {
+    id: number;
+    name?: string | undefined;
+    amountOnHand: number;
+    measurementUnit?: string | undefined;
+    quantityPerPackage: number;
+    warningThreshold: number;
+    amountRequired: number;
+}
+
+export class InventorySearchParamsDto implements IInventorySearchParamsDto {
+
+    constructor(data?: IInventorySearchParamsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): InventorySearchParamsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new InventorySearchParamsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+}
+
+export interface IInventorySearchParamsDto {
+}
+
+export enum InventoryWarningDto {
+    Ok = 0,
+    ThresholdReached = 1,
+    NotEnoughForPendingOrders = 2,
 }
 
 export class MixingBatchCreateDto implements IMixingBatchCreateDto {

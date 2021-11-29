@@ -1,6 +1,14 @@
-﻿namespace IceCreamLogistics.Application
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using IceCreamLogistics.Domain;
+
+namespace IceCreamLogistics.Application
 {
-    internal interface IInventoryRepository
+    public interface IInventoryRepository
     {
+        Task AddToInventory(IngredientAmountEdit item);
+        Task SetInventory(IngredientAmountEdit item);
+        Task Deplete(IEnumerable<IngredientAmountEdit> ingredientAmount);
+
     }
 }
