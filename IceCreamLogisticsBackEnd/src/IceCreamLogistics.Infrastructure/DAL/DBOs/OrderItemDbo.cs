@@ -25,6 +25,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.DBOs
 
         [NotMapped]
         public decimal PendingAmount => Amount - CancelledAmount - SelectedMixingAmount;
+        
         [NotMapped]
         public decimal InProgressAmount => SelectedMixingAmount - MixedAmount;
     }

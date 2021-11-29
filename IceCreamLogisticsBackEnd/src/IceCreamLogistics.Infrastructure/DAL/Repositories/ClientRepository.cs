@@ -14,14 +14,14 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
     {
         public ClientRepository(IceCreamLogisticsDbContext dbContext)
         {
-            DbContext = dbContext;
+            _dbContext = dbContext;
         }
 
-        private IceCreamLogisticsDbContext DbContext { get; }
+        private readonly IceCreamLogisticsDbContext _dbContext;
 
         public async Task<IEnumerable<Client>>  GetClientsBySearch(string text, LazyLoadingParams loadingParams)
         {
-            return DbContext.Clients
+            return _dbContext.Clients
                 .Include(x => x.Address)
                 .Where(x => x.Name.StartsWith(text))
                     .OrderBy(x => x.Name)
@@ -38,9 +38,9 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .From(client)
                 .AdaptToType<ClientDbo>();
             
-            await DbContext.Clients.AddAsync(clientDbo);
-            await DbContext.Addresses.AddAsync(clientDbo.Address);
-            await DbContext.SaveChangesAsync();
+            await _dbContext.Clients.AddAsync(clientDbo);
+            await _dbContext.Addresses.AddAsync(clientDbo.Address);
+            await _dbContext.SaveChangesAsync();
             
             return DboMappingProvider.Mapper
                 .From(clientDbo)
@@ -52,11 +52,11 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
             
             var clientDbo = DboMappingProvider.Mapper
                 .From(client)
-                .AdaptTo<ClientDbo>(await DbContext.Clients
+                .AdaptTo<ClientDbo>(await _dbContext.Clients
                     .Include(x => x.Address)
                     .FirstAsync(x => x.Id == client.Id));
             
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             
             return DboMappingProvider.Mapper
                 .From(clientDbo)

@@ -62,8 +62,10 @@ export class IngredientConfigComponent implements OnInit {
     this.selectedItem = new IngredientDto({
       name: this.searchText,
       id: undefined,
-      measurementUnit: "darab",
-      amountOnHand: 0
+      measurementUnit: 'darab',
+      amountOnHand: 0,
+      quantityPerPackage: 1,
+      warningThreshold: 0
     });
   }
 

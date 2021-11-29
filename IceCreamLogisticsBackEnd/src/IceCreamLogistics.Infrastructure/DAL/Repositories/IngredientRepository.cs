@@ -10,16 +10,17 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 {
     internal class IngredientRepository : IIngredientRepository
     {
+        private readonly IceCreamLogisticsDbContext _dbContext;
+
         public IngredientRepository(IceCreamLogisticsDbContext dbContext)
         {
-            DbContext = dbContext;
+            _dbContext = dbContext;
         }
 
-        private IceCreamLogisticsDbContext DbContext { get; }
 
         public async Task<IEnumerable<Ingredient>>  GetIngredientsBySearch(string text, LazyLoadingParams loadingParams)
         {
-            return DbContext.Ingredients
+            return _dbContext.Ingredients
                     .Where(x => x.Name.StartsWith(text))
                     .OrderBy(x => x.Name)
                 .ApplyLazyLoading(loadingParams)
@@ -33,8 +34,8 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         {
             var ingredientDbo = ingredientCreate.MapTo<IngredientDbo>();
             
-            await DbContext.Ingredients.AddAsync(ingredientDbo);
-            await DbContext.SaveChangesAsync();
+            await _dbContext.Ingredients.AddAsync(ingredientDbo);
+            await _dbContext.SaveChangesAsync();
             
             return ingredientDbo.MapTo<Ingredient>();
         }
@@ -44,17 +45,17 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
             
             var ingredientDbo = DboMappingProvider.Mapper
                 .From(ingredientCreate)
-                .AdaptTo<IngredientDbo>(await DbContext.Ingredients.
+                .AdaptTo<IngredientDbo>(await _dbContext.Ingredients.
                     FirstAsync(x => x.Id == ingredientCreate.Id));
             
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             
             return ingredientDbo.MapTo<Ingredient>();
         }
 
         public async Task<IEnumerable<Ingredient>> GetMany(IEnumerable<int> ids)
         {
-            var results = DbContext.Ingredients
+            var results = _dbContext.Ingredients
                 .Where(x => ids.Contains(x.Id))
                 .AsEnumerable();
 

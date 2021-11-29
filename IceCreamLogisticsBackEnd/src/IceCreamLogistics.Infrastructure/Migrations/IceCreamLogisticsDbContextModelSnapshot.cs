@@ -137,6 +137,12 @@ namespace IceCreamLogistics.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<decimal>("QuantityPerPackage")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("WarningThreshold")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
 
                     b.ToTable("Ingredients");

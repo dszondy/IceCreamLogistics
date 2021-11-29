@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h2 class="modal-title">Raktárkészlet beállítása</h2>
+  <h3 class="modal-subtitle">{{ item.name }}</h3>
+</div>
+<div class="modal-body">
+  <pre>
+    Raktáron: {{ item.amountOnHand/item.quantityPerPackage }} db
+    Mennyiség: {{ item.amountOnHand }} {{item.measurementUnit}}
+
+  </pre>
+  <label for="amount">Új mennyiség</label>
+  <input class="form-control"
+         id="amount"
+         [(ngModel)]="quantity"
+         type="number" [min]="0" > x {{ item.quantityPerPackage }}
+  <button class="btn btn-success" (click)="submit()">Mentés</button>
+</div>

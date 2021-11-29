@@ -13,16 +13,16 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 {
     internal class UserRepository: IUserRepository
     {
-        private IceCreamLogisticsDbContext DbContext { get; }
+        private readonly IceCreamLogisticsDbContext _dbContext;
 
         public UserRepository(IceCreamLogisticsDbContext dbContext)
         {
-            DbContext = dbContext;
+            _dbContext = dbContext;
         }
 
         public async Task<User> GetUserById(int id)
         {
-            var user = await DbContext.Users
+            var user = await _dbContext.Users
                 .Include(x => x.Roles)
                 .FirstOrDefaultAsync(x => x.Id == id);
             return DboMappingProvider.Mapper
@@ -32,7 +32,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 
         public async Task<User> GetUserByName(string name)
         {
-            var user = await DbContext.Users
+            var user = await _dbContext.Users
                 .Include(x => x.Roles)
                 .FirstOrDefaultAsync(x => x.Name == name);
             return  DboMappingProvider.Mapper
@@ -44,14 +44,14 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         {
 
             var dbo = user.MapTo<UserDbo>();
-            await DbContext.AddAsync(dbo);
-            await DbContext.SaveChangesAsync();
+            await _dbContext.AddAsync(dbo);
+            await _dbContext.SaveChangesAsync();
             return await GetUserById(dbo.Id);
         }
 
         public async Task<User> Update(int id, UserCreate user)
         {
-            var dbo = await DbContext.Users
+            var dbo = await _dbContext.Users
                 .Include(x =>x.Roles)
                 .FirstOrDefaultAsync(x => x.Id == id);
             dbo.Email = user.Email;
@@ -68,13 +68,13 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                     .ForEach(x => dbo.Roles.Add(x));
             }
 
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return await GetUserById(dbo.Id);       
         }
 
         public async Task<IEnumerable<UserShallow>> Search(string search, LazyLoadingParams lazyLoadingParams)
         {
-            return DbContext.Users
+            return _dbContext.Users
                 .Where(x => x.Name.StartsWith(search ?? ""))
                 .ApplyLazyLoading(lazyLoadingParams)
                 .Select(x => x.MapTo<UserShallow>());

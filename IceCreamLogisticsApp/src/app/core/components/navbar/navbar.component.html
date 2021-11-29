@@ -41,14 +41,12 @@
           <li role="menuitem"><a class="nav-link" routerLink="/delivery/new">Új kiszállítás</a></li>
         </ul>
       </li>
-      <li class="btn-group nav-item" dropdown>
-        <a aria-controls="adminNavDropdown" class="nav-link" dropdownToggle id="adminNavDropdown">
-          Raktár
-          <fa-icon icon="caret-down"></fa-icon>
+      <li class="btn-group nav-item"  routerLink="/inventory">
+        <a id="inventory-nav">
+          <app-inventory-warning>
+            Raktár
+          </app-inventory-warning>
         </a>
-        <ul *dropdownMenu aria-labelledby="adminNavDropdown" class="dropdown-menu"
-            id="dropdown-basic" role="menu">
-        </ul>
       </li>
 
 
@@ -69,4 +67,5 @@
 
     </ul>
   </div>
+  <div class="float-right"></div>
 </nav>

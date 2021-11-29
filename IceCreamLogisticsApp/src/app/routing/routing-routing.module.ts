@@ -16,7 +16,11 @@ const routes: Routes = [{
   {
     path: 'settings',
     loadChildren: () => import('../admin-settings/admin-settings.module').then(m => m.AdminSettingsModule)
-  }
+  },
+  {
+    path: 'inventory',
+    loadChildren: () => import('../inventory/inventory.module').then(m => m.InventoryModule)
+  },
 ];
 
 @NgModule({

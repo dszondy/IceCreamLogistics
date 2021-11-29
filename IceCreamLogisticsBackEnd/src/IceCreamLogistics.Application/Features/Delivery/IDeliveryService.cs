@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using IceCreamLogistics.Application.Model;
 using IceCreamLogistics.Domain;
 using IceCreamLogistics.Presentation.DTOs;
 using Microsoft.AspNetCore.Mvc;

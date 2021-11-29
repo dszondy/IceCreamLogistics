@@ -10,6 +10,7 @@ namespace IceCreamLogistics.Presentation.DTOs
         public bool CanBeOrdered { get; set; }
         public string DescriptionForLabels { get; set; }
         public decimal PricePerUnit { get; set; }
+        
         public IEnumerable<RecipeCreateIngredientDto> Ingredients { get; set; }
     }
 

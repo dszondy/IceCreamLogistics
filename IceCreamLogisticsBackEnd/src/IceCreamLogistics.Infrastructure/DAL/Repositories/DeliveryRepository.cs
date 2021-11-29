@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using IceCreamLogistics.Application;
+using IceCreamLogistics.Application.Model;
 using IceCreamLogistics.Domain;
 using IceCreamLogistics.Infrastructure.DAL.DBOs;
 using IceCreamLogistics.Presentation.DTOs;
