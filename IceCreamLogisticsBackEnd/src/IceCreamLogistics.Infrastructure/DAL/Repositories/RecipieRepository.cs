@@ -12,16 +12,16 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 {
     internal class RecipeRepository : IRecipeRepository
     {
+        private readonly IceCreamLogisticsDbContext _dbContext;
+
         public RecipeRepository(IceCreamLogisticsDbContext dbContext)
         {
-            DbContext = dbContext;
+            _dbContext = dbContext;
         }
-
-        private IceCreamLogisticsDbContext DbContext { get; }
-
+        
         public async Task<IEnumerable<Recipe>>  GetRecipesBySearch(string text, LazyLoadingParams loadingParams)
         {
-            return DbContext.Recipes
+            return _dbContext.Recipes
                     .Where(x => x.Name.StartsWith(text))
                     .Where(x => x.CanBeOrdered)
                     .OrderBy(x => x.Name)
@@ -34,7 +34,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 
         public async Task<RecipeDetails> Get(int id)
         {
-            var result = await DbContext.Recipes
+            var result = await _dbContext.Recipes
                 .Include(x => x.Ingredients)
                 .ThenInclude(x => x.Ingredient)
                 .FirstAsync(x => x.Id == id);
@@ -43,7 +43,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 
         public  async Task<IEnumerable<RecipeDetails>> GetMany(IEnumerable<int> ids)
         {
-            var results = DbContext.Recipes
+            var results = _dbContext.Recipes
                 .Include(x => x.Ingredients)
                 .ThenInclude(x => x.Ingredient)
                 .Where(x => ids.Contains(x.Id))
@@ -58,17 +58,17 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .From(recipe)
                 .AdaptToType<RecipeDbo>();
 
-            await DbContext.Recipes.AddAsync(recipeDbo);
-            await DbContext.SaveChangesAsync();
+            await _dbContext.Recipes.AddAsync(recipeDbo);
+            await _dbContext.SaveChangesAsync();
 
-            await DbContext.RecipeIngredients.AddRangeAsync(
+            await _dbContext.RecipeIngredients.AddRangeAsync(
                 recipe.Ingredients.Select(x => new RecipeIngredientDbo()
                 {
                     RecipeId = recipeDbo.Id,
                     IngredientId = x.IngredientId,
                     Amount = x.Amount
                 }));
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
 
             return DboMappingProvider.Mapper
@@ -79,25 +79,25 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         public async Task<Recipe> Update(RecipeCreate recipe)
         {
             
-            DbContext.RecipeIngredients.RemoveRange(DbContext.RecipeIngredients
+            _dbContext.RecipeIngredients.RemoveRange(_dbContext.RecipeIngredients
                 .Where(x => x.RecipeId == recipe.Id));
             
             var recipeDbo = DboMappingProvider.Mapper
                 .From(recipe)
-                .AdaptTo<RecipeDbo>(await DbContext.Recipes.
+                .AdaptTo<RecipeDbo>(await _dbContext.Recipes.
                     FirstAsync(x => x.Id == recipe.Id));
 
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             
             
-            await DbContext.RecipeIngredients.AddRangeAsync(
+            await _dbContext.RecipeIngredients.AddRangeAsync(
                 recipe.Ingredients.Select(x => new RecipeIngredientDbo()
                 {
                     RecipeId = recipeDbo.Id,
                     IngredientId = x.IngredientId,
                     Amount = x.Amount
                 }));
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return DboMappingProvider.Mapper
                 .From(recipeDbo)

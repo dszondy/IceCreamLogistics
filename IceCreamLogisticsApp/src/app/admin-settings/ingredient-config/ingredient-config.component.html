@@ -11,8 +11,16 @@
         </button>
       </div>
       <div class="form-group">
-        <label for="measurement">Mértékegység: </label>
-        <input [(ngModel)]="selectedItem.measurementUnit" class="form-control" id="measurement" type="text">
+        <label for="measurementUnit">Mértékegység: </label>
+        <input [(ngModel)]="selectedItem.measurementUnit" class="form-control" id="measurementUnit" type="text">
+      </div>
+      <div class="form-group">
+        <label for="quantityPerPackage">Rendelési mennyiség(Csomag): </label>
+        <input [(ngModel)]="selectedItem.quantityPerPackage" class="form-control" id="quantityPerPackage" type="text">
+      </div>
+      <div class="form-group">
+        <label for="warningThreshold">Raktár riasztási szint: </label>
+        <input [(ngModel)]="selectedItem.warningThreshold" class="form-control" id="warningThreshold" type="text">
       </div>
     </div>
   </div>

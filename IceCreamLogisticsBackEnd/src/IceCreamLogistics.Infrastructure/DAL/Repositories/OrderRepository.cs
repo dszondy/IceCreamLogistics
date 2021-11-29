@@ -12,23 +12,23 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 {
     internal class OrderRepository: IOrderRepository
     {
+        private readonly IceCreamLogisticsDbContext _dbContext;
+
         public OrderRepository(IceCreamLogisticsDbContext dbContext)
         {
-            DbContext = dbContext;
+            _dbContext = dbContext;
         }
-
-        private IceCreamLogisticsDbContext DbContext { get; }
-
+        
         public async Task<Order> Create(Order order)
         {
                 var orderDbo = order.MapTo<OrderDbo>();
             
-            await DbContext.Orders.AddAsync(orderDbo);
-            await DbContext.OrderItems.AddRangeAsync(orderDbo.Items);
+            await _dbContext.Orders.AddAsync(orderDbo);
+            await _dbContext.OrderItems.AddRangeAsync(orderDbo.Items);
 
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
-            orderDbo = await DbContext.Orders
+            orderDbo = await _dbContext.Orders
                 .Include(x => x.Client)
                 .Include(x => x.Items)
                 .ThenInclude(x => x.Recipe)
@@ -42,11 +42,11 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         public async Task<Order> UpdateState(int orderId, OrderState state)
         {
                         
-            var orderDbo = await DbContext.Orders
+            var orderDbo = await _dbContext.Orders
                 .FirstAsync(x => x.Id == orderId);
             orderDbo.OrderState = state;
                 
-            await DbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             
             return DboMappingProvider.Mapper
                 .From(orderDbo)
@@ -108,7 +108,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
 
         private IQueryable<OrderDbo> GetOrdersWithDefaultIncludes()
         {
-            return DbContext.Orders
+            return _dbContext.Orders
                 .Include(x => x.Items).ThenInclude(x => x.Cancellations)
                 .Include(x => x.Items).ThenInclude(x => x.Recipe)
                 .Include(x => x.Client).ThenInclude(x => x.Address);

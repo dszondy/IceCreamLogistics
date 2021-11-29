@@ -482,10 +482,18 @@ export class DeliveryClient {
         return _observableOf<DeliveryDetailsDto>(<any>null);
     }
 
-    list(searchParams: DeliverySearchParamsDto | null | undefined) : Observable<DeliveryDetailsDto> {
+    list(searchParams: DeliverySearchParamsDto | null | undefined, offset: number | undefined, count: number | undefined) : Observable<LazyLoadingResponseOfDeliveryShallow> {
         let url_ = this.baseUrl + "/deliveries?";
         if (searchParams !== undefined && searchParams !== null)
             url_ += "searchParams=" + encodeURIComponent("" + searchParams) + "&";
+        if (offset === null)
+            throw new Error("The parameter 'offset' cannot be null.");
+        else if (offset !== undefined)
+            url_ += "Offset=" + encodeURIComponent("" + offset) + "&";
+        if (count === null)
+            throw new Error("The parameter 'count' cannot be null.");
+        else if (count !== undefined)
+            url_ += "Count=" + encodeURIComponent("" + count) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -503,14 +511,14 @@ export class DeliveryClient {
                 try {
                     return this.processList(<any>response_);
                 } catch (e) {
-                    return <Observable<DeliveryDetailsDto>><any>_observableThrow(e);
+                    return <Observable<LazyLoadingResponseOfDeliveryShallow>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<DeliveryDetailsDto>><any>_observableThrow(response_);
+                return <Observable<LazyLoadingResponseOfDeliveryShallow>><any>_observableThrow(response_);
         }));
     }
 
-    protected processList(response: HttpResponseBase): Observable<DeliveryDetailsDto> {
+    protected processList(response: HttpResponseBase): Observable<LazyLoadingResponseOfDeliveryShallow> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -521,7 +529,7 @@ export class DeliveryClient {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = DeliveryDetailsDto.fromJS(resultData200);
+            result200 = LazyLoadingResponseOfDeliveryShallow.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -529,7 +537,7 @@ export class DeliveryClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<DeliveryDetailsDto>(<any>null);
+        return _observableOf<LazyLoadingResponseOfDeliveryShallow>(<any>null);
     }
 }
 
@@ -2573,6 +2581,130 @@ export interface IDeliveryEditDto {
     completed: boolean;
 }
 
+export class LazyLoadingResponseOfDeliveryShallow implements ILazyLoadingResponseOfDeliveryShallow {
+    offset!: number;
+    count!: number;
+    nextOffset!: number;
+    hasMore!: boolean;
+    content?: DeliveryShallow[] | undefined;
+
+    constructor(data?: ILazyLoadingResponseOfDeliveryShallow) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.offset = _data["offset"];
+            this.count = _data["count"];
+            this.nextOffset = _data["nextOffset"];
+            this.hasMore = _data["hasMore"];
+            if (Array.isArray(_data["content"])) {
+                this.content = [] as any;
+                for (let item of _data["content"])
+                    this.content!.push(DeliveryShallow.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): LazyLoadingResponseOfDeliveryShallow {
+        data = typeof data === 'object' ? data : {};
+        let result = new LazyLoadingResponseOfDeliveryShallow();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["offset"] = this.offset;
+        data["count"] = this.count;
+        data["nextOffset"] = this.nextOffset;
+        data["hasMore"] = this.hasMore;
+        if (Array.isArray(this.content)) {
+            data["content"] = [];
+            for (let item of this.content)
+                data["content"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ILazyLoadingResponseOfDeliveryShallow {
+    offset: number;
+    count: number;
+    nextOffset: number;
+    hasMore: boolean;
+    content?: DeliveryShallow[] | undefined;
+}
+
+export class DeliveryShallow implements IDeliveryShallow {
+    id!: number;
+    name!: string;
+    deliveryDate!: Date;
+    completed!: boolean;
+    clientCount!: number;
+    orderCount!: number;
+    recipeCount!: number;
+    totalAmount!: number;
+
+    constructor(data?: IDeliveryShallow) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.deliveryDate = _data["deliveryDate"] ? new Date(_data["deliveryDate"].toString()) : <any>undefined;
+            this.completed = _data["completed"];
+            this.clientCount = _data["clientCount"];
+            this.orderCount = _data["orderCount"];
+            this.recipeCount = _data["recipeCount"];
+            this.totalAmount = _data["totalAmount"];
+        }
+    }
+
+    static fromJS(data: any): DeliveryShallow {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeliveryShallow();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["deliveryDate"] = this.deliveryDate ? this.deliveryDate.toISOString() : <any>undefined;
+        data["completed"] = this.completed;
+        data["clientCount"] = this.clientCount;
+        data["orderCount"] = this.orderCount;
+        data["recipeCount"] = this.recipeCount;
+        data["totalAmount"] = this.totalAmount;
+        return data; 
+    }
+}
+
+export interface IDeliveryShallow {
+    id: number;
+    name: string;
+    deliveryDate: Date;
+    completed: boolean;
+    clientCount: number;
+    orderCount: number;
+    recipeCount: number;
+    totalAmount: number;
+}
+
 export class DeliverySearchParamsDto implements IDeliverySearchParamsDto {
 
     constructor(data?: IDeliverySearchParamsDto) {
@@ -2669,6 +2801,7 @@ export class Ingredient implements IIngredient {
     amountOnHand!: number;
     measurementUnit!: string;
     quantityPerPackage!: number;
+    warningThreshold!: number;
 
     constructor(data?: IIngredient) {
         if (data) {
@@ -2686,6 +2819,7 @@ export class Ingredient implements IIngredient {
             this.amountOnHand = _data["amountOnHand"];
             this.measurementUnit = _data["measurementUnit"];
             this.quantityPerPackage = _data["quantityPerPackage"];
+            this.warningThreshold = _data["warningThreshold"];
         }
     }
 
@@ -2703,6 +2837,7 @@ export class Ingredient implements IIngredient {
         data["amountOnHand"] = this.amountOnHand;
         data["measurementUnit"] = this.measurementUnit;
         data["quantityPerPackage"] = this.quantityPerPackage;
+        data["warningThreshold"] = this.warningThreshold;
         return data; 
     }
 }
@@ -2713,6 +2848,7 @@ export interface IIngredient {
     amountOnHand: number;
     measurementUnit: string;
     quantityPerPackage: number;
+    warningThreshold: number;
 }
 
 export class IngredientDto implements IIngredientDto {
@@ -2720,6 +2856,8 @@ export class IngredientDto implements IIngredientDto {
     name?: string | undefined;
     amountOnHand!: number;
     measurementUnit?: string | undefined;
+    quantityPerPackage!: number;
+    warningThreshold!: number;
 
     constructor(data?: IIngredientDto) {
         if (data) {
@@ -2736,6 +2874,8 @@ export class IngredientDto implements IIngredientDto {
             this.name = _data["name"];
             this.amountOnHand = _data["amountOnHand"];
             this.measurementUnit = _data["measurementUnit"];
+            this.quantityPerPackage = _data["quantityPerPackage"];
+            this.warningThreshold = _data["warningThreshold"];
         }
     }
 
@@ -2752,6 +2892,8 @@ export class IngredientDto implements IIngredientDto {
         data["name"] = this.name;
         data["amountOnHand"] = this.amountOnHand;
         data["measurementUnit"] = this.measurementUnit;
+        data["quantityPerPackage"] = this.quantityPerPackage;
+        data["warningThreshold"] = this.warningThreshold;
         return data; 
     }
 }
@@ -2761,12 +2903,16 @@ export interface IIngredientDto {
     name?: string | undefined;
     amountOnHand: number;
     measurementUnit?: string | undefined;
+    quantityPerPackage: number;
+    warningThreshold: number;
 }
 
 export class IngredientCreateDto implements IIngredientCreateDto {
     id!: number;
     name?: string | undefined;
     measurementUnit?: string | undefined;
+    quantityPerPackage!: number;
+    warningThreshold!: number;
 
     constructor(data?: IIngredientCreateDto) {
         if (data) {
@@ -2782,6 +2928,8 @@ export class IngredientCreateDto implements IIngredientCreateDto {
             this.id = _data["id"];
             this.name = _data["name"];
             this.measurementUnit = _data["measurementUnit"];
+            this.quantityPerPackage = _data["quantityPerPackage"];
+            this.warningThreshold = _data["warningThreshold"];
         }
     }
 
@@ -2797,6 +2945,8 @@ export class IngredientCreateDto implements IIngredientCreateDto {
         data["id"] = this.id;
         data["name"] = this.name;
         data["measurementUnit"] = this.measurementUnit;
+        data["quantityPerPackage"] = this.quantityPerPackage;
+        data["warningThreshold"] = this.warningThreshold;
         return data; 
     }
 }
@@ -2805,6 +2955,8 @@ export interface IIngredientCreateDto {
     id: number;
     name?: string | undefined;
     measurementUnit?: string | undefined;
+    quantityPerPackage: number;
+    warningThreshold: number;
 }
 
 export class MixingBatchCreateDto implements IMixingBatchCreateDto {
