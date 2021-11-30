@@ -47,7 +47,7 @@
           <cdk-virtual-scroll-viewport (scrolledIndexChange)="nextBatch($event,users.length)"
                                        class="picklist-viewport"
                                        itemSize="50">
-            <div (click)="select(user)" *cdkVirtualFor="let user of users" class="example-item auto m-1">
+            <div (click)="select(user)" *cdkVirtualFor="let user of users" class="example-item auto 2">
               <button
                 [ngClass]="{
                   'btn-primary': user!==selectedItem,
