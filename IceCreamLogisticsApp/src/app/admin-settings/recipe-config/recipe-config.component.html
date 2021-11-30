@@ -46,7 +46,7 @@
           <cdk-virtual-scroll-viewport (scrolledIndexChange)="nextBatch($event,recipes.length)"
                                        class="picklist-viewport"
                                        itemSize="50">
-            <div (click)="select(recipe)" *cdkVirtualFor="let recipe of recipes" class="example-item auto m-1">
+            <div (click)="select(recipe)" *cdkVirtualFor="let recipe of recipes" class="example-item auto m-2">
               <button
                 [ngClass]="{
                   'btn-primary': recipe!==selectedItem && recipe.canBeOrdered,

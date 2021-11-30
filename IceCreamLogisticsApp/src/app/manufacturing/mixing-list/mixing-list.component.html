@@ -6,9 +6,9 @@
           <cdk-virtual-scroll-viewport (scrolledIndexChange)="nextBatch($event,batches.length)"
                                        class="picklist-viewport"
                                        itemSize="50">
-            <div (click)="select(batch)" *cdkVirtualFor="let batch of batches" class="example-item auto m-1">
+            <div (click)="select(batch)" *cdkVirtualFor="let batch of batches" class="example-item auto m-2">
               <button
-                class=" btn btn-primary w-100">{{batch.name}}</button>
+                class=" btn btn-primary w-100">{{batch.name}} {{batch.created | date: 'yyyy-MM-dd'}}</button>
             </div>
           </cdk-virtual-scroll-viewport>
         </ng-container>
