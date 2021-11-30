@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using IceCreamLogistics.Domain;
+using IceCreamLogistics.Domain.Security;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -15,12 +16,13 @@ namespace IceCreamLogistics.Application.Security
 {
     internal class AuthService : IAuthService
     {
-        public AuthService(IAuthRepository authRepository, IUserRepository userRepository, IHashingService hashingService, IUserTokenService userTokenService)
+        public AuthService(IAuthRepository authRepository, IUserRepository userRepository, IHashingService hashingService, IUserTokenService userTokenService, ICurrentUserService currentUserService)
         {
             AuthRepository = authRepository;
             UserRepository = userRepository;
             HashingService = hashingService;
             UserTokenService = userTokenService;
+            _currentUserService = currentUserService;
             _rng = RandomNumberGenerator.Create();
         }
 
@@ -28,6 +30,8 @@ namespace IceCreamLogistics.Application.Security
         private IUserRepository UserRepository { get; }
         private IHashingService HashingService { get; }
         private IUserTokenService UserTokenService { get; }
+        private readonly ICurrentUserService _currentUserService;
+        
         private readonly RandomNumberGenerator _rng;
 
         public async Task<string> AuthenticateUser(string name, string password)
@@ -49,12 +53,21 @@ namespace IceCreamLogistics.Application.Security
             var salt = new byte[128];
             _rng.GetBytes(salt);
             var passwordHash = HashingService.CalculateHash(password: password, salt: salt.ToString());
-            
-            var authInfo = await AuthRepository.GetAuthInfo(userId);
-            authInfo.Salt = salt.ToString();
-            authInfo.PasswordHash = passwordHash;
+
+            var authInfo = new BasicAuthInfo()
+            {
+                Salt = salt.ToString(),
+                PasswordHash = passwordHash,
+                UserId = userId
+            };
+
             
             await AuthRepository.UpsertAuthInfo(authInfo);
+        }
+
+        public async Task<User> GetCurrentUser()
+        {
+            return await UserRepository.GetUserById(await _currentUserService.GetUserId());
         }
     }
 }

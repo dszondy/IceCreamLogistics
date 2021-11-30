@@ -11,18 +11,18 @@ namespace IceCreamLogistics.Presentation.Controllers
     [ApiController]    
     public class AuthController : Controller
     {
-        private IAuthService AuthService { get; }
+        private readonly IAuthService _authService;
 
         public AuthController(IAuthService authService)
         {
-            AuthService = authService;
+            _authService = authService;
         }
 
         [AllowAnonymous]    
         [HttpPost]    
         public async Task<ActionResult<string>> Login([FromBody] LoginDto loginDto)
         {
-            var token = await AuthService.AuthenticateUser(loginDto.Name, loginDto.Password);
+            var token = await _authService.AuthenticateUser(loginDto.Name, loginDto.Password);
             if (token is not null)
             {
                 return Ok(token);
@@ -37,6 +37,12 @@ namespace IceCreamLogistics.Presentation.Controllers
         public ActionResult<IEnumerable<string>> Get()    
         {    
             return new string[] { "value1", "value2", "value3", "value4", "value5" };    
-        } 
+        }
+        
+        [HttpGet("current-user")]    
+        public async Task<ActionResult<UserSecurityInfoDto>> GetCurrentUser()    
+        {    
+            return (await _authService.GetCurrentUser()).MapTo<UserSecurityInfoDto>();    
+        }
     }
 }   

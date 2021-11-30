@@ -1,8 +1,9 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
 import {BehaviorSubject, Observable, of} from 'rxjs';
-import {Role, SecurityClient, UserCreateDto, UserSecurityInfoDto, UserShallowDto} from '../../core/api/api';
+import {AuthClient, Role, SecurityClient, UserCreateDto, UserSecurityInfoDto, UserShallowDto} from '../../core/api/api';
 import {map, mergeMap, scan, switchMap, tap, throttleTime} from 'rxjs/operators';
+import {AuthService} from '../../core/security/auth.service';
 
 @Component({
   selector: 'app-user-config',
@@ -33,7 +34,7 @@ export class UserConfigComponent implements OnInit {
   selectedItem: UserShallowDto;
   canAdd = true;
 
-  constructor(private securityClient: SecurityClient) {
+  constructor(private securityClient: SecurityClient, private authService: AuthService) {
     this.reset();
   }
 
@@ -89,19 +90,16 @@ export class UserConfigComponent implements OnInit {
         roles: this.selectedItemDetails.roles,
         clientId : this.selectedItemDetails.client?.id,
       });
-
       if (this.selectedItemDetails.id) {
         return this.securityClient.update(user, this.selectedItemDetails.id
         ).pipe(tap(x => {
           Object.assign(this.selectedItem, x);
-          this.reset();
           this.searchText = '';
         }));
       } else {
         return this.securityClient.create(user)
           .pipe(tap(x => {
             Object.assign(this.selectedItem, x);
-            this.reset();
             this.searchText = '';
           }));
       }
@@ -128,9 +126,9 @@ export class UserConfigComponent implements OnInit {
   }
 
   setRole(role: Role, $event: any): void {
-    if(!this.selectedItemDetails.roles)
+    if (!this.selectedItemDetails.roles)
       this.selectedItemDetails.roles = [];
-    if ($event){
+    if (!$event){
       this.selectedItemDetails.roles.splice(this.selectedItemDetails.roles.indexOf(role), 1);
     }
     else {
@@ -140,5 +138,9 @@ export class UserConfigComponent implements OnInit {
 
   hasRole(role: Role): boolean {
     return this.selectedItemDetails.roles?.includes(role);
+  }
+
+  changePassword(): void {
+    this.authService.changePassword(this.selectedItem.id);
   }
 }

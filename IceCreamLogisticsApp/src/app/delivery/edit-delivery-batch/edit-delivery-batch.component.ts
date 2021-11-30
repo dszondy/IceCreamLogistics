@@ -13,7 +13,15 @@ export class EditDeliveryBatchComponent implements OnInit {
   selectedOrdersById = new Map<number, OrderForDeliveryDto>() ;
 
   constructor(activatedRoute: ActivatedRoute, private deliveryClient: DeliveryClient) {
-    if (activatedRoute.snapshot.params.id){}
+    if (activatedRoute.snapshot.params.id){
+      this.deliveryClient.get(activatedRoute.snapshot.params.id).subscribe(delivery => {
+        this.delivery = delivery;
+        this.selectedOrdersById = new Map<number, OrderForDeliveryDto>();
+        this.delivery.orders.forEach(order => {
+          this.selectedOrdersById.set(order.id, order);
+        });
+      });
+    }
     else {
       this.delivery = new DeliveryDetailsDto({name: '', deliveryDate: new Date(), orders: [], id: undefined, completed: false});
     }
@@ -27,7 +35,8 @@ export class EditDeliveryBatchComponent implements OnInit {
       completed: false,
       id: this.delivery.id,
       name: this.delivery.name,
-      deliveryDate: this.delivery.deliveryDate,
+      // @ts-ignore
+      deliveryDate: new Date(Date.parse(this.delivery.deliveryDate)),
       orderIds: Array.from(this.selectedOrdersById.keys())
     });
 
@@ -46,5 +55,9 @@ export class EditDeliveryBatchComponent implements OnInit {
 
   orderRemoved($event: OrderForDeliveryDto):void {
     this.selectedOrdersById.delete($event.id);
+  }
+
+  selectedOrders(): OrderForDeliveryDto[] {
+    return Array.from(this.selectedOrdersById.values());
   }
 }

@@ -143,7 +143,12 @@ namespace IceCreamLogistics.Infrastructure.DAL
                 .HasMany(x => x.Orders)
                 .WithOne()
                 .HasForeignKey(x => x.DeliveryId);
-                
+            
+            modelBuilder.Entity<UserDbo>()
+                .HasOne(x => x.Client)
+                .WithMany()
+                .HasForeignKey(x => x.ClientId)
+                .IsRequired(false);
         }
     }
 }

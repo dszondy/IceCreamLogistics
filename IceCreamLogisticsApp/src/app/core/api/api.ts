@@ -133,6 +133,54 @@ export class AuthClient {
         }
         return _observableOf<string[]>(<any>null);
     }
+
+    getCurrentUser() : Observable<UserSecurityInfoDto> {
+        let url_ = this.baseUrl + "/auth/current-user";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCurrentUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCurrentUser(<any>response_);
+                } catch (e) {
+                    return <Observable<UserSecurityInfoDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<UserSecurityInfoDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCurrentUser(response: HttpResponseBase): Observable<UserSecurityInfoDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserSecurityInfoDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<UserSecurityInfoDto>(<any>null);
+    }
 }
 
 @Injectable({
@@ -2191,6 +2239,209 @@ export interface ILoginDto {
     password?: string | undefined;
 }
 
+export class UserSecurityInfoDto implements IUserSecurityInfoDto {
+    id!: number;
+    name?: string | undefined;
+    email?: string | undefined;
+    client?: ClientDto | undefined;
+    roles?: Role[] | undefined;
+
+    constructor(data?: IUserSecurityInfoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.email = _data["email"];
+            this.client = _data["client"] ? ClientDto.fromJS(_data["client"]) : <any>undefined;
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): UserSecurityInfoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserSecurityInfoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["email"] = this.email;
+        data["client"] = this.client ? this.client.toJSON() : <any>undefined;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item);
+        }
+        return data; 
+    }
+}
+
+export interface IUserSecurityInfoDto {
+    id: number;
+    name?: string | undefined;
+    email?: string | undefined;
+    client?: ClientDto | undefined;
+    roles?: Role[] | undefined;
+}
+
+export class Client implements IClient {
+    id!: number;
+    name!: string;
+    address!: Address;
+    email!: string;
+    phone!: string;
+
+    constructor(data?: IClient) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.address = new Address();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.address = _data["address"] ? Address.fromJS(_data["address"]) : new Address();
+            this.email = _data["email"];
+            this.phone = _data["phone"];
+        }
+    }
+
+    static fromJS(data: any): Client {
+        data = typeof data === 'object' ? data : {};
+        let result = new Client();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["address"] = this.address ? this.address.toJSON() : <any>undefined;
+        data["email"] = this.email;
+        data["phone"] = this.phone;
+        return data; 
+    }
+}
+
+export interface IClient {
+    id: number;
+    name: string;
+    address: Address;
+    email: string;
+    phone: string;
+}
+
+export class ClientDto extends Client implements IClientDto {
+
+    constructor(data?: IClientDto) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+    }
+
+    static fromJS(data: any): ClientDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IClientDto extends IClient {
+}
+
+export class Address implements IAddress {
+    country!: string;
+    zip!: string;
+    region!: string;
+    city!: string;
+    addressLine!: string;
+
+    constructor(data?: IAddress) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.country = _data["country"];
+            this.zip = _data["zip"];
+            this.region = _data["region"];
+            this.city = _data["city"];
+            this.addressLine = _data["addressLine"];
+        }
+    }
+
+    static fromJS(data: any): Address {
+        data = typeof data === 'object' ? data : {};
+        let result = new Address();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["country"] = this.country;
+        data["zip"] = this.zip;
+        data["region"] = this.region;
+        data["city"] = this.city;
+        data["addressLine"] = this.addressLine;
+        return data; 
+    }
+}
+
+export interface IAddress {
+    country: string;
+    zip: string;
+    region: string;
+    city: string;
+    addressLine: string;
+}
+
+export enum Role {
+    Admin = 0,
+    Order = 1,
+    Manufacturing = 2,
+    Delivery = 3,
+    Dashboard = 4,
+    Configuration = 5,
+}
+
 export class LazyLoadingResponseOfClient implements ILazyLoadingResponseOfClient {
     offset!: number;
     count!: number;
@@ -2249,140 +2500,6 @@ export interface ILazyLoadingResponseOfClient {
     nextOffset: number;
     hasMore: boolean;
     content?: Client[] | undefined;
-}
-
-export class Client implements IClient {
-    id!: number;
-    name!: string;
-    address!: Address;
-    email!: string;
-    phone!: string;
-
-    constructor(data?: IClient) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.address = new Address();
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.address = _data["address"] ? Address.fromJS(_data["address"]) : new Address();
-            this.email = _data["email"];
-            this.phone = _data["phone"];
-        }
-    }
-
-    static fromJS(data: any): Client {
-        data = typeof data === 'object' ? data : {};
-        let result = new Client();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["address"] = this.address ? this.address.toJSON() : <any>undefined;
-        data["email"] = this.email;
-        data["phone"] = this.phone;
-        return data; 
-    }
-}
-
-export interface IClient {
-    id: number;
-    name: string;
-    address: Address;
-    email: string;
-    phone: string;
-}
-
-export class Address implements IAddress {
-    country!: string;
-    zip!: string;
-    region!: string;
-    city!: string;
-    addressLine!: string;
-
-    constructor(data?: IAddress) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.country = _data["country"];
-            this.zip = _data["zip"];
-            this.region = _data["region"];
-            this.city = _data["city"];
-            this.addressLine = _data["addressLine"];
-        }
-    }
-
-    static fromJS(data: any): Address {
-        data = typeof data === 'object' ? data : {};
-        let result = new Address();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["country"] = this.country;
-        data["zip"] = this.zip;
-        data["region"] = this.region;
-        data["city"] = this.city;
-        data["addressLine"] = this.addressLine;
-        return data; 
-    }
-}
-
-export interface IAddress {
-    country: string;
-    zip: string;
-    region: string;
-    city: string;
-    addressLine: string;
-}
-
-export class ClientDto extends Client implements IClientDto {
-
-    constructor(data?: IClientDto) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-    }
-
-    static fromJS(data: any): ClientDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ClientDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IClientDto extends IClient {
 }
 
 export class DeliveryDetailsDto implements IDeliveryDetailsDto {
@@ -2588,6 +2705,7 @@ export interface IOrderDetailsItem {
 export class Recipe implements IRecipe {
     id!: number;
     name!: string;
+    descriptionForLabels!: string;
     canBeOrdered!: boolean;
     pricePerUnit!: number;
 
@@ -2604,6 +2722,7 @@ export class Recipe implements IRecipe {
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
+            this.descriptionForLabels = _data["descriptionForLabels"];
             this.canBeOrdered = _data["canBeOrdered"];
             this.pricePerUnit = _data["pricePerUnit"];
         }
@@ -2620,6 +2739,7 @@ export class Recipe implements IRecipe {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["name"] = this.name;
+        data["descriptionForLabels"] = this.descriptionForLabels;
         data["canBeOrdered"] = this.canBeOrdered;
         data["pricePerUnit"] = this.pricePerUnit;
         return data; 
@@ -2629,6 +2749,7 @@ export class Recipe implements IRecipe {
 export interface IRecipe {
     id: number;
     name: string;
+    descriptionForLabels: string;
     canBeOrdered: boolean;
     pricePerUnit: number;
 }
@@ -3776,6 +3897,7 @@ export class RecipeDto implements IRecipeDto {
     name?: string | undefined;
     canBeOrdered!: boolean;
     pricePerUnit!: number;
+    descriptionForLabels?: string | undefined;
 
     constructor(data?: IRecipeDto) {
         if (data) {
@@ -3792,6 +3914,7 @@ export class RecipeDto implements IRecipeDto {
             this.name = _data["name"];
             this.canBeOrdered = _data["canBeOrdered"];
             this.pricePerUnit = _data["pricePerUnit"];
+            this.descriptionForLabels = _data["descriptionForLabels"];
         }
     }
 
@@ -3808,6 +3931,7 @@ export class RecipeDto implements IRecipeDto {
         data["name"] = this.name;
         data["canBeOrdered"] = this.canBeOrdered;
         data["pricePerUnit"] = this.pricePerUnit;
+        data["descriptionForLabels"] = this.descriptionForLabels;
         return data; 
     }
 }
@@ -3817,6 +3941,7 @@ export interface IRecipeDto {
     name?: string | undefined;
     canBeOrdered: boolean;
     pricePerUnit: number;
+    descriptionForLabels?: string | undefined;
 }
 
 export class LazyLoadingResponseOfMixingBatchShallowDto implements ILazyLoadingResponseOfMixingBatchShallowDto {
@@ -4955,75 +5080,6 @@ export class RecipeCreateIngredientDto implements IRecipeCreateIngredientDto {
 export interface IRecipeCreateIngredientDto {
     ingredientId: number;
     amount: number;
-}
-
-export class UserSecurityInfoDto implements IUserSecurityInfoDto {
-    id!: number;
-    name?: string | undefined;
-    email?: string | undefined;
-    client?: ClientDto | undefined;
-    roles?: Role[] | undefined;
-
-    constructor(data?: IUserSecurityInfoDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.email = _data["email"];
-            this.client = _data["client"] ? ClientDto.fromJS(_data["client"]) : <any>undefined;
-            if (Array.isArray(_data["roles"])) {
-                this.roles = [] as any;
-                for (let item of _data["roles"])
-                    this.roles!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): UserSecurityInfoDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserSecurityInfoDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["email"] = this.email;
-        data["client"] = this.client ? this.client.toJSON() : <any>undefined;
-        if (Array.isArray(this.roles)) {
-            data["roles"] = [];
-            for (let item of this.roles)
-                data["roles"].push(item);
-        }
-        return data; 
-    }
-}
-
-export interface IUserSecurityInfoDto {
-    id: number;
-    name?: string | undefined;
-    email?: string | undefined;
-    client?: ClientDto | undefined;
-    roles?: Role[] | undefined;
-}
-
-export enum Role {
-    Admin = 0,
-    Order = 1,
-    Manufacturing = 2,
-    Delivery = 3,
-    Dashboard = 4,
-    Configuration = 5,
 }
 
 export class UserCreateDto implements IUserCreateDto {

@@ -12,8 +12,9 @@
           <input [(ngModel)]="selectedItemDetails.email" class="form-control" id="email" type="text">
         </div>
       </div>
+      <button class="btn btn-warning" (click)="changePassword()">Jelszó módosítása</button>
       <tabset>
-        <tab heading="Megrendelő" class="mt-2" (selectTab)="onSetToClient(true)">
+        <tab heading="Megrendelő" class="mt-2" [active]="!!selectedItemDetails.client" (selectTab)="onSetToClient(true)">
           <app-client-select [(selectedClient)]="selectedItemDetails.client"></app-client-select>
         </tab>
         <tab heading="Belső felhasználó" class="mt-2" (selectTab)="onSetToClient(false)">
