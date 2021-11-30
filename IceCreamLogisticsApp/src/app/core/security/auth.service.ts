@@ -1,12 +1,15 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
+import {BsModalService} from 'ngx-bootstrap/modal';
+import {PasswordChangeModalComponent} from './password-change-modal/password-change-modal.component';
+import {UserShallowDto} from '../api/api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor() {
+  constructor(private modalService: BsModalService) {
   }
 
   private _token: BehaviorSubject<string> = new BehaviorSubject<string>(this.getToken());
@@ -23,7 +26,20 @@ export class AuthService {
     this._token.next(token);
   }
 
-  Logout() {
-
+  logout() {
+    this.setToken(undefined)
   }
+
+  changeOwnPassword(): void {
+    const modalRef = this.modalService.show(PasswordChangeModalComponent);
+  }
+
+  changePassword(userId: number): void {
+    const modalRef = this.modalService.show(PasswordChangeModalComponent, {
+      initialState: {
+        userId
+      }
+    });
+  }
+
 }

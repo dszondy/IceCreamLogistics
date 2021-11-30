@@ -1,6 +1,6 @@
 <div
-  [ngClass]="{'btn btn-warning':isWarning(), 'btn btn-danger': isDanger(), 'nav-link': isNone()}">
+  [ngClass]="{'btn':!isNone(),'btn-warning':isWarning(), 'btn-danger': isDanger(), 'nav-link': isNone()}">
   <fa-icon *ngIf="isWarning()" icon="exclamation-triangle"></fa-icon>
-  <fa-icon icon="exclamation-circle" *ngIf="isDanger()"></fa-icon>
+  <fa-icon *ngIf="isDanger()" icon="exclamation-circle"></fa-icon>
   <ng-content></ng-content>
 </div>

@@ -1,0 +1,19 @@
+<div class="card bg-primary p-2">
+  <ng-container *ngIf="itemsDisplayedObservable | async as deliveries" style="height: 80vh">
+    <cdk-virtual-scroll-viewport (scrolledIndexChange)="nextBatch($event, deliveries.length)" [itemSize]="200"
+                                 style="height: 80vh">
+      <div *cdkVirtualFor="let delivery of deliveries">
+        <alert type="success">
+
+        <div class="row align-items-center">
+            <div class="col-6"> <a [routerLink]="[delivery.id]" class="text-dark">{{delivery.name}} ({{delivery.deliveryDate | date:'yyyy-MM-dd'}})</a></div>
+            <div class="col-3">{{delivery.orderCount}} megrendelés {{delivery.clientCount}} kliens számára</div>
+            <div class="col-3">
+              {{delivery.completed? 'Kiszállítva' : 'Folyamatban'}}
+            </div>
+          </div>
+        </alert>
+      </div>
+    </cdk-virtual-scroll-viewport>
+  </ng-container>
+</div>

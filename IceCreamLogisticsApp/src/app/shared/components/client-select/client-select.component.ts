@@ -31,6 +31,9 @@ export class ClientSelectComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(this.selectedClient) {
+      this.asyncSelected = this.selectedClient.name;
+    }
   }
 
   startSearch() {

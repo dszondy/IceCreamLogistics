@@ -5,8 +5,7 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav">
-
+    <ul class="navbar-nav" *ngIf="hasRole(Role.Order) || isClient()">
       <li class="btn-group nav-item" dropdown>
         <a aria-controls="adminNavDropdown" class="nav-link" dropdownToggle id="adminNavDropdown">
           Megrendelés
@@ -19,19 +18,19 @@
         </ul>
       </li>
 
-      <li class="btn-group nav-item" dropdown>
-        <a aria-controls="adminNavDropdown" class="nav-link" dropdownToggle id="adminNavDropdown">
+      <li class="btn-group nav-item" dropdown *ngIf="hasRole(Role.Manufacturing)">
+        <a aria-controls="mixingNavDropdown" class="nav-link" dropdownToggle id="mixingNavDropdown">
           Keverés
           <fa-icon icon="caret-down"></fa-icon>
         </a>
-        <ul *dropdownMenu aria-labelledby="adminNavDropdown" class="dropdown-menu"
+        <ul *dropdownMenu aria-labelledby="mixingNavDropdown" class="dropdown-menu"
             id="dropdown-basic" role="menu">
           <li role="menuitem"><a class="nav-link" routerLink="/manufacturing/create-batch">Keverés kezdése</a></li>
           <li role="menuitem"><a class="nav-link" routerLink="/manufacturing/batch">Eddigi keverések</a></li>
         </ul>
       </li>
 
-      <li class="btn-group nav-item" dropdown>
+      <li class="btn-group nav-item" dropdown *ngIf="hasRole(Role.Delivery)">
         <a aria-controls="deliveryNavDropdown" class="nav-link" dropdownToggle id="deliveryNavDropdown">
           Kiszállítás
           <fa-icon icon="caret-down"></fa-icon>
@@ -39,6 +38,7 @@
         <ul *dropdownMenu aria-labelledby="deliveryNavDropdown" class="dropdown-menu"
             id="deliveryDropdown" role="menu">
           <li role="menuitem"><a class="nav-link" routerLink="/delivery/new">Új kiszállítás</a></li>
+          <li role="menuitem"><a class="nav-link" routerLink="/delivery/">Kiszállítások</a></li>
         </ul>
       </li>
       <li class="btn-group nav-item"  routerLink="/inventory">
@@ -50,7 +50,7 @@
       </li>
 
 
-      <li class="btn-group nav-item" dropdown>
+      <li class="btn-group nav-item" dropdown *ngIf="hasRole(Role.Admin)">
         <a aria-controls="adminNavDropdown" class="nav-link" dropdownToggle id="adminNavDropdown">
           Admin Settings
           <fa-icon icon="caret-down"></fa-icon>
@@ -64,7 +64,16 @@
 
         </ul>
       </li>
-
+      <li class="btn-group nav-item" dropdown>
+        <a aria-controls="ownSettingsNavDropdown" class="nav-link" dropdownToggle id="ownSettingsNavDropdown">
+          Saját beállítások
+          <fa-icon icon="caret-down"></fa-icon>
+        </a>
+        <ul *dropdownMenu aria-labelledby="ownSettingsNavDropdown" class="dropdown-menu"
+            id="ownSettingsNavDropdownMenu" role="menu">
+          <li role="menuitem"><a class="dropdown-item" (click)="changePassword()">Jelszó módosítása</a></li>
+        </ul>
+      </li>
     </ul>
   </div>
   <div class="float-right"></div>

@@ -49,8 +49,8 @@ namespace IceCreamLogistics.Presentation.Controllers
         
         [HttpGet]
         [Route("{id}")]
-        public ActionResult<UserSecurityInfoDto> GetUserInfo([FromRoute] int id){    
-            var result = _userService.Get(id);
+        public async Task<ActionResult<UserSecurityInfoDto>> GetUserInfo([FromRoute] int id){    
+            var result = await _userService.Get(id);
             return Ok(result.MapTo<UserSecurityInfoDto>());
         } 
         

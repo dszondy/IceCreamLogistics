@@ -43,7 +43,7 @@ namespace IceCreamLogistics.Presentation
                     {    
                         ValidateIssuer = false,    
                         ValidateAudience = false,    
-                        ValidateLifetime = false,    
+                        ValidateLifetime = true,    
                         ValidateIssuerSigningKey = false,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))    
                     };    
