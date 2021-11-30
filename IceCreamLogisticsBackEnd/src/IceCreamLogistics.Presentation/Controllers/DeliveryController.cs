@@ -50,7 +50,7 @@ namespace IceCreamLogistics.Presentation.Controllers
         [Route("")]
         public async Task<ActionResult<LazyLoadingResponse<DeliveryShallow>>> List([FromQuery] DeliverySearchParamsDto searchParams, [FromQuery] LazyLoadingParamsDto lazyLoadingParams)
         {
-            var result = await _deliveryService.List(searchParams.MapTo<DeliverySearchParams>(), lazyLoadingParams.MapTo<LazyLoadingParams>());
+            var result = await _deliveryService.List(new DeliverySearchParams(), lazyLoadingParams.MapTo<LazyLoadingParams>());
             return result
                 .Select(x => x.MapTo<DeliveryShallow>())
                 .ToLazyLoadingResponse(lazyLoadingParams);

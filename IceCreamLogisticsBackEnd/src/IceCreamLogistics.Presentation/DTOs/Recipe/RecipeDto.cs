@@ -9,6 +9,7 @@ namespace IceCreamLogistics.Presentation.DTOs
         public string Name { get; set; }
         public bool CanBeOrdered { get; set; }
         public decimal PricePerUnit { get; set; }
+        public string DescriptionForLabels { get; set; }
 
     }
 }

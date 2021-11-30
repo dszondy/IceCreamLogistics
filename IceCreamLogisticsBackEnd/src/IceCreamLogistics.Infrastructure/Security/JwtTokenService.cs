@@ -34,12 +34,13 @@ namespace IceCreamLogistics.Infrastructure.Security
 
             IEnumerable<Claim> claims = (new []
             {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim("UserId", user.Id.ToString())
+                new Claim(ClaimTypes.Email, user.Email?? ""),
+                new Claim(ClaimTypes.Name, user.Name?? ""),
+                new Claim("UserId", user.Id.ToString()),
             }).Concat(
                 user.Roles
-                    ?.Select(x => new Claim(ClaimTypes.Role, x.ToString())));
+                    ?.Select(x => new Claim(ClaimTypes.Role, x.ToString()))
+                ?? Enumerable.Empty<Claim>());
             
             if (user.Client is not null)
             {

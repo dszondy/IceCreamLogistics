@@ -11,8 +11,10 @@
     </div>
     <div class="row p-2 col-5 m-0">
       <label for="date">Kiszállítás dátuma: </label>
-      <input [(ngModel)]="delivery.deliveryDate" class="form-control" id="date" type="date">
-    </div>
+      <input [ngModel] ="delivery.deliveryDate | date:'yyyy-MM-dd'" (ngModelChange)="delivery.deliveryDate = $event"
+             class="form-control"
+             id="date"
+             type="date">    </div>
   </div>
   <tabset>
     <tab #searchTab="tab" heading="Keresés">
@@ -22,7 +24,7 @@
         [selectedOrdersById]="selectedOrdersById"></app-list-orders-for-delivery>
     </tab>
     <tab heading="Részletek">
-      <app-preview-batch></app-preview-batch>
+      <app-preview-batch [orders]="selectedOrders()" (orderRemoved)="orderRemoved($event)" ></app-preview-batch>
     </tab>
   </tabset>
 </div>

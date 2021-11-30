@@ -24,6 +24,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         {
             var user = await _dbContext.Users
                 .Include(x => x.Roles)
+                .Include(x => x.Client)
                 .FirstOrDefaultAsync(x => x.Id == id);
             return DboMappingProvider.Mapper
                 .From(user)
@@ -34,6 +35,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         {
             var user = await _dbContext.Users
                 .Include(x => x.Roles)
+                .Include(x => x.Client)
                 .FirstOrDefaultAsync(x => x.Name == name);
             return  DboMappingProvider.Mapper
                 .From(user)
@@ -67,6 +69,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                     .ToList()
                     .ForEach(x => dbo.Roles.Add(x));
             }
+            dbo.ClientId = user.ClientId > 0 ? user.ClientId: null;
 
             await _dbContext.SaveChangesAsync();
             return await GetUserById(dbo.Id);       

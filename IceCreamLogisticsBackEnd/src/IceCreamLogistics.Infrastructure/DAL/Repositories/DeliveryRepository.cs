@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IceCreamLogistics.Application;
@@ -37,6 +38,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
             {
                 Name = delivery.Name,
                 Completed = delivery.Completed,
+                DeliveryDate = delivery.DeliveryDate,
                 Orders = await _dbContext.Orders
                     .Where(x => delivery.OrderIds.Contains(x.Id))
                     .ToArrayAsync()
@@ -53,6 +55,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
             
             deliveryDbo.Name = delivery.Name;
             deliveryDbo.Completed = delivery.Completed;
+            deliveryDbo.DeliveryDate = delivery.DeliveryDate;
             deliveryDbo.Orders = await _dbContext.Orders
                 .Where(x => delivery.OrderIds.Contains(x.Id))
                 .ToArrayAsync();
@@ -74,6 +77,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 Name = x.Name,
                 Completed = x.Completed,
                 OrderCount = x.Orders.Count,
+                DeliveryDate = x.DeliveryDate??new DateTime(2000,1,1),
                 ClientCount = x.Orders.Select(order => order.Client.Id).Distinct().Count(),
                 RecipeCount = x.Orders.SelectMany(order => order.Items).Select(item => item.Recipe.Id).Distinct().Count()
             });

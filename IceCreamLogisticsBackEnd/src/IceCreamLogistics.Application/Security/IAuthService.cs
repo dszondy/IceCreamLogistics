@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using IceCreamLogistics.Domain;
 
 namespace IceCreamLogistics.Application.Security
 {
@@ -6,5 +7,6 @@ namespace IceCreamLogistics.Application.Security
     {
         Task<string> AuthenticateUser(string name, string password);
         Task ChangePassword(int useId, string password);
+        Task<User> GetCurrentUser();
     }
 }

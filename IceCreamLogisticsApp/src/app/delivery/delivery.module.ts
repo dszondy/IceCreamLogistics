@@ -10,9 +10,12 @@ import {FormsModule} from '@angular/forms';
 import {TabsModule} from 'ngx-bootstrap/tabs';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import {AlertModule} from 'ngx-bootstrap/alert';
+import { ListDeliveriesComponent } from './list-deliveries/list-deliveries.component';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {NgxPrintModule} from 'ngx-print';
 
 @NgModule({
-  declarations: [EditDeliveryBatchComponent, ListOrdersForDeliveryComponent, PreviewBatchComponent],
+  declarations: [EditDeliveryBatchComponent, ListOrdersForDeliveryComponent, PreviewBatchComponent, ListDeliveriesComponent],
   imports: [
     CommonModule,
     SharedModule,
@@ -21,6 +24,8 @@ import {AlertModule} from 'ngx-bootstrap/alert';
     TabsModule,
     ScrollingModule,
     AlertModule,
+    FontAwesomeModule,
+    NgxPrintModule,
   ]
 })
 export class DeliveryModule { }

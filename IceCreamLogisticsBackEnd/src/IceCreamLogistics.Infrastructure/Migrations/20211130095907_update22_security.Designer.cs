@@ -3,15 +3,17 @@ using System;
 using IceCreamLogistics.Infrastructure.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace IceCreamLogistics.Infrastructure.Migrations
 {
     [DbContext(typeof(IceCreamLogisticsDbContext))]
-    partial class IceCreamLogisticsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211130095907_update22_security")]
+    partial class update22_security
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,9 +111,6 @@ namespace IceCreamLogistics.Infrastructure.Migrations
 
                     b.Property<bool>("Completed")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("DeliveryDate")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
