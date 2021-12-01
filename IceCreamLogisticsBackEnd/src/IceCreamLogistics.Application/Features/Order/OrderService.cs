@@ -57,5 +57,10 @@ namespace IceCreamLogistics.Application
         {
             return _orderRepository.ListOrdersForDelivery(searchParams, lazyLoadingParams);
         }
+
+        public Task RegisterCancelledAmounts(OrderItemCancellation[] orderItemCancellations)
+        {
+            return _orderProgressRepository.RegisterCancelledAmounts(orderItemCancellations);
+        }
     }
 }

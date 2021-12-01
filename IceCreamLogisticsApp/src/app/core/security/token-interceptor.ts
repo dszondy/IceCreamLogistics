@@ -3,7 +3,6 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {AuthService} from './auth.service';
-import {tokenize} from 'ngx-bootstrap/typeahead';
 import {flatMap} from 'rxjs/internal/operators';
 
 

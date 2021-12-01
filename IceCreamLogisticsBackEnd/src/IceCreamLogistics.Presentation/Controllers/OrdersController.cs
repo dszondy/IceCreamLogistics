@@ -15,7 +15,6 @@ namespace IceCreamLogistics.Presentation.Controllers
     {
 
         private readonly IOrderService _orderService;
-        private readonly  IOrderProgressRepository _orderProcessingService;
 
         public OrdersController(IOrderService orderService)
         {
@@ -92,7 +91,7 @@ namespace IceCreamLogistics.Presentation.Controllers
         [Route("cancel-item")]
         public async  Task<ActionResult> CancelItems([FromBody] OrderItemCancellationDto cancellationDto)
         {
-            await _orderProcessingService.RegisterCancelledAmounts(new []{ cancellationDto.MapTo<OrderItemCancellation>()});
+            await _orderService.RegisterCancelledAmounts(new []{ cancellationDto.MapTo<OrderItemCancellation>()});
             return Ok();
         }
     }

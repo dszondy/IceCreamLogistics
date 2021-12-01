@@ -83,6 +83,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                     .Id,
                 Amount = x.Amount
             }));
+            await _dbContext.SaveChangesAsync();
         }
 
 
@@ -119,7 +120,11 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .Select(x => new OrderPart()
                 {
                     Order = x.MapTo<Order>(),
-                    IncompleteItems = x.Items.Select(item => item.MapTo<OrderItem>())
+                    IncompleteItems = x.Items.Select(item => new OrderItem()
+                    {
+                        Recipe = item.Recipe.MapTo<Recipe>(),
+                        Amount = item.Amount - item.SelectedMixingAmount - item.Cancellations.Sum(x => x.Amount),
+                    })
                 });        
         }
     }

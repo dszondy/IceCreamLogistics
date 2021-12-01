@@ -22,6 +22,7 @@ namespace IceCreamLogistics.Application
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IDeliveryService, DeliveryService>();
             services.AddTransient<IInventoryService, InventoryService>();
+            services.AddTransient<IDashboardService, DashboardService>();
         }
 
     }
