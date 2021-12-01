@@ -17,6 +17,9 @@ export class ClientSelectComponent implements OnInit {
   @Output()
   selectedClientChange = new EventEmitter<Client>();
 
+  @Input()
+  locked = false;
+
   clients: Observable<Client[]>;
   typeaheadLoading?: boolean;
   asyncSelected?: string;

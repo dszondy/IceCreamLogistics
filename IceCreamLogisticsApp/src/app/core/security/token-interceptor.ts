@@ -13,7 +13,11 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+<<<<<<< Updated upstream
     if (request.url.match('auth$') && request.method === 'POST'){
+=======
+    if (request.url.match('auth$') &&request.method === 'POST'){
+>>>>>>> Stashed changes
       return next.handle(request);
     }
 

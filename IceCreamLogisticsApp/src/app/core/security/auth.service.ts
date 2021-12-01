@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, ReplaySubject, Subject} from 'rxjs';
 import {BsModalService} from 'ngx-bootstrap/modal';
 import {PasswordChangeModalComponent} from './password-change-modal/password-change-modal.component';
 import {UserShallowDto} from '../api/api';
@@ -12,7 +12,7 @@ export class AuthService {
   constructor(private modalService: BsModalService) {
   }
 
-  private _token: BehaviorSubject<string> = new BehaviorSubject<string>(this.getToken());
+  private _token = new ReplaySubject<string>(1);
   public get token(): Observable<string> {
     return this._token.asObservable();
   }

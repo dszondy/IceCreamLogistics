@@ -13,6 +13,10 @@ export class LoginComponent {
   bsModalRef?: BsModalRef;
   template = ViewChild('template');
   constructor(private modalService: BsModalService, private authService: AuthService) {
+    if (!authService.getToken()) {
+      this.bsModalRef = this.modalService.show(LoginModalComponent, {ignoreBackdropClick: true});
+    }
+
     authService.token.pipe(
       tap(token => {
         if (token) {
