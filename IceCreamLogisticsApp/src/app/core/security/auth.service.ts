@@ -10,7 +10,11 @@ import {UserShallowDto} from '../api/api';
 export class AuthService {
 
   constructor(private modalService: BsModalService) {
-  }
+    const token = this.getToken();
+    if (token) {
+      this._token.next(token);
+    }
+    }
 
   private _token = new ReplaySubject<string>(1);
   public get token(): Observable<string> {

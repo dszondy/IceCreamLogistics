@@ -14,15 +14,23 @@
     </div>
     <div class="row align-items-center">
       <div class="col-6 p-2   text-greater">Recept</div>
-      <div class=" col-2 p-2  text-greater">Rendelés</div>
-      <div class=" col-2 p-2  text-greater">Törölve</div>
-      <div class=" col-2 p-2  text-greater">Elkészült</div>
+      <div class=" col-1 p-2  text-greater">Rendelés</div>
+      <div class=" col-1 p-2  text-greater">Törölve</div>
+      <div class=" col-1 p-2  text-greater">Elkészült</div>
+      <div class=" col-3 p-2 "></div>
+
     </div>
     <div *ngFor="let orderItem of order.items" class="row align-items-center">
       <div class="col-6 p-2   text-greater">{{orderItem.recipe.name}}</div>
-      <div class=" col-2 p-2  text-greater">{{orderItem.amount}} adag</div>
-      <div class=" col-2 p-2  text-greater">{{orderItem.cancelledAmount}} adag</div>
-      <div class=" col-2 p-2  text-greater">{{orderItem.mixedAmount}} adag</div>
+      <div class=" col-1 p-2  text-greater">{{orderItem.amount}} adag</div>
+      <div class=" col-1 p-2  text-greater">{{orderItem.cancelledAmount}} adag</div>
+      <div class=" col-1 p-2  text-greater">{{orderItem.mixedAmount}} adag</div>
+      <div class="col-3 m-0">
+        <button class="btn btn-dark"
+                (click)="cancelItem(orderItem)">
+          <fa-icon icon="trash"></fa-icon>
+        </button>
+      </div>
     </div>
   </div>
   <div>

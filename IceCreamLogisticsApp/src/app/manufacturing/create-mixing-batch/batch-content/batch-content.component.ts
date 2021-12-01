@@ -36,4 +36,9 @@ export class BatchContentComponent implements OnInit {
     const value = new MixingBatchOrder(order.orderPart, order.member);
     this.orderSelected.emit(value);
   }
+
+  change(order: MixingBatchOrder): void {
+    order.member.items.forEach(x => x.amount = order.items.find( item => item.recipeId == x.recipeId).memberAmount);
+    this.orderSelected.emit(order);
+  }
 }

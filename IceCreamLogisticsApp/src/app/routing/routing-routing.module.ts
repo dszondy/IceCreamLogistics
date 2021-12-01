@@ -1,10 +1,16 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {DashboardComponent} from '../core/dashboard/dashboard/dashboard.component';
 
-const routes: Routes = [{
+const routes: Routes = [
+  {
+    path: '',
+    component: DashboardComponent,
+  },
+  {
   path: 'orders',
   loadChildren: () => import('../order/order.module').then(m => m.OrderModule)
-},
+  },
   {
     path: 'manufacturing',
     loadChildren: () => import('../manufacturing/manufacturing.module').then(m => m.ManufacturingModule)

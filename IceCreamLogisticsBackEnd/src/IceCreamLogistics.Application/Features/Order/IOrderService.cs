@@ -17,5 +17,6 @@ namespace IceCreamLogistics.Application
         
         Task<OrderDetails> Get(int orderId);
         Task<IEnumerable<OrderForDelivery>> SearchForDelivery(OrderForDeliverySearchParams searchParams, LazyLoadingParams lazyLoadingParams);
+        Task RegisterCancelledAmounts(OrderItemCancellation[] orderItemCancellations);
     }
 }

@@ -13,14 +13,19 @@
       <div class="col-3">
         <button class="btn btn-light"
                 printSectionId="print-{{order.id}}}-{{item.recipe.id}}"
-                ngxPrint>
+                ngxPrint [useExistingCss]="true">
           <fa-icon icon="print"></fa-icon></button>
       </div>
       <div style="height: 0; overflow: hidden">
-        <div id="print-{{order.id}}}-{{item.recipe.id}}">
-          {{item.recipe.name}}
-          {{item.recipe.descriptionForLabels}}
-          {{order.requestedDate | date: 'yyyy-MM-dd'}}
+        <div id="print-{{order.id}}}-{{item.recipe.id}}" >
+          <alert type="primary" style="width: 50%">
+            <div>
+              <h1>{{item.recipe.name}}</h1>
+              <h2>{{order.client.name}}</h2>
+              <h5>{{item.recipe.descriptionForLabels}}</h5>
+              lejárat: {{order.requestedDate | date: 'yyyy-MM-dd'}}
+            </div>
+          </alert>
         </div>
       </div>
     </div>

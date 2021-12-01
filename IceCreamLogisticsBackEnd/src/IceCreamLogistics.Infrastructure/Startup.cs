@@ -29,7 +29,7 @@ namespace IceCreamLogistics.Infrastructure
             services.AddTransient<IDeliveryRepository, DeliveryRepository>();
             services.AddTransient<IInventoryStatusRepository, InventoryStatusRepository>();
             services.AddTransient<IInventoryRepository, InventoryRepository>();
-
+            services.AddTransient<IDashboardValuesRepository, DashboardValuesRepository>();
             services.AddTransient<IHashingService, HashingService>();
             services.AddTransient<IUserTokenService, JwtTokenService>();
             services.AddTransient<IUserRepository, UserRepository>();

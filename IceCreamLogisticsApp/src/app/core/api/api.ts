@@ -362,6 +362,75 @@ export class ClientClient {
 @Injectable({
     providedIn: 'root'
 })
+export class DashboardClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:5000";
+    }
+
+    getLast30DaysRecipes() : Observable<DashboardValueDto[]> {
+        let url_ = this.baseUrl + "/dashboard/recipes/last30";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetLast30DaysRecipes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetLast30DaysRecipes(<any>response_);
+                } catch (e) {
+                    return <Observable<DashboardValueDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<DashboardValueDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetLast30DaysRecipes(response: HttpResponseBase): Observable<DashboardValueDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(DashboardValueDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<DashboardValueDto[]>(<any>null);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class DeliveryClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -2500,6 +2569,46 @@ export interface ILazyLoadingResponseOfClient {
     nextOffset: number;
     hasMore: boolean;
     content?: Client[] | undefined;
+}
+
+export class DashboardValueDto implements IDashboardValueDto {
+    value!: number;
+    label?: string | undefined;
+
+    constructor(data?: IDashboardValueDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+            this.label = _data["label"];
+        }
+    }
+
+    static fromJS(data: any): DashboardValueDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DashboardValueDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        data["label"] = this.label;
+        return data; 
+    }
+}
+
+export interface IDashboardValueDto {
+    value: number;
+    label?: string | undefined;
 }
 
 export class DeliveryDetailsDto implements IDeliveryDetailsDto {
