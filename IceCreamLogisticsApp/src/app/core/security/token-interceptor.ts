@@ -3,6 +3,8 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {AuthService} from './auth.service';
+import {tokenize} from 'ngx-bootstrap/typeahead';
+import {flatMap} from 'rxjs/internal/operators';
 
 
 @Injectable()
@@ -11,12 +13,20 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    request = request.clone({
-      setHeaders: {
-        Authorization   : `Bearer ${this.auth.getToken()}`
+
+    if (request.url.match('auth$') &&request.method === 'POST'){
+      return next.handle(request);
+    }
+
+    return this.auth.token.pipe(flatMap(token => {
+      if (token) {
+        request = request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${token}`
+          }
+        });
       }
-    });
-    const handle = next.handle(request);
-    return handle;
+      return next.handle(request);
+    }));
   }
 }

@@ -12,7 +12,8 @@
       <input class="form-control" id="password" type="password" [formControlName]="'password'">
     </div>
     <div class="mb-3">
-    <button class="btn btn-primary" type="submit" [disabled]="!loginForm.valid">Bejelentkezés</button>
+    <button class="btn btn-primary" id="login"
+            type="submit" [disabled]="!loginForm.valid">Bejelentkezés</button>
     </div>
   </form>
 
