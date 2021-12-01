@@ -29,7 +29,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
             if (authInfoDbo is not null)
             {
                 authInfoDbo.PasswordHash = authInfo.PasswordHash;
-                authInfo.Salt = authInfo.Salt;
+                authInfoDbo.Salt = authInfo.Salt;
                 await _dbContext.SaveChangesAsync();
             }
             else
