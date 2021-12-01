@@ -35,3 +35,5 @@ Desktop.ini
 IceCreamLogisticsApp/src/cypress/screenshots/
 
 IceCreamLogisticsApp/src/cypress/videos/
+
+IceCreamLogisticsBackEnd/src/IceCreamLogistics.Presentation/Mappers/DtoMapperImpl.g.cs

@@ -53,9 +53,6 @@ namespace IceCreamLogistics.Presentation
 
             config.NewConfig<Recipe, RecipeDto>();
             config.NewConfig<RecipeDto, Recipe>();
-            
-            config.NewConfig<Client, ClientDbo>();
-            config.NewConfig<ClientDbo, Client>();
 
             config.NewConfig<OrderCreateItemDto, OrderItem>()
                 .AfterMapping((dto, item) => item.Recipe = new Recipe() { Id = dto.RecipeId });
