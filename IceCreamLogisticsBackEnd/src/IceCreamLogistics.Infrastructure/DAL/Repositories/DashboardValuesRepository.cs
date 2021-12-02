@@ -95,12 +95,16 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
                 .Where(x => x.OrderCreated < dateRangeStart.AddDays(7))
                 .SumAsync(x => x.Items.Sum(y => y.Amount)));
         
-        var results = dayRanges.Select(async x =>  new DashboardValue(){ Label = x.ToString("yyyy-MM-dd"), Value = await query(x)}).ToList();
-        foreach (var result in results)
+        var results = new List<DashboardValue>();
+        foreach (var result in dayRanges.Select(query))
         {
-            result.Wait();
+            results.Add(new DashboardValue
+            {
+                Label = result.Result.ToString("yyyy-MM-dd"),
+                Value = await result
+            });
         }
-        return results.Select(x => x.Result);
+        return results;
     }
 
 

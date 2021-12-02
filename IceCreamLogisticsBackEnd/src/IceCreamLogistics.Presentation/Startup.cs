@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using IceCreamLogistics.Infrastructure.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -79,6 +80,8 @@ namespace IceCreamLogistics.Presentation
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Infrastructure.Startup.Configure(app, env);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -98,8 +101,6 @@ namespace IceCreamLogistics.Presentation
             app.UseSwaggerUi3();
             
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-
-            Infrastructure.Startup.Configure(app, env);
         }
     }
 }

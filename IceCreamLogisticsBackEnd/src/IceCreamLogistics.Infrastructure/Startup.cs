@@ -42,6 +42,7 @@ namespace IceCreamLogistics.Infrastructure
         {           
             using var context = new IceCreamLogisticsDbContext(app.ApplicationServices.GetService<IConfiguration>());
             context.Database.Migrate();
+            app.UseMiddleware<DbTransactionMiddleware>();
         }
 
 
