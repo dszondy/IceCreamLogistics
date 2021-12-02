@@ -16,12 +16,12 @@ namespace IceCreamLogistics.Application.Security
 {
     internal class AuthService : IAuthService
     {
-        public AuthService(IAuthRepository authRepository, IUserRepository userRepository, IHashingService hashingService, IUserTokenService userTokenService, ICurrentUserService currentUserService)
+        public AuthService(IAuthRepository authRepository, IUserRepository userRepository, IHashingService hashingService, IAuthTokenService authTokenService, ICurrentUserService currentUserService)
         {
             AuthRepository = authRepository;
             UserRepository = userRepository;
             HashingService = hashingService;
-            UserTokenService = userTokenService;
+            AuthTokenService = authTokenService;
             _currentUserService = currentUserService;
             _rng = RandomNumberGenerator.Create();
         }
@@ -29,7 +29,7 @@ namespace IceCreamLogistics.Application.Security
         private IAuthRepository AuthRepository { get; }
         private IUserRepository UserRepository { get; }
         private IHashingService HashingService { get; }
-        private IUserTokenService UserTokenService { get; }
+        private IAuthTokenService AuthTokenService { get; }
         private readonly ICurrentUserService _currentUserService;
         
         private readonly RandomNumberGenerator _rng;
@@ -43,7 +43,7 @@ namespace IceCreamLogistics.Application.Security
             var passwordHash = HashingService.CalculateHash(password: password, salt: authInfo.Salt);
             if (passwordHash.Equals(authInfo.PasswordHash, StringComparison.OrdinalIgnoreCase))
             {
-                return await UserTokenService.GenerateToken(user);
+                return await AuthTokenService.GenerateToken(user);
             }
             return null;
         }

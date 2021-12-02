@@ -3,7 +3,7 @@ using IceCreamLogistics.Domain;
 
 namespace IceCreamLogistics.Application.Security
 {
-    public interface IUserTokenService
+    public interface IAuthTokenService
     {
        Task<string> GenerateToken(User user);
     }

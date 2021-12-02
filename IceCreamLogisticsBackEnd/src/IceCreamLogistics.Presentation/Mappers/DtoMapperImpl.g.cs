@@ -15,7 +15,8 @@ namespace IceCreamLogistics.Presentation
                 Id = p1.Id,
                 Name = p1.Name,
                 CanBeOrdered = p1.CanBeOrdered,
-                PricePerUnit = p1.PricePerUnit
+                PricePerUnit = p1.PricePerUnit,
+                DescriptionForLabels = p1.DescriptionForLabels
             };
         }
         public RecipeCreate MapToRecipeCreate(RecipeCreateDto p2)
@@ -136,6 +137,7 @@ namespace IceCreamLogistics.Presentation
                 {
                     Id = p6.Recipe.Id,
                     Name = p6.Recipe.Name,
+                    DescriptionForLabels = p6.Recipe.DescriptionForLabels,
                     CanBeOrdered = p6.Recipe.CanBeOrdered,
                     PricePerUnit = p6.Recipe.PricePerUnit
                 },
@@ -151,6 +153,7 @@ namespace IceCreamLogistics.Presentation
                 {
                     Id = p8.Recipe.Id,
                     Name = p8.Recipe.Name,
+                    DescriptionForLabels = p8.Recipe.DescriptionForLabels,
                     CanBeOrdered = p8.Recipe.CanBeOrdered,
                     PricePerUnit = p8.Recipe.PricePerUnit
                 },
@@ -182,10 +185,11 @@ namespace IceCreamLogistics.Presentation
                 {
                     Id = p12.Recipe.Id,
                     Name = p12.Recipe.Name,
+                    DescriptionForLabels = p12.Recipe.DescriptionForLabels,
                     CanBeOrdered = p12.Recipe.CanBeOrdered,
                     PricePerUnit = p12.Recipe.PricePerUnit
                 },
-                Amount = (decimal)p12.Amount
+                Amount = p12.Amount
             };
         }
         
@@ -198,7 +202,8 @@ namespace IceCreamLogistics.Presentation
                     Id = p10.Recipe.Id,
                     Name = p10.Recipe.Name,
                     CanBeOrdered = p10.Recipe.CanBeOrdered,
-                    PricePerUnit = p10.Recipe.PricePerUnit
+                    PricePerUnit = p10.Recipe.PricePerUnit,
+                    DescriptionForLabels = p10.Recipe.DescriptionForLabels
                 },
                 Amount = p10.Amount,
                 CompletedAmount = p10.CompletedAmount
