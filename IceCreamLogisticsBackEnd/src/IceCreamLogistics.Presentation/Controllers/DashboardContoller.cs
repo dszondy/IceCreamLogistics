@@ -26,5 +26,29 @@ namespace IceCreamLogistics.Presentation.Controllers
             
             return Ok(recipes.Select(x => x.MapTo<DashboardValueDto>()));
         }
+        [HttpGet]
+        [Route("orders/cancelled30")]
+        public async Task<ActionResult<IEnumerable<DashboardValueDto>>> GetOrdersCancelledLast30()
+        {
+            var recipes = await _dashboardService.GetOrdersCancelledLast30();
+            
+            return Ok(recipes.Select(x => x.MapTo<DashboardValueDto>()));
+        }
+        [HttpGet]
+        [Route("orders/last10w")]
+        public async Task<ActionResult<IEnumerable<DashboardValueDto>>> GetOrdersByWeekLast10()
+        {
+            var recipes = await _dashboardService.GetOrdersByWeekLast10();
+            
+            return Ok(recipes.Select(x => x.MapTo<DashboardValueDto>()));
+        }
+        [HttpGet]
+        [Route("orders/client30")]
+        public async Task<ActionResult<IEnumerable<DashboardValueDto>>> GetOrdersByClientLast30Days()
+        {
+            var recipes = await _dashboardService.GetOrdersByClientLast30Days();
+            
+            return Ok(recipes.Select(x => x.MapTo<DashboardValueDto>()));
+        }
     }
 }

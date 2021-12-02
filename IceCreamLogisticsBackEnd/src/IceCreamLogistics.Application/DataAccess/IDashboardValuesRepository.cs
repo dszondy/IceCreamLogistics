@@ -8,5 +8,8 @@ namespace IceCreamLogistics.Application
     {
         Task<IEnumerable<DashboardValue>> GetPopularRecipesLast30Days();
 
+        Task<IEnumerable<DashboardValue>> GetOrdersCancelledLast30();
+        Task<IEnumerable<DashboardValue>> GetOrdersByWeekLast10();
+        Task<IEnumerable<DashboardValue>> GetOrdersByClientLast30Days();
     }
 }

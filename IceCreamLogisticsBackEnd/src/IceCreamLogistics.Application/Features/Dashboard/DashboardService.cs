@@ -17,13 +17,17 @@ namespace IceCreamLogistics.Application
         {
             return _dashboardValuesRepository.GetPopularRecipesLast30Days();
         }
-        public Task<IEnumerable<DashboardValue>> GetOrdersByWeekLat10()
+        public Task<IEnumerable<DashboardValue>> GetOrdersByWeekLast10()
         {
-            return _dashboardValuesRepository.GetPopularRecipesLast30Days();
+            return _dashboardValuesRepository.GetOrdersByWeekLast10();
         }
-        public Task<IEnumerable<DashboardValue>> GetOrdersByClient()
+        public Task<IEnumerable<DashboardValue>> GetOrdersByClientLast30Days()
         {
-            return _dashboardValuesRepository.GetPopularRecipesLast30Days();
+            return _dashboardValuesRepository.GetOrdersByClientLast30Days();
+        }
+        public Task<IEnumerable<DashboardValue>> GetOrdersCancelledLast30()
+        {
+            return _dashboardValuesRepository.GetOrdersCancelledLast30();
         }
     }
 }
