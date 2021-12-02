@@ -2,7 +2,7 @@
 
 namespace IceCreamLogistics.Infrastructure.DAL.DBOs
 {
-    public class ClientDbo
+    internal class ClientDbo
     {
         [Key]
         public int Id { get; set; }

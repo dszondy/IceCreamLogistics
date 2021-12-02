@@ -15,7 +15,7 @@ using User = IceCreamLogistics.Domain.User;
 
 namespace IceCreamLogistics.Infrastructure.Security
 {
-    public class JwtTokenService: ICurrentUserService, IUserTokenService
+    public class JwtTokenService: ICurrentUserService, IAuthTokenService
     {
         private readonly  HttpContext _httpContext;
 

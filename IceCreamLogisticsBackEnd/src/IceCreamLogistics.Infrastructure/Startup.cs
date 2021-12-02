@@ -31,7 +31,7 @@ namespace IceCreamLogistics.Infrastructure
             services.AddTransient<IInventoryRepository, InventoryRepository>();
             services.AddTransient<IDashboardValuesRepository, DashboardValuesRepository>();
             services.AddTransient<IHashingService, HashingService>();
-            services.AddTransient<IUserTokenService, JwtTokenService>();
+            services.AddTransient<IAuthTokenService, JwtTokenService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ICurrentUserService, JwtTokenService>();
             services.AddDbContext<IceCreamLogisticsDbContext>();
@@ -42,6 +42,7 @@ namespace IceCreamLogistics.Infrastructure
         {           
             using var context = new IceCreamLogisticsDbContext(app.ApplicationServices.GetService<IConfiguration>());
             context.Database.Migrate();
+            app.UseMiddleware<DbTransactionMiddleware>();
         }
 
 
