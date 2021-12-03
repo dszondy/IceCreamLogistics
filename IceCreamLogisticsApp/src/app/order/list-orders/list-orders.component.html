@@ -1,5 +1,5 @@
 <alert type="info">
-  <div>
+  <div class="row d-flex">
     <div class="form-group col-lg-6">
       <label class="form-label" for="from">Kiszállítás dátuma: </label>
       <input
@@ -44,7 +44,7 @@
         <ng-template #head>
           <div class="row align-items-center">
             <div class="col-6"> <a [routerLink]="[order.id]" class="text-dark">{{order.client.name}} ({{order.requestedDate | date:'yyyy-MM-dd'}})</a></div>
-            <div class="col-3">{{order.items.length}}</div>
+            <div class="col-3">{{order.items.length}} recept</div>
             <div class="col-3">
               {{orderStatus[order.orderState]}}
             </div>
@@ -53,7 +53,7 @@
         <ng-template #content>
           <div *ngFor="let item of order.items" class="row  align-items-center">
             <div class="col-6"> {{item.recipe.name}} </div>
-            <div class="col-5"> {{item.amount}}  </div>
+            <div class="col-5"> {{item.amount}} adag </div>
             <div class="col-1">
             </div>
           </div>

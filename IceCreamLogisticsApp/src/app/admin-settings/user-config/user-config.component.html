@@ -8,6 +8,13 @@
       </div>
       <div class="d-flex justify-content-between align-items-center pb-2">
         <div class="form-group w-100">
+          <label for="email">UserName: </label>
+          <input *ngIf="!selectedItemDetails.id" [(ngModel)]="selectedItemDetails.name" class="form-control" id="name" type="text">
+          {{selectedItemDetails.id ? selectedItemDetails.name : ''}}
+        </div>
+      </div>
+      <div class="d-flex justify-content-between align-items-center pb-2">
+        <div class="form-group w-100">
           <label for="email">Email: </label>
           <input [(ngModel)]="selectedItemDetails.email" class="form-control" id="email" type="text">
         </div>

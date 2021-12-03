@@ -1,9 +1,7 @@
 <div class="row col-lg-8 align-items-center">
   <div class="col-3">Alapanyag</div>
   <div class="col-3">Raktáron</div>
-  <div class="col-3">Szükséges</div>
-  <div class="col-3 row">
-  </div>
+  <div class="col-6">Szükséges (+Tartalék)</div>
   </div>
 <hr>
 <ng-container *ngIf="itemsDisplayedObservable | async as items" style="height: 80vh">
@@ -13,10 +11,14 @@
            [ngClass]="{'bg-danger':isDanger(item), 'bg-warning':isWarning(item), 'text-white': isWarning(item) || isDanger(item)}"
       >
         <div class="col-3">{{item.name}}</div>
-        <div class="col-3">{{item.amountOnHand}} {{item.measurementUnit}} ({{item.amountOnHand/item.quantityPerPackage}} csomag)</div>
-        <div class="col-3">{{item.amountRequired}} {{item.measurementUnit}} (+ {{item.warningThreshold}} {{item.measurementUnit}})</div>
+        <div class="col-3 row"><div>{{item.amountOnHand}} {{item.measurementUnit}} </div>
+          <div> ({{item.amountOnHand/item.quantityPerPackage}} csomag)</div>
+        </div>
+        <div class="col-3 row"> <div>{{item.amountRequired}} {{item.measurementUnit}} </div>
+          <div> (+{{item.warningThreshold}} {{item.measurementUnit}})</div>
+          </div>
         <div class="col-3 row">
-          <button class="btn btn-secondary m-1" (click)="set(item)"><fa-icon icon="box"></fa-icon></button>
+          <button class="btn btn-secondary m-1" (click)="set(item)"><fa-icon icon="box-open"></fa-icon></button>
           <button class="btn btn-primary m-1" (click)="add(item)"><fa-icon icon="plus"></fa-icon></button></div>
       </div>
     </div>

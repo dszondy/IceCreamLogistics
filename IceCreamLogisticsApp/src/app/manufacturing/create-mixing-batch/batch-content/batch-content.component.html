@@ -12,11 +12,11 @@
     </ng-template>
     <ng-template #content>
       <div *ngFor="let item of itemsFiltered(order)" class="row  align-items-center">
-        <div class="col-6"> {{item.recipeName}} </div>
-        <div class="col-3"> <input [(ngModel)]="item.memberAmount"
-                                   class="form-control" width="20rem" min="1" [max]="item.incompleteAmount" (ngModelChange)="change(order)">
+        <div class="col-5"> {{item.recipeName}} </div>
+        <div class="col-5 d-flex flex-nowrap align-items-center"><div style="width: 6rem"><input [(ngModel)]="item.memberAmount"
+                                   class="form-control" min="1" [max]="item.incompleteAmount" (ngModelChange)="change(order)">
         </div>
-        <div class="col-1">/{{item.incompleteAmount}}</div>
+         <div class="row m-2" > / {{item.incompleteAmount}}</div> </div>
         <div class="col-2">
           <app-add-check (checkedChange)="onItemChecked($event, item, order)"
                          [checked]="item.memberAmount > 0"></app-add-check>

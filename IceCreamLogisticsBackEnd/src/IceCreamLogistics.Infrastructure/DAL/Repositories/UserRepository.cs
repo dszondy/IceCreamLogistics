@@ -45,8 +45,26 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         public async Task<User> Create(UserCreate user)
         {
 
-            var dbo = user.MapTo<UserDbo>();
+            var dbo = new UserDbo
+            {
+                Email = user.Email,
+                Name = user.Name,
+                IsActive = true,
+                ClientId = user.ClientId > 0 ? user.ClientId: null
+            };
+
             await _dbContext.AddAsync(dbo);
+            await _dbContext.SaveChangesAsync();
+
+            if (user.Roles is not null)
+            {
+                await _dbContext.AddRangeAsync(user.Roles
+                    .Select(x => new RoleDbo()
+                    {
+                        UserId = dbo.Id,
+                        Role = x
+                    }));
+            }
             await _dbContext.SaveChangesAsync();
             return await GetUserById(dbo.Id);
         }

@@ -4,16 +4,14 @@
       <div class="row align-items-center">
         <div class="col-5">{{recipe.recipeName}}</div>
         <div class="col-3">{{recipe.totalAmount}} adag</div>
-        <div class="col-3">{{recipe.totalClients}} megrendelésből</div>
-        <div class="col-1">
-        </div>
+        <div class="col-4">{{recipe.totalClients}} megrendelés</div>
       </div>
     </ng-template>
     <ng-template #content>
       <div *ngFor="let item of recipe.items" class="row  align-items-center">
         <div class="col-5"> {{item.order.clientName}} </div>
-        <div class="col-5"> {{item.item.memberAmount}} adag</div>
-        <div class="col-2">
+        <div class="col-3"> {{item.item.memberAmount}} adag</div>
+        <div class="col-4">
           <app-add-check (checkedChange)="onItemChecked($event, recipe.recipeId, item.order)"
                          [checked]="true"></app-add-check>
         </div>
