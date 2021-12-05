@@ -100,7 +100,7 @@ namespace IceCreamLogistics.Infrastructure.DAL.Repositories
         {
             results.Add(new DashboardValue
             {
-                Label = result.Result.ToString("yyyy-MM-dd"),
+                Label = result.Result.ToString("d"),
                 Value = await result
             });
         }

@@ -1,14 +1,14 @@
 <div class="card">
   <div class="container row align-items-center">
     <div class="col-lg-8 p-2">
-      <label class="form-label" for="client">Alapanyag: </label>
+      <label class="form-label" for="ingredient">Alapanyag: </label>
       <input (typeaheadOnSelect)="onIngredientSelected($event)"
              [(ngModel)]="asyncIngredientName"
              [isAnimated]="true"
              [typeaheadAsync]="true"
              [typeahead]="ingredients"
              class="form-control"
-             id="client"
+             id="ingredient"
              placeholder="Keresés..."
              typeaheadOptionField="name">
     </div>
@@ -21,7 +21,7 @@
              id="amount">
     </div>
     <div class="col-1 p-2">
-      <button (click)="addItem()" [disabled]="!(ingredientSelected && amount)" class="btn btn-primary" type="button">
+      <button id="add-item" (click)="addItem()" [disabled]="!(ingredientSelected && amount)" class="btn btn-primary" type="button">
         <fa-icon icon="plus"></fa-icon>
       </button>
     </div>

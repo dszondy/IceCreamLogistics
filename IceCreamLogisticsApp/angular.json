@@ -33,7 +33,7 @@
             "scripts": []
           },
           "configurations": {
-            "test": {
+            "test-server": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
