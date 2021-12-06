@@ -132,6 +132,30 @@ namespace IceCreamLogistics.Infrastructure.DAL
                     {
                         Role = Role.Admin,
                         UserId = 1
+                    }, new RoleDbo()
+                    {
+                        Role = Role.Configuration,
+                        UserId = 1
+                    },
+                    new RoleDbo()
+                    {
+                        Role = Role.Dashboard,
+                        UserId = 1
+                    },
+                    new RoleDbo()
+                    {
+                        Role = Role.Delivery,
+                        UserId = 1
+                    },
+                    new RoleDbo()
+                    {
+                        Role = Role.Order,
+                        UserId = 1
+                    },
+                    new RoleDbo()
+                    {
+                        Role = Role.Manufacturing,
+                        UserId = 1
                     }
                 );
             modelBuilder.Entity<OrderItemCancellationDbo>()

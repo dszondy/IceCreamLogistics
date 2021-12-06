@@ -1,9 +1,9 @@
-FROM node:14.16.0-alpine3.13 as build-stage
-
+#stage 1
+FROM node:16 as node
 WORKDIR /app
-COPY package*.json .
-RUN npm install
 COPY . .
+RUN npm install
 RUN npm run test-server
-EXPOSE 4200
-ENTRYPOINT [ "nginx","-g","daemon off;" ]
+#stage 2
+FROM nginx:alpine
+COPY --from=node /app/dist/IceCreamLogisticsApp /usr/share/nginx/html

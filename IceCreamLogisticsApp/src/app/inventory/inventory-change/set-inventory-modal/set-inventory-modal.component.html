@@ -1,17 +1,25 @@
 <div class="modal-header">
   <h2 class="modal-title">Raktárkészlet beállítása</h2>
-  <h3 class="modal-subtitle">{{ item.name }}</h3>
 </div>
 <div class="modal-body">
+  <h3 class="modal-subtitle">{{ item.name }}</h3>
+
   <pre>
     Raktáron: {{ item.amountOnHand/item.quantityPerPackage }} db
     Mennyiség: {{ item.amountOnHand }} {{item.measurementUnit}}
 
   </pre>
   <label for="amount">Új mennyiség</label>
+  <div class="d-flex">
   <input class="form-control"
          id="amount"
          [(ngModel)]="quantity"
-         type="number" [min]="0" > x {{ item.quantityPerPackage }}
+         type="number" [min]="0">
+    <div class="ml-2">
+  x {{ item.quantityPerPackage }} {{ item.measurementUnit }}
+    </div>
+  </div>
+  <div class="d-flex justify-content-end">
   <button class="btn btn-success" (click)="submit()">Mentés</button>
+  </div>
 </div>

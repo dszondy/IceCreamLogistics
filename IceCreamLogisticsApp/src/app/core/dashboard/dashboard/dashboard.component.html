@@ -1,20 +1,20 @@
 <div class="d-flex row m-0">
-  <div class="col-4 alert alert-dark m-2 p-4 ">
+  <div class="col-lg-4 alert alert-dark m-2 p-4 ">
     <h3>Receptek népszerűsége</h3>
     <h5>Elmúlt 30 nap adatai alapján</h5>
     <ngx-charts-pie-chart *ngIf="recipesLast30" [results]="recipesLast30" [view]="[300,300]"></ngx-charts-pie-chart>
   </div>
-  <div class="col-7 alert alert-dark m-2 p-4 ">
+  <div class="col-lg-7 alert alert-dark m-2 p-4 ">
     <h3>Megrendelők rendelései</h3>
     <h5>Elmúlt 30 nap adatai alapján</h5>
     <ngx-charts-bar-horizontal *ngIf="recipesLast30" [results]="ordersByClient30" [view]="[600,300]"></ngx-charts-bar-horizontal>
   </div>
-  <div class="col-4 alert alert-dark m-2 p-4 ">
+  <div class="col-lg-4 alert alert-dark m-2 p-4 ">
     <h3>Rendelések teljesítése</h3>
     <h5>Elmúlt 30 nap adatai alapján</h5>
     <ngx-charts-pie-chart *ngIf="recipesLast30" [results]="ordersCancelled30" [view]="[300,300]"></ngx-charts-pie-chart>
   </div>
-  <div class="col-4 alert alert-dark m-2 p-4 ">
+  <div class="col-lg-4 alert alert-dark m-2 p-4 ">
     <h3>Megrendelések hetente</h3>
     <h5>Elmúlt 10 hét alapján</h5>
     <ngx-charts-bar-vertical [results]="ordersByWeek10" [view]="[300,300]"></ngx-charts-bar-vertical>

@@ -6,7 +6,7 @@
           <label for="name">Név: </label>
           <input [(ngModel)]="selectedItem.name" class="form-control" id="name" type="text">
         </div>
-        <button (click)="close().subscribe()" class="btn btn-light">
+        <button id="close" (click)="close().subscribe()" class="btn btn-light">
           <fa-icon icon="times" style="font-size:20px"></fa-icon>
         </button>
       </div>
@@ -29,9 +29,9 @@
     <div class="card">
       <div class="d-flex align-items-center justify-content-lg-start">
         <fa-icon icon="search" style="font-size:20px"></fa-icon>
-        <input (ngModelChange)="onSearchTextChange($event)" [(ngModel)]="searchText" [readOnly]="selectedItem"
+        <input id="search" (ngModelChange)="onSearchTextChange($event)" [(ngModel)]="searchText" [readOnly]="selectedItem"
                class="form-control m-2" type="text">
-        <button (click)="add()" [disabled]="!canAdd || selectedItem" class="btn btn-primary">
+        <button  id="add"  (click)="add()" [disabled]="!canAdd || selectedItem" class="btn btn-primary">
           <fa-icon icon="plus" style="font-size:20px"></fa-icon>
         </button>
       </div>
