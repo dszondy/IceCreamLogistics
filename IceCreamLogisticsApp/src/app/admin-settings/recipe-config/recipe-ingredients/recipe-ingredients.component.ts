@@ -56,4 +56,8 @@ export class RecipeIngredientsComponent implements OnInit {
       .pipe(map(x => x.content));
   }
 
+  removeItem(ingredient: RecipeIngredientDto): void {
+    this.recipeIngredients = this.recipeIngredients.filter(x => x !== ingredient);
+    this.recipeIngredientsChange.emit(this.recipeIngredients);
+  }
 }
