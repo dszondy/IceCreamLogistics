@@ -27,7 +27,7 @@
       <app-tree-node *cdkVirtualFor="let order of orders">
         <ng-template #head>
           <div class="row align-items-center">
-            <div class="col-6">{{order.client.name}} ({{order.requestedDate}})</div>
+            <div class="col-6">{{order.client.name}} ({{order.requestedDate | date:'yyyy-MM-dd'}})</div>
             <div class="col-5">{{order.items.length}}</div>
             <div class="col-1">
               <app-add-check (checkedChange)="onOrderChecked($event, order)"
