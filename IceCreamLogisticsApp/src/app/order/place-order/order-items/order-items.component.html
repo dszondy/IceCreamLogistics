@@ -8,7 +8,7 @@
              [typeaheadAsync]="true"
              [typeahead]="recipes"
              class="form-control"
-             id="client"
+             id="recipe"
              placeholder="Keresés..."
              typeaheadOptionField="name">
     </div>
@@ -24,7 +24,7 @@
       {{recipeSelected ? recipeSelected.pricePerUnit * amount + ' Ft' : '' }}
     </div>
     <div class="col-lg-1 col-2 p-2">
-      <button (click)="addItem()" [disabled]="!(recipeSelected && amount)" class="btn btn-primary" type="button">
+      <button (click)="addItem()" id="add-item" [disabled]="!(recipeSelected && amount)" class="btn btn-primary" type="button">
         <fa-icon icon="plus"></fa-icon>
       </button>
     </div>
