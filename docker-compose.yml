@@ -1,0 +1,50 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+  server:
+    build: IceCreamLogisticsBackEnd
+    depends_on:
+      - db
+    links:
+      - db:db
+    environment:
+      ASPNETCORE_URLS: http://localhost:5000 
+      ASPNETCORE_ENVIRONMENT: Development 
+      PORT: 5000
+      Jwt:Key: This is my private symetric key 
+      Jwt:Issuer: localhost 
+      IceCreamDbConnectionString: "Host=db; Port=5432; Database=IceCreamLogistics; Username=postgres; Password=postgres"
+  web:
+    build: IceCreamLogisticsApp
+    ports:
+      - "80:80"
+    links:
+      - server:server
+    environment:
+      - NGINX_HOST=web
+      - NGINX_PORT=80
+    depends_on:
+      - server
+  e2e:
+    image: cypress
+    build: 
+        context: ./IceCreamLogisticsApp
+        dockerfile: ./cypress/Dockerfile
+    container_name: cypress
+    depends_on:
+      - web
+    links:
+      - web:web
+    environment:
+      - CYPRESS_baseUrl=http://web:80
+    command: npx cypress run
+    volumes:
+      - ./IceCreamLogisticsApp/cypress:/app/cypress
+      - ./IceCreamLogisticsApp/cypress.json:/app/cypress.json

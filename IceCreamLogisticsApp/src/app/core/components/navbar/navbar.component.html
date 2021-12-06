@@ -7,14 +7,14 @@
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav align-items-center" *ngIf="hasRole(Role.Order) || isClient()">
       <li class="btn-group nav-item" dropdown>
-        <a aria-controls="adminNavDropdown" class="nav-link" dropdownToggle id="adminNavDropdown">
+        <a aria-controls="orderNavDropdown" class="nav-link" dropdownToggle id="orderNavDropdown">
           Megrendelés
           <fa-icon icon="caret-down"></fa-icon>
         </a>
-        <ul *dropdownMenu aria-labelledby="adminNavDropdown" class="dropdown-menu"
+        <ul *dropdownMenu aria-labelledby="orderNavDropdown" class="dropdown-menu"
             id="dropdown-basic" role="menu">
-          <li role="menuitem"><a class="nav-link" routerLink="/orders/place-order">Új Megrendelés</a></li>
-          <li role="menuitem"><a class="nav-link" routerLink="/orders">Megrendelések</a></li>
+          <li role="menuitem"><a id="order-create"class="nav-link" routerLink="/orders/place-order">Új Megrendelés</a></li>
+          <li role="menuitem"><a id="order-list" class="nav-link" routerLink="/orders">Megrendelések</a></li>
         </ul>
       </li>
 
@@ -25,8 +25,8 @@
         </a>
         <ul *dropdownMenu aria-labelledby="mixingNavDropdown" class="dropdown-menu"
             id="dropdown-basic" role="menu">
-          <li role="menuitem"><a class="nav-link" routerLink="/manufacturing/create-batch">Keverés kezdése</a></li>
-          <li role="menuitem"><a class="nav-link" routerLink="/manufacturing/batch">Eddigi keverések</a></li>
+          <li role="menuitem"><a id="mixing-create" class="nav-link" routerLink="/manufacturing/create-batch">Keverés kezdése</a></li>
+          <li role="menuitem"><a id="mixing-list" class="nav-link" routerLink="/manufacturing/batch">Eddigi keverések</a></li>
         </ul>
       </li>
 
@@ -37,8 +37,8 @@
         </a>
         <ul *dropdownMenu aria-labelledby="deliveryNavDropdown" class="dropdown-menu"
             id="deliveryDropdown" role="menu">
-          <li role="menuitem"><a class="nav-link" routerLink="/delivery/new">Új kiszállítás</a></li>
-          <li role="menuitem"><a class="nav-link" routerLink="/delivery/">Kiszállítások</a></li>
+          <li role="menuitem"><a id="delivery-create" class="nav-link" routerLink="/delivery/new">Új kiszállítás</a></li>
+          <li role="menuitem"><a id="delivery-list" class="nav-link" routerLink="/delivery/">Kiszállítások</a></li>
         </ul>
       </li>
       <li class="btn-group nav-item"  routerLink="/inventory">
@@ -57,10 +57,10 @@
         </a>
         <ul *dropdownMenu aria-labelledby="adminNavDropdown" class="dropdown-menu"
             id="dropdown-basic" role="menu">
-          <li role="menuitem"><a class="dropdown-item" routerLink="/settings/recipes">Receptek</a></li>
-          <li role="menuitem"><a class="dropdown-item" routerLink="/settings/clients">Megrendelők</a></li>
-          <li role="menuitem"><a class="dropdown-item" routerLink="/settings/ingredients">Alapanyagok</a></li>
-          <li role="menuitem"><a class="dropdown-item" routerLink="/settings/users">Felhasználók</a></li>
+          <li role="menuitem"><a id="config-recipes" class="dropdown-item" routerLink="/settings/recipes">Receptek</a></li>
+          <li role="menuitem"><a id="config-clients" class="dropdown-item" routerLink="/settings/clients">Megrendelők</a></li>
+          <li role="menuitem"><a id="config-ingredients" class="dropdown-item" routerLink="/settings/ingredients">Alapanyagok</a></li>
+          <li role="menuitem"><a id="config-users" class="dropdown-item" routerLink="/settings/users">Felhasználók</a></li>
 
         </ul>
       </li>
