@@ -1,6 +1,6 @@
 <div class="card">
   <div class="container row align-items-center">
-    <div class="col-lg-8 p-2">
+    <div class="col-lg-7 p-2">
       <label class="form-label" for="ingredient">Alapanyag: </label>
       <input (typeaheadOnSelect)="onIngredientSelected($event)"
              [(ngModel)]="asyncIngredientName"
@@ -20,15 +20,16 @@
              class="form-control"
              id="amount">
     </div>
-    <div class="col-1 p-2">
+    <div class="col-2 p-2">
       <button id="add-item" (click)="addItem()" [disabled]="!(ingredientSelected && amount)" class="btn btn-primary" type="button">
         <fa-icon icon="plus"></fa-icon>
       </button>
     </div>
     <hr>
-    <div *ngFor="let ingredient of recipeIngredients" class="container row align-items-center">
-      <div class="col-8 p-2 pl-4">{{ingredient.ingredientName}}</div>
-      <div class="col-4 p-2  pl-4">{{ingredient.amount}} {{ingredient.measurementUnit}}</div>
+    <div *ngFor="let ingredient of recipeIngredients" class="container m-0 mb-1 row align-items-center">
+      <div class="col-7  pl-4">{{ingredient.ingredientName}}</div>
+      <div class="col-3  pl-4">{{ingredient.amount}} {{ingredient.measurementUnit}}</div>
+      <div class="col-2  pl-4"><button class="btn btn-dark" (click)="removeItem(ingredient)"><fa-icon icon="trash"></fa-icon> </button></div>
     </div>
   </div>
 </div>
