@@ -1,18 +1,17 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
   <a class="navbar-brand" href="#">Fagylalt logisztika</a>
-  <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
-          data-target="#navbarNavDropdown" data-toggle="collapse" type="button">
+  <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav align-items-center" *ngIf="hasRole(Role.Order) || isClient()">
+  <div class="navbar-collapse collapse" id="navbar">
+    <ul class="navbar-nav align-items-lg-center" *ngIf="hasRole(Role.Order) || isClient()">
       <li class="btn-group nav-item" dropdown>
         <a aria-controls="orderNavDropdown" class="nav-link" dropdownToggle id="orderNavDropdown">
           Megrendelés
           <fa-icon icon="caret-down"></fa-icon>
         </a>
         <ul *dropdownMenu aria-labelledby="orderNavDropdown" class="dropdown-menu"
-            id="dropdown-basic" role="menu">
+            id="orderNavDropdow" role="menu">
           <li role="menuitem"><a id="order-create"class="nav-link" routerLink="/orders/place-order">Új Megrendelés</a></li>
           <li role="menuitem"><a id="order-list" class="nav-link" routerLink="/orders">Megrendelések</a></li>
         </ul>
@@ -76,5 +75,4 @@
       </li>
     </ul>
   </div>
-  <div class="float-right"></div>
 </nav>
