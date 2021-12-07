@@ -12,6 +12,8 @@ export class ClientDetailsComponent implements OnInit {
 
   @Input()
   public client: Client;
+  @Input()
+  public locked: boolean;
 
   constructor() {
   }

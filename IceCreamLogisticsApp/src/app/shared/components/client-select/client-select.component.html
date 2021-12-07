@@ -13,5 +13,5 @@
            typeaheadOptionField="name">
   </div>
   <app-client-details (clientChange)="startSearch()" *ngIf="!searchInProgress"
-                      [client]="selectedClient"></app-client-details>
+                      [client]="selectedClient" [locked]="locked"></app-client-details>
 </div>

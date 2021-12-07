@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Observable, Subscriber} from "rxjs";
-import {Client, ClientClient} from "../../../core/api/api";
+import {Observable, of, Subscriber} from 'rxjs';
+import {AuthClient, Client, ClientClient} from '../../../core/api/api';
 import {map, mergeMap} from "rxjs/operators";
 import {TypeaheadMatch} from "ngx-bootstrap/typeahead";
+import {AuthService} from '../../../core/security/auth.service';
 
 @Component({
   selector: 'app-client-select',
@@ -24,7 +25,16 @@ export class ClientSelectComponent implements OnInit {
   typeaheadLoading?: boolean;
   asyncSelected?: string;
 
-  constructor(private clientClient: ClientClient) {
+  constructor(private clientClient: ClientClient, private authClient: AuthClient) {
+    this.authClient.getCurrentUser().subscribe(user => {
+      if (user.client) {
+        this.selectedClient = user.client;
+        this.clients = of([]);
+        this.locked = true;
+        this.searchInProgress = false;
+        this.selectedClientChange.emit(user.client);
+      }
+    });
     this.clients = new Observable((observer: Subscriber<string>) => {
       observer.next(this.asyncSelected);
     })
@@ -34,7 +44,7 @@ export class ClientSelectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.selectedClient) {
+    if (this.selectedClient) {
       this.asyncSelected = this.selectedClient.name;
     }
   }

@@ -2,7 +2,7 @@
   <div class="card-body">
     <div class="row d-flex align-items-center m-0">
       <h2>{{client.name}}</h2>
-      <button (click)="changeClient()" class="btn btn-dark ml-2">
+      <button *ngIf="!locked" (click)="changeClient()" class="btn btn-dark ml-2">
         <fa-icon icon="edit"></fa-icon>
       </button>
     </div>
